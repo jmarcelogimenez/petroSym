@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>runUI</class>
+ <widget class="QScrollArea" name="runUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>451</width>
+    <height>425</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>ScrollArea</string>
+  </property>
+  <property name="widgetResizable">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="scrollAreaWidgetContents">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>449</width>
+     <height>423</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Execution Type</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0" colspan="2">
+        <widget class="QRadioButton" name="type_serial">
+         <property name="text">
+          <string>Serial</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QRadioButton" name="type_parallel">
+         <property name="text">
+          <string>Parallel</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Number of Processors:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="num_proc">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>1024</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QCheckBox" name="reconstruct">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Reconstruct result after simulation</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Run</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QPushButton" name="pushButton_decompose">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Decompose Case</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/newPrefix/images/fromHelyx/decompose16.png</normaloff>:/newPrefix/images/fromHelyx/decompose16.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_run">
+         <property name="text">
+          <string>Run Calculation</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/newPrefix/images/fromHelyx/start16.png</normaloff>:/newPrefix/images/fromHelyx/start16.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_reset">
+         <property name="text">
+          <string>Reset Calculation</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/newPrefix/images/fromHelyx/update16.png</normaloff>:/newPrefix/images/fromHelyx/update16.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="title">
+       <string>Notification</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0" colspan="2">
+        <widget class="QCheckBox" name="checkBox_2">
+         <property name="text">
+          <string>Send me a mail when calculation is finished</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Email address:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="lineEdit">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="placeholderText">
+          <string>me@domain.com</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>type_serial</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>runUI</receiver>
+   <slot>changeType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>85</x>
+     <y>50</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>442</x>
+     <y>137</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>type_parallel</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>runUI</receiver>
+   <slot>changeType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>74</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>447</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_decompose</sender>
+   <signal>pressed()</signal>
+   <receiver>runUI</receiver>
+   <slot>decomposeCase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>306</x>
+     <y>196</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>450</x>
+     <y>187</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_run</sender>
+   <signal>pressed()</signal>
+   <receiver>runUI</receiver>
+   <slot>runCase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>112</x>
+     <y>229</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>444</x>
+     <y>226</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_reset</sender>
+   <signal>pressed()</signal>
+   <receiver>runUI</receiver>
+   <slot>resetCase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>184</x>
+     <y>259</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>444</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>changeType()</slot>
+  <slot>decomposeCase()</slot>
+  <slot>runCase()</slot>
+  <slot>resetCase()</slot>
+ </slots>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
+</ui>

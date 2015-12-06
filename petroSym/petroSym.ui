@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>petroSymUI</class>
+ <widget class="QMainWindow" name="petroSymUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>798</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>petroSym</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/newPrefix/images/icone.png</normaloff>:/newPrefix/images/icone.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="widget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QSplitter" name="splitter_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <widget class="QTabWidget" name="tabWidget">
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <widget class="QWidget" name="tab_mesh">
+            <attribute name="title">
+             <string>Mesh</string>
+            </attribute>
+           </widget>
+           <widget class="QWidget" name="tab_case_setup">
+            <attribute name="title">
+             <string>Case Setup</string>
+            </attribute>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0">
+              <widget class="QSplitter" name="splitter_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <widget class="QTreeWidget" name="treeWidget">
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <column>
+                 <property name="text">
+                  <string>Case Setup</string>
+                 </property>
+                </column>
+                <item>
+                 <property name="text">
+                  <string>Solution Modeling</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/newPrefix/images/fromHelyx/freeSurface16.png</normaloff>:/newPrefix/images/fromHelyx/freeSurface16.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Run Time Controls</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/newPrefix/images/fromHelyx/cog16.png</normaloff>:/newPrefix/images/fromHelyx/cog16.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Boundary Conditions</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/newPrefix/images/fromHelyx/externalMesh16.png</normaloff>:/newPrefix/images/fromHelyx/externalMesh16.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Initial Conditions</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/newPrefix/images/fromHelyx/exportResults16.png</normaloff>:/newPrefix/images/fromHelyx/exportResults16.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Materials</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/newPrefix/images/fromHelyx/gridgen16.png</normaloff>:/newPrefix/images/fromHelyx/gridgen16.png</iconset>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>phase 1</string>
+                  </property>
+                 </item>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Numerical Schemes</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/newPrefix/images/fromHelyx/calculator16.png</normaloff>:/newPrefix/images/fromHelyx/calculator16.png</iconset>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Solver Settings</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/newPrefix/images/fromHelyx/parMap16.png</normaloff>:/newPrefix/images/fromHelyx/parMap16.png</iconset>
+                 </property>
+                </item>
+               </widget>
+               <widget class="QScrollArea" name="scrollArea_case_setup">
+                <property name="widgetResizable">
+                 <bool>true</bool>
+                </property>
+                <widget class="QWidget" name="scrollAreaWidgetContents_2">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>346</width>
+                   <height>387</height>
+                  </rect>
+                 </property>
+                </widget>
+               </widget>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="tab_run">
+            <attribute name="title">
+             <string>Run</string>
+            </attribute>
+           </widget>
+           <widget class="QWidget" name="tab_postpro">
+            <attribute name="title">
+             <string>Postprocessing</string>
+            </attribute>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="widget_3" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QTabWidget" name="tabWidget_2">
+              <property name="currentIndex">
+               <number>-1</number>
+              </property>
+              <property name="tabsClosable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="widget_2" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="baseSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>178</width>
+             <height>464</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>798</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_As"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuAbout"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNew"/>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSave"/>
+   <addaction name="actionSave_As"/>
+   <addaction name="separator"/>
+   <addaction name="actionTerminal"/>
+   <addaction name="actionBrowse"/>
+   <addaction name="separator"/>
+   <addaction name="actionHelp"/>
+   <addaction name="actionRun"/>
+   <addaction name="actionParaview"/>
+  </widget>
+  <action name="actionNew">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/newPrefix/images/fromHelyx/new16.png</normaloff>:/newPrefix/images/fromHelyx/new16.png</iconset>
+   </property>
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/newPrefix/images/fromHelyx/open16.png</normaloff>:/newPrefix/images/fromHelyx/open16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/newPrefix/images/fromHelyx/save16.png</normaloff>:/newPrefix/images/fromHelyx/save16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionSave_As">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/newPrefix/images/fromHelyx/saveAs16.png</normaloff>:/newPrefix/images/fromHelyx/saveAs16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save As</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/newPrefix/images/fromHelyx/exit16.png</normaloff>:/newPrefix/images/fromHelyx/exit16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionTerminal">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/newPrefix/images/fromHelyx/console16.png</normaloff>:/newPrefix/images/fromHelyx/console16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Terminal</string>
+   </property>
+   <property name="toolTip">
+    <string>Terminal</string>
+   </property>
+  </action>
+  <action name="actionBrowse">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/newPrefix/images/fromHelyx/browseFolder16.png</normaloff>:/newPrefix/images/fromHelyx/browseFolder16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Browse</string>
+   </property>
+   <property name="toolTip">
+    <string>Browse</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/newPrefix/images/fromHelyx/info16.png</normaloff>:/newPrefix/images/fromHelyx/info16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+   <property name="toolTip">
+    <string>Help</string>
+   </property>
+  </action>
+  <action name="actionChangeMeshType">
+   <property name="text">
+    <string>changeMeshType</string>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/newPrefix/images/fromHelyx/next16.png</normaloff>:/newPrefix/images/fromHelyx/next16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Run</string>
+   </property>
+   <property name="toolTip">
+    <string>Run</string>
+   </property>
+  </action>
+  <action name="actionParaview">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/newPrefix/images/fromHelyx/paraview16.png</normaloff>:/newPrefix/images/fromHelyx/paraview16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paraview</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Paraview</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>activated()</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpen</sender>
+   <signal>activated()</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>openCase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSave</sender>
+   <signal>activated()</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>saveCase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSave_As</sender>
+   <signal>activated()</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>saveAsCase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionTerminal</sender>
+   <signal>activated()</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>openTerminal()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionBrowse</sender>
+   <signal>activated()</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>openBrowse()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNew</sender>
+   <signal>activated()</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>newCase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRun</sender>
+   <signal>activated()</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>runCase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionParaview</sender>
+   <signal>activated()</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>openParaview()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>updateCaseSetup()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>216</x>
+     <y>189</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>329</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>importMesh()</slot>
+  <slot>openCase()</slot>
+  <slot>saveCase()</slot>
+  <slot>saveAsCase()</slot>
+  <slot>exitCase()</slot>
+  <slot>openTerminal()</slot>
+  <slot>openBrowse()</slot>
+  <slot>openHelp()</slot>
+  <slot>updateMeshPanel()</slot>
+  <slot>newCase()</slot>
+  <slot>createMesh()</slot>
+  <slot>checkMesh()</slot>
+  <slot>runCase()</slot>
+  <slot>openParaview()</slot>
+  <slot>updateCaseSetup()</slot>
+  <slot>drawGeo()</slot>
+  <slot>saveBlockMesh()</slot>
+  <slot>drawStatistics()</slot>
+ </slots>
+</ui>

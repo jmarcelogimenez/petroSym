@@ -1,0 +1,6 @@
+setuptools
+coverage
+flake8
+sphinx
+numpy
+matplotlib

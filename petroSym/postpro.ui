@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>postproUI</class>
+ <widget class="QScrollArea" name="postproUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>518</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>ScrollArea</string>
+  </property>
+  <property name="widgetResizable">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="scrollAreaWidgetContents">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>516</width>
+     <height>478</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Postprocessing with Paraview</string>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/newPrefix/images/fromHelyx/paraview16.png</normaloff>:/newPrefix/images/fromHelyx/paraview16.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Export Data</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="1">
+        <widget class="QComboBox" name="comboBox">
+         <item>
+          <property name="text">
+           <string>VTK</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Fluent</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Ensight</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Export Format: </string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="text">
+          <string>Export</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/newPrefix/images/fromHelyx/export16.png</normaloff>:/newPrefix/images/fromHelyx/export16.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Calculate</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="currentIndex">
+          <number>2</number>
+         </property>
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
+           <string>Fields</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="1">
+            <widget class="QComboBox" name="time_1">
+             <item>
+              <property name="text">
+               <string>Latest Time</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Full Range</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="field_1">
+             <item>
+              <property name="text">
+               <string>Vorticity</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Mach number</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Courant Number</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Pecklet Number</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Stream Function</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Enstrophy</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Q Criterion</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Field</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Time Range</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QPushButton" name="calc_1">
+             <property name="text">
+              <string>Calculate</string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>images/fromHelyx/cog16.png</normaloff>images/fromHelyx/cog16.png</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>Wall</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="1">
+            <widget class="QComboBox" name="time_2">
+             <item>
+              <property name="text">
+               <string>Latest Time</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Full Range</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Time Range</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="2">
+            <widget class="QPushButton" name="calc_2">
+             <property name="text">
+              <string>Calculate</string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>images/fromHelyx/cog16.png</normaloff>images/fromHelyx/cog16.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Wall Calculation</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="field_2">
+             <item>
+              <property name="text">
+               <string>y Plus RAS</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>y Plus LES</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Wall Velocity Gradient</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_3">
+          <attribute name="title">
+           <string>Boundary</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="1">
+            <widget class="QComboBox" name="time_3">
+             <item>
+              <property name="text">
+               <string>Latest Time</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Full Range</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Time Range</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>Calculation Type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QComboBox" name="type_3">
+             <item>
+              <property name="text">
+               <string>Average</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Integral</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>Field Name</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="bou_3"/>
+           </item>
+           <item row="2" column="1">
+            <widget class="QComboBox" name="field_3"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>Boundary Name</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" colspan="2">
+            <widget class="QPushButton" name="calc_3">
+             <property name="text">
+              <string>Calculate</string>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/newPrefix/images/fromHelyx/cog16.png</normaloff>:/newPrefix/images/fromHelyx/cog16.png</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>pressed()</signal>
+   <receiver>postproUI</receiver>
+   <slot>openParaview()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>493</x>
+     <y>28</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>pressed()</signal>
+   <receiver>postproUI</receiver>
+   <slot>exportData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>197</x>
+     <y>113</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>510</x>
+     <y>147</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>calc_3</sender>
+   <signal>pressed()</signal>
+   <receiver>postproUI</receiver>
+   <slot>calculate3()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>189</x>
+     <y>342</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>512</x>
+     <y>449</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>calc_2</sender>
+   <signal>pressed()</signal>
+   <receiver>postproUI</receiver>
+   <slot>calculate2()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>255</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>510</x>
+     <y>432</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>calc_1</sender>
+   <signal>pressed()</signal>
+   <receiver>postproUI</receiver>
+   <slot>calculate1()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>227</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>510</x>
+     <y>409</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>openParaview()</slot>
+  <slot>exportData()</slot>
+  <slot>calculate1()</slot>
+  <slot>calculate2()</slot>
+  <slot>calculate3()</slot>
+ </slots>
+</ui>

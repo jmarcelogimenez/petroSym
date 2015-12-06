@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>solverSettingsUI</class>
+ <widget class="QScrollArea" name="solverSettingsUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>379</width>
+    <height>476</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>ScrollArea</string>
+  </property>
+  <property name="widgetResizable">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="scrollAreaWidgetContents">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>377</width>
+     <height>474</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Apply</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/newPrefix/images/fromHelyx/save16.png</normaloff>:/newPrefix/images/fromHelyx/save16.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="text">
+         <string>Manual Edit</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/newPrefix/images/fromHelyx/edit16.png</normaloff>:/newPrefix/images/fromHelyx/edit16.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>pressed()</signal>
+   <receiver>solverSettingsUI</receiver>
+   <slot>aplicar()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>-24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>7</x>
+     <y>53</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>pressed()</signal>
+   <receiver>solverSettingsUI</receiver>
+   <slot>editar()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>351</x>
+     <y>-25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>34</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>aplicar()</slot>
+  <slot>onChange1()</slot>
+  <slot>onChange2()</slot>
+  <slot>editar()</slot>
+  <slot>onChangeSomething()</slot>
+ </slots>
+</ui>

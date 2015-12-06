@@ -1,0 +1,12 @@
+python-2.7 o python-3.4
+pyqt
+python-setuptools
+python-vtk
+python-numpy
+python-dev
+pyqt4-dev-tools
+pyFOAM-6.4 (6.5 requiere pw>4.1)  -> comentar la linea 300 para evitar el render() (aparece un fogonazo molesto)
+https://pythonhosted.org/spyder/installation.html
+pip install rope
+pip install matplotlib
+sudo apt-get install paraview-python

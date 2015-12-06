@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>tracersUI</class>
+ <widget class="QDialog" name="tracersUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>324</width>
+    <height>434</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Tracers Setting</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="1">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>Remove</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>New</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <layout class="QVBoxLayout" name="figureLayout"/>
+   </item>
+   <item row="0" column="0" rowspan="4">
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <column>
+      <property name="text">
+       <string>Start Time</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Inlet Patch</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="pushButton_3">
+     <property name="text">
+      <string>Apply</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>images/fromHelyx/save16.png</normaloff>images/fromHelyx/save16.png</iconset>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>tracersUI</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>223</x>
+     <y>424</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>tracersUI</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>223</x>
+     <y>424</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>pressed()</signal>
+   <receiver>tracersUI</receiver>
+   <slot>newTracer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>314</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>323</x>
+     <y>142</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>pressed()</signal>
+   <receiver>tracersUI</receiver>
+   <slot>removeTracer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>314</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>323</x>
+     <y>148</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>pressed()</signal>
+   <receiver>tracersUI</receiver>
+   <slot>saveCaseData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>276</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>285</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>newTracer()</slot>
+  <slot>removeTracer()</slot>
+  <slot>saveCaseData()</slot>
+ </slots>
+</ui>

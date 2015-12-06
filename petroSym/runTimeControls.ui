@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>runTimeControlsUI</class>
+ <widget class="QScrollArea" name="runTimeControlsUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>379</width>
+    <height>476</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>ScrollArea</string>
+  </property>
+  <property name="widgetResizable">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="scrollAreaWidgetContents">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>361</width>
+     <height>524</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Apply</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/newPrefix/images/fromHelyx/save16.png</normaloff>:/newPrefix/images/fromHelyx/save16.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="text">
+         <string>Manual Edit</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/newPrefix/images/fromHelyx/edit16.png</normaloff>:/newPrefix/images/fromHelyx/edit16.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Time Settings</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="6" column="1" colspan="2">
+        <widget class="QLineEdit" name="max_cfl">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>1.0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Max Delta Time:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="2">
+        <widget class="QLineEdit" name="delta_time">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Start From: </string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1" colspan="2">
+        <widget class="QLineEdit" name="max_deltat">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>1.0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="2">
+        <widget class="QLineEdit" name="end_time">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Max CFL Number:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Max Alpha CFL Number:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="2">
+        <widget class="QCheckBox" name="adjustable">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Delta Time (s):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>End Time (s):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="start_from">
+         <property name="text">
+          <string>0.0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Adjustable Run Time:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1" colspan="2">
+        <widget class="QLineEdit" name="max_cfl_alpha">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>0.5</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cb_start_from">
+         <item>
+          <property name="text">
+           <string>Start Time</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>First Time</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Latest Time</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Data Writing</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="2" column="1">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>Write Control:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>Write Compression:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2" colspan="2">
+        <widget class="QSpinBox" name="purge">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QComboBox" name="cb_write_control">
+         <property name="maximumSize">
+          <size>
+           <width>250</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Time Step</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Run Time</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Clock Time</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Write Precision:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLineEdit" name="write_control"/>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string>Write Format:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Purge Write</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QLabel" name="label_13">
+         <property name="text">
+          <string>Time Precision:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2" colspan="2">
+        <widget class="QComboBox" name="format">
+         <item>
+          <property name="text">
+           <string>ASCII</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Binary</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="5" column="2" colspan="2">
+        <widget class="QSpinBox" name="precision">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>16</number>
+         </property>
+         <property name="value">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2" colspan="2">
+        <widget class="QComboBox" name="compression">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string>Uncompressed</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Compressed</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="7" column="2" colspan="2">
+        <widget class="QSpinBox" name="precision_time">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+      <zorder>label_8</zorder>
+      <zorder>cb_write_control</zorder>
+      <zorder>write_control</zorder>
+      <zorder>label_9</zorder>
+      <zorder>purge</zorder>
+      <zorder>label_10</zorder>
+      <zorder>label_11</zorder>
+      <zorder>label_12</zorder>
+      <zorder>label_13</zorder>
+      <zorder>format</zorder>
+      <zorder>precision</zorder>
+      <zorder>compression</zorder>
+      <zorder>precision_time</zorder>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>cb_start_from</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChange1()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>adjustable</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChange2()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>330</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>pressed()</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>aplicar()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>-24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>7</x>
+     <y>53</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>pressed()</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>editar()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>351</x>
+     <y>-25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>34</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_start_from</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>152</x>
+     <y>39</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>start_from</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>356</x>
+     <y>30</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>end_time</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>355</x>
+     <y>81</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>delta_time</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>356</x>
+     <y>140</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>adjustable</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>355</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>max_cfl</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>360</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>max_cfl_alpha</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>195</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>359</x>
+     <y>247</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>max_deltat</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>226</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>356</x>
+     <y>281</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_write_control</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>230</x>
+     <y>293</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>361</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>write_control</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>293</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>362</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>purge</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>324</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>357</x>
+     <y>370</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>format</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>355</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>354</x>
+     <y>400</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>precision</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>386</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>355</x>
+     <y>427</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>compression</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>runTimeControlsUI</receiver>
+   <slot>onChangeSomething()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>356</x>
+     <y>455</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>aplicar()</slot>
+  <slot>onChange1()</slot>
+  <slot>onChange2()</slot>
+  <slot>editar()</slot>
+  <slot>onChangeSomething()</slot>
+ </slots>
+</ui>
