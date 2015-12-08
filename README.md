@@ -19,7 +19,7 @@ run::
     sudo apt-get install -y --force-yes openfoam240
     sudo apt-get install paraviewopenfoam410
     sudo apt-get install libfreetype6-dev libpng12-dev
-    sudo apt-get install python-pip python2.7-dev libxext-dev python-qt4 qt4-dev-tools build-essential
+    sudo apt-get install python-pip python2.7-dev libxext-dev python-qt4 pyqt4-dev-tools build-essential
 
 Installation
 ------------
