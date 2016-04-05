@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>379</width>
+    <width>370</width>
     <height>476</height>
    </rect>
   </property>
@@ -26,13 +26,16 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>377</width>
+     <width>368</width>
      <height>474</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
       <item>
        <widget class="QPushButton" name="pushButton">
         <property name="enabled">
@@ -56,6 +59,100 @@
          <iconset resource="resources.qrc">
           <normaloff>:/newPrefix/images/fromHelyx/edit16.png</normaloff>:/newPrefix/images/fromHelyx/edit16.png</iconset>
         </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QGroupBox" name="groupBox1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="title">
+         <string>Basic Options</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Method:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cb_basic_options">
+           <property name="currentIndex">
+            <number>-1</number>
+           </property>
+           <item>
+            <property name="text">
+             <string>Robust</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Intermediate</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>High Order</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Custom</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="title">
+         <string>Advanced Options</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <layout class="QGridLayout" name="grid_avanzada" columnminimumwidth="0">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMinimumSize</enum>
+           </property>
+           <property name="horizontalSpacing">
+            <number>10</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>6</number>
+           </property>
+          </layout>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -87,8 +184,8 @@
    <slot>aplicar()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>115</x>
-     <y>-24</y>
+     <x>116</x>
+     <y>11</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -103,12 +200,28 @@
    <slot>editar()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>351</x>
-     <y>-25</y>
+     <x>358</x>
+     <y>11</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
      <y>34</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_basic_options</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>numericalSchemesUI</receiver>
+   <slot>onChangeSomething3()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>121</x>
+     <y>103</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>226</x>
+     <y>385</y>
     </hint>
    </hints>
   </connection>
@@ -119,5 +232,6 @@
   <slot>onChange2()</slot>
   <slot>editar()</slot>
   <slot>onChangeSomething()</slot>
+  <slot>onChangeSomething3()</slot>
  </slots>
 </ui>

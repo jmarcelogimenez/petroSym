@@ -152,11 +152,13 @@ class petroSym(petroSymUI):
                 #Levantar dependiendo del caso predefinido elegido
                 typeSim = data[2]
                 if typeSim == 'Skimmer Tank':
-                    command = 'cp -r %s/templates/template_skimmer/* %s/.' % (os.path.dirname(__file__),self.currentFolder)
+                    #command = 'cp -r %s/templates/template_skimmer/* %s/.' % (os.path.dirname(__file__),self.currentFolder)
+                    command = 'cp -r %s/templates/template_skimmer/* %s/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
                     os.system(command)
                     self.solvername = 'pimpleFoam'
                 elif typeSim =='Generic':
-                    command = 'cp -r %s/templates/template_icoFoam/* %s/.' % (os.path.dirname(__file__),self.currentFolder)
+                    #command = 'cp -r %s/templates/template_icoFoam/* %s/.' % (os.path.dirname(__file__),self.currentFolder)
+                    command = 'cp -r %s/templates/template_icoFoam/* %s/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
                     os.system(command)
                     self.solvername = 'icoFoam'
                 #para que pueda sacar algunos datos
@@ -730,7 +732,7 @@ class petroSym(petroSymUI):
         elif menu=='Numerical Schemes':
             widget = numericalSchemes(self.currentFolder)
         elif menu=='Solver Settings':
-            widget = solverSettings(self.currentFolder)
+            widget = solverSettings(self.currentFolder,self.solvername)
         else:
             #do nothing
             return           
