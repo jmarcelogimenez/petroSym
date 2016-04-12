@@ -9,9 +9,9 @@ before_install:
   - sudo add-apt-repository http://www.openfoam.org/download/ubuntu
   - sudo apt-get -qq update
   - sudo apt-get install -y --force-yes openfoam240
-  - sudo apt-get install -y paraviewopenfoam410
-  - sudo apt-get install -y libfreetype6-dev libpng12-dev
-  - sudo apt-get install -y python-pip python2.7-dev libxext-dev python-qt4 pyqt4-dev-tools build-essential
+  - sudo apt-get install -y --force-yes paraviewopenfoam410
+  - sudo apt-get install -y --force-yes libfreetype6-dev libpng12-dev
+  - sudo apt-get install -y --force-yes python-pip python2.7-dev libxext-dev python-qt4 pyqt4-dev-tools build-essential
   - pip install -r requirements.txt
   - ./install_external.sh
   - . /opt/openfoam240/etc/bashrc
