@@ -5,7 +5,7 @@ virtualenv:
   system_site_packages: false
 before_install:
   - sudo add-apt-repository http://www.openfoam.org/download/ubuntu
-  - sudo apt-get update -qq
+  - sudo apt-get update -q
   - sudo apt-get install -y --force-yes openfoam240
   - sudo apt-get install paraviewopenfoam410
   - sudo apt-get install libfreetype6-dev libpng12-dev
