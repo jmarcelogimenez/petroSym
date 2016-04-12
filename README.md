@@ -24,12 +24,12 @@ run::
 Installation
 ------------
 
-Package petroSym requires python 2.7, matplotlib>=3.5.0, PyQt and pyFoam 0.6.4
+Package petroSym requires python 2.7, matplotlib>=1.5.0, PyQt and pyFoam 0.6.4
 
     pip install -r requirements.txt
     ./install_external.sh
 
-Before installing or using simphony-openfoam , make sure the OpenFOAM environment variables are set by the following command:
+Before installing or using petroSym, make sure the OpenFOAM environment variables are set by the following command:
 
     source /opt/openfoam240/etc/bashrc
 

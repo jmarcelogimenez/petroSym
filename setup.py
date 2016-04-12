@@ -4,6 +4,7 @@
 #$LastChangedRevision$
 
 import os
+import time
 from setuptools import setup, find_packages, Command
 from setuptools.command.install import install
 
@@ -12,6 +13,8 @@ version = '0.1'
 class InstallCommand(install):
     """Customized setuptools install command - prints a friendly greeting."""
     def run(self):
+        print "Hello, openfoamer, how are you? :)"
+        time.sleep(2)
         os.system("./install_foam_utilities.sh")
         os.system("./compileUI.sh")
 	install.run(self)
@@ -60,7 +63,7 @@ def read(*rnames):
 
 install_requires = [
         'setuptools',
-	'matplotlib',
+        'matplotlib',
         'PyFoam==0.6.4'
         ]
 
@@ -88,11 +91,10 @@ setup(
 	'images/*.png',
 	'caseDicts/*',
 	'pvsms/*',
-    'matplotlibrc'
+      'matplotlibrc'
 	]),
     include_package_data=True,
-    dependency_links=[
-    ],
+    dependency_links=[],
     install_requires=install_requires,
     tests_require=tests_require,
     extras_require=dict(
@@ -112,25 +114,28 @@ setup(
     classifiers=[
         'Development Status :: 1 - Pre-Alpha',
         'Environment :: Console',
+        'Intended Audience :: End Users/Desktop',
         'Intended Audience :: Developers',
         'License :: GNU General Public License :: GPL-2',
         'Operating System :: OS Independent',
+        'Operating System :: Linux :: Ubuntu',
         'Programming Language :: Python',
+        'Topic :: Communications :: Email',
         'Topic :: Documentation',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     author="Juan Marcelo Gimenez",
     author_email="jmarcelogimenez at gmail dot com",
-    description="GUI for OpenFOAM.",
-    #long_description=long_description,
+    description="GUI for OpenFOAM",
+    long_description="Cool GUI for OpenFOAM",
     license="GNU GPL-2",
     keywords="openfoam GUI",
     #zip_safe = False,
-    #url="http://rst2pdf.googlecode.com",
-    #download_url="http://code.google.com/p/rst2pdf/downloads/list",
+    #url="https://github.com/jmarcelogimenez/petroSym",
+    download_url="https://github.com/jmarcelogimenez/petroSym",
     entry_points={'console_scripts': ['petroSym = petroSym.__main__:main']},
     #test_suite='rst2pdf.tests.test_rst2pdf.test_suite',
-	cmdclass={
+    cmdclass = {
         'clean': CleanCommand,
         'install': InstallCommand
     }

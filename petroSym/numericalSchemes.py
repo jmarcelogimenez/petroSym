@@ -199,13 +199,15 @@ class numericalSchemes(numericalSchemesUI):
     def onChangeSomething2(self):
         sender = self.sender() #La cb que la activo
         scheme = sender.objectName()
+        scheme = unicode(scheme)
         
         #Si existe un item en la columna 2 (Los opcionales) borrarlo, total si existe para otro scheme se va a crear de nuevo abajo        
         row = dicAvanzadas[scheme]['solver'][0]
         item = self.grid_avanzada.itemAtPosition(row,2)
-        if item and (sender.currentText() not in dicAvanzadas['gradSchemes'][0][5]): ##WARNING
-            self.clearLayout(item,0)
-            self.grid_avanzada.removeItem(item)
+        if item:
+            if (scheme!='gradSchemes') or ((scheme=='gradSchemes') and (sender.currentText() not in dicAvanzadas['gradSchemes'][0][5])):
+                self.clearLayout(item,0)
+                self.grid_avanzada.removeItem(item)
         
         for keys1 in dicAvanzadas[scheme].keys():
             
@@ -289,6 +291,7 @@ class numericalSchemes(numericalSchemesUI):
             keysdivSchemes.remove('default')
             for keys in keysdic:
                     data = ''
+                    keys = unicode(keys)
                     if (type(dicGuardar[keys]['default'][0]) is bool):
                         data=data+'bounded ' if dicGuardar[keys]['default'][0]==True else ''
                     else:
@@ -300,17 +303,18 @@ class numericalSchemes(numericalSchemesUI):
                     if (dicGuardar[keys]['default'][2] != ''):
                         data=data+' '+str(dicGuardar[keys]['default'][2])
                     
-                    self.parsedData[keys]['default'] = data
+                    self.parsedData[unicode(keys)]['default'] = data
                     
             for keys in keysdivSchemes:
                 if keys not in self.parsedData['divSchemes'].keys():
                     self.parsedData['divSchemes'][keys] = {}
-                self.parsedData['divSchemes'][keys] = dicGuardar['divSchemes'][keys][0]
+                self.parsedData['divSchemes'][unicode(keys)] = dicGuardar['divSchemes'][keys][0]
         
         else: #Si entro por un advanced
             keysdic = dicAvanzadas.keys()
             for keys in keysdic:
                 data = {}
+                keys = unicode(keys)
                 for i in range(dicAvanzadas[keys]['solver'][1]): #Son 3 columnas
                     layoutH = self.grid_avanzada.findChild(QtGui.QHBoxLayout,keys+str(i))
                     pos = dicAvanzadas[keys][i][0]
@@ -322,14 +326,14 @@ class numericalSchemes(numericalSchemesUI):
                     widget= widget.widget()
                     name = widget.staticMetaObject.className()
                     if (name == 'QComboBox'):
-                        data[pos] = widget.currentText()
+                        data[pos] = str(widget.currentText())
                         if (widget.currentText() in dicAvanzadas[keys].keys()):
-                            for i in range(dicAvanzadas[keys][widget.currentText()]['solver'][1]):
+                            for i in range(dicAvanzadas[keys][str(widget.currentText())]['solver'][1]):
                                 layoutH = self.grid_avanzada.findChild(QtGui.QHBoxLayout,keys+'2') #3 columna, los opcionales
                                 widgetN = layoutH.itemAt(1).widget()
                                 if (widgetN.text()==''):
-                                    widgetN.setText(str(dicAvanzadas[keys][widget.currentText()][i][5]))
-                                pos = dicAvanzadas[keys][widget.currentText()][i][0]
+                                    widgetN.setText(str(dicAvanzadas[keys][str(widget.currentText())][i][5]))
+                                pos = dicAvanzadas[keys][str(widget.currentText())][i][0]
                                 data[pos] = widgetN.text()
                     elif (name == 'QCheckBox'):
                         if widget.isChecked():
@@ -338,9 +342,9 @@ class numericalSchemes(numericalSchemesUI):
                         data[pos] = widget.text()
                     
                 strr = " ".join(str(v) for v in data.itervalues())
-                self.parsedData[keys]['default'] = strr
+                self.parsedData[unicode(keys)]['default'] = strr
             
-        self.parsedData['schemeType'] = self.cb_basic_options.currentText()
+        self.parsedData['schemeType'] = str(self.cb_basic_options.currentText())
         self.parsedData.writeFile()
         
         self.pushButton.setEnabled(False)
@@ -417,6 +421,10 @@ class numericalSchemes(numericalSchemesUI):
                 continue
             parsedData = deepcopy(self.parsedData[key1]['default'])
             
+            import PyFoam
+            if type(parsedData) is PyFoam.Basics.DataStructures.BoolProxy: #Error de booleanProxy (?)
+                parsedData=str(parsedData)
+            
             if (type(parsedData) is str):
                 parsedData = parsedData.split()
             
@@ -442,13 +450,15 @@ class numericalSchemes(numericalSchemesUI):
                     if (parsedData[0] in dicPrimeras):
                         data[0]=parsedData[0]
                         parsedData.remove(parsedData[0])
-                    if self.RepresentsInt(parsedData[len(parsedData)-1]):
-                        data[2]=parsedData[len(parsedData)-1]
-                        parsedData.remove(parsedData[len(parsedData)-1])
+                    if len(parsedData)>1:
+                        if self.RepresentsInt(parsedData[len(parsedData)-1]):
+                            data[2]=parsedData[len(parsedData)-1]
+                            parsedData.remove(parsedData[len(parsedData)-1])
                     data[1]=" ".join(str(v) for v in parsedData)
             
-            if (type(data[0]) is not str): #Error de booleanProxy (?)
-                data[0]=str(data[0])
+            for i in range(0,2):
+                if (type(data[i]) is not str): #Error de booleanProxy (?)
+                    data[i]=str(data[i])
             #print data
             for i in range(dicAvanzadas[key1]['solver'][1]): #Son 3 columnas
                 layoutH = self.grid_avanzada.findChild(QtGui.QHBoxLayout,key1+str(i))

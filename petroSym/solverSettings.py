@@ -244,6 +244,7 @@ class solverSettings(solverSettingsUI):
     def loadData(self):
         self.filename = '%s/system/fvSolution'%self.currentFolder        
         self.filename2 = path.join(path.dirname(__file__),"templates/fvSolutionTemplate")
+        #self.filename2 = "%s/templates/fvSolutionTemplate" % os.path.dirname(__file__)
         
         self.parsedData = ParsedParameterFile(self.filename,createZipped=False)
         self.templateparsedDataI = ParsedParameterFile(self.filename2,createZipped=False)
@@ -337,47 +338,49 @@ class solverSettings(solverSettingsUI):
             if currentIndex == 0:
                
                if solver in dic_unknowsSymetric:
-                   self.parsedData['solvers'][solver] = templateparsedData['solvers']['PCG']
+                   self.parsedData['solvers'][str(solver)] = templateparsedData['solvers']['PCG']
                    for ifield in range(0,dicPCG['solver'][1]):
-                       self.saveItems(widget,dicPCG,ifield,self.parsedData['solvers'][solver])
+                       self.saveItems(widget,dicPCG,ifield,self.parsedData['solvers'][str(solver)])
                else:
-                   self.parsedData['solvers'][solver] = templateparsedData['solvers']['PBiCG']
+                   self.parsedData['solvers'][str(solver)] = templateparsedData['solvers']['PBiCG']
                    for ifield in range(0,dicPBiCG['solver'][1]):
-                       self.saveItems(widget,dicPBiCG,ifield,self.parsedData['solvers'][solver])
+                       self.saveItems(widget,dicPBiCG,ifield,self.parsedData['solvers'][str(solver)])
                 
             elif currentIndex == 1:
-                self.parsedData['solvers'][solver] = templateparsedData['solvers']['GAMG']
+                self.parsedData['solvers'][str(solver)] = templateparsedData['solvers']['GAMG']
                     
                 self.changeValuesOnCB(0,[['GaussSeidel','DIC','DICGaussSeidel'],['GaussSeidel']],dicGAMG,(solver in dic_unknowsSymetric))
                 
                 for ifield in range(0,dicGAMG['solver'][1]):
-                    self.saveItems(widget,dicGAMG,ifield,self.parsedData['solvers'][solver])
+                    self.saveItems(widget,dicGAMG,ifield,self.parsedData['solvers'][str(solver)])
                 
             elif currentIndex == 2:
-                self.parsedData['solvers'][solver] = templateparsedData['solvers']['smoothSolver']
+                self.parsedData['solvers'][str(solver)] = templateparsedData['solvers']['smoothSolver']
                     
                 self.changeValuesOnCB(0,[['GaussSeidel','DIC','DICGaussSeidel'],['GaussSeidel']],dicSmoothSolver,(solver in dic_unknowsSymetric))
                 
                 for ifield in range(0,dicSmoothSolver['solver'][1]):
-                    self.saveItems(widget,dicSmoothSolver,ifield,self.parsedData['solvers'][solver])
+                    self.saveItems(widget,dicSmoothSolver,ifield,self.parsedData['solvers'][str(solver)])
                 
             self.CurrentWidgetIndexDict[cb.objectName()] = cb.currentIndex()
             self.OriginalWidgetIndexDict[cb.objectName()] = cb.currentIndex()   
         
-        #PIMPLE  
-        widget = self.tabWidget.findChild(QtGui.QWidget,'PIMPLE')
-        templateparsedData = deepcopy(self.templateparsedDataI)
-        self.parsedData['PIMPLE'] = templateparsedData['solvers']['PIMPLE']
-        for ifield in range(0,dicPIMPLE['solver'][1]):
-            self.saveItems(widget,dicPIMPLE,ifield,self.parsedData['PIMPLE'])
-            
-        #Relaxation          
-        widget = self.tabWidget.findChild(QtGui.QWidget,'Relaxation')        
-        templateparsedData = deepcopy(self.templateparsedDataI)        
-        self.parsedData['relaxationFactors'] = templateparsedData['solvers']['relaxationFactors']
-        self.parsedData['relaxationFactors']['fields'] = templateparsedData['solvers']['relaxationFactors']['fields']
-        for ifield in range(0,dicRelaxation['solver'][1]):
-            self.saveItems(widget,dicRelaxation,ifield,self.parsedData['relaxationFactors']['fields'])
+        if self.solvername in dic_solversPIMPLE:        
+        
+            #PIMPLE  
+            widget = self.tabWidget.findChild(QtGui.QWidget,'PIMPLE')
+            templateparsedData = deepcopy(self.templateparsedDataI)
+            self.parsedData['PIMPLE'] = templateparsedData['solvers']['PIMPLE']
+            for ifield in range(0,dicPIMPLE['solver'][1]):
+                self.saveItems(widget,dicPIMPLE,ifield,self.parsedData['PIMPLE'])
+                
+            #Relaxation          
+            widget = self.tabWidget.findChild(QtGui.QWidget,'Relaxation')        
+            templateparsedData = deepcopy(self.templateparsedDataI)        
+            self.parsedData['relaxationFactors'] = templateparsedData['solvers']['relaxationFactors']
+            self.parsedData['relaxationFactors']['fields'] = templateparsedData['solvers']['relaxationFactors']['fields']
+            for ifield in range(0,dicRelaxation['solver'][1]):
+                self.saveItems(widget,dicRelaxation,ifield,self.parsedData['relaxationFactors']['fields'])
         
         #####
         self.parsedData.writeFile()
@@ -526,7 +529,7 @@ class solverSettings(solverSettingsUI):
         
         ###NO ME CONVENCE
         if creation or (self.OriginalWidgetIndexDict[solver] == state): #Si es la primer vez que lo creo, o si el estado original era ese (Solo para fields)
-            parsedData = self.parsedData['solvers'][solver]
+            parsedData = self.parsedData['solvers'][str(solver)]
         elif state == 'PIMPLE': #Si lo llamo para PIMPLE
                 if self.parsedData.content.has_key('PIMPLE'):                    
                     parsedData = self.parsedData['PIMPLE']
@@ -537,7 +540,7 @@ class solverSettings(solverSettingsUI):
                 if self.parsedData.content.has_key('relaxationFactors'):                    
                     parsedData = self.parsedData['relaxationFactors']['fields']
                 else:
-                    tempparsedData = deepcopy(self.templateparsedDataI.currentText())
+                    tempparsedData = deepcopy(self.templateparsedDataI)
                     parsedData = tempparsedData['solvers']['relaxationFactors']['fields']
         else: #Sino que cargue la plantilla
             tempparsedData = deepcopy(self.templateparsedDataI)

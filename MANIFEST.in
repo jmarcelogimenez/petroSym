@@ -1,1 +1,11 @@
 recursive-include petroSym/templates *
+include requirements.txt
+include install_foam_utilities.sh
+include README.md
+include compileUI.sh
+include petroSym/matplotlibrc
+recursive-include petroSym/caseDicts *
+recursive-include petroSym/images *
+recursive-include petroSym/pvsms *
+recursive-include utilitiesFoam
+recursive-include petroSym *.ui 

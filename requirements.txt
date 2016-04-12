@@ -4,3 +4,4 @@ flake8
 sphinx
 numpy
 matplotlib
+PyFoam==0.6.4

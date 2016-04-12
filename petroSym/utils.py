@@ -7,6 +7,7 @@ Created on Wed Aug 19 17:08:36 2015
 
 from PyQt4 import QtGui, QtCore
 import os
+import time
 
 types = {}
 types['p'] = 'scalar'
@@ -173,6 +174,8 @@ def currentFields(currentFolder,filterTurb=True):
         logname = '%s/dirFeatures.log' % currentFolder
         command = 'dirFeaturesFoam -case %s > %s' % (currentFolder,logname)
         os.system(command)
+        while (os.system(command)):
+            time.sleep(0.2)
         log = open(logname, 'r')
         for linea in log:
             if "Current Time" in linea:
@@ -184,21 +187,27 @@ def currentFields(currentFolder,filterTurb=True):
         allturb = ['k','epsilon','omega','nuSgs','nut','nuTilda']
         #le dejo los que voy a utilizar
         filename = '%s/constant/turbulenceProperties'%currentFolder
-        tprop = ParsedParameterFile(filename,createZipped=False)    
-        if tprop['simulationType']=='RASModel':
-            filename = '%s/constant/RASProperties'%currentFolder
-            Rprop = ParsedParameterFile(filename,createZipped=False)    
-            if Rprop['RASModel']=='kEpsilon':
-                allturb.remove('k')
-                allturb.remove('epsilon')
-            if Rprop['RASModel']=='kOmega' or Rprop['RASModel']=='kOmegaSST':
-                allturb.remove('k')
-                allturb.remove('omega')
-        elif tprop['simulationType']=='LESModel':
-            filename = '%s/constant/LESProperties'%self.currentFolder
-            Lprop = ParsedParameterFile(filename,createZipped=False)    
-            if Lprop['LESModel']=='Smagorinsky':  
-                allturb.remove('nuSgs')
+        e=False        
+        try:
+            tprop = ParsedParameterFile(filename,createZipped=False)
+        except IOError as e:
+            tprop = {}
+            
+        if (not e):
+            if tprop['simulationType']=='RASModel':
+                filename = '%s/constant/RASProperties'%currentFolder
+                Rprop = ParsedParameterFile(filename,createZipped=False)    
+                if Rprop['RASModel']=='kEpsilon':
+                    allturb.remove('k')
+                    allturb.remove('epsilon')
+                if Rprop['RASModel']=='kOmega' or Rprop['RASModel']=='kOmegaSST':
+                    allturb.remove('k')
+                    allturb.remove('omega')
+            elif tprop['simulationType']=='LESModel':
+                filename = '%s/constant/LESProperties'%self.currentFolder
+                Lprop = ParsedParameterFile(filename,createZipped=False)    
+                if Lprop['LESModel']=='Smagorinsky':  
+                    allturb.remove('nuSgs')
                 
         NO_FIELDS = ['T0', 'T1', 'T2', 'T3', 'T4', 'nonOrth', 'skew']
         if filterTurb:
