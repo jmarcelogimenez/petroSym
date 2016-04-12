@@ -4,11 +4,11 @@ language: python
 python:
   - "2.7"
 virtualenv:
-  system_site_packages: false
+  system_site_packages: true
 before_install:
   - sudo apt-get install -y --force-yes python-pip python2.7-dev libxext-dev python-qt4 pyqt4-dev-tools build-essential
-  - ln -s /usr/lib/python2.7/dist-packages/PyQt4/ ~/virtualenv/python2.7.10/lib/python2.7/site-packages/
-  - ln -s /usr/lib/python2.7/dist-packages/sip.so ~/virtualenv/python2.7.10/lib/python2.7/site-packages/
+#  - ln -s /usr/lib/python2.7/dist-packages/PyQt4/ ~/virtualenv/python2.7.10/lib/python2.7/site-packages/
+#  - ln -s /usr/lib/python2.7/dist-packages/sip.so ~/virtualenv/python2.7.10/lib/python2.7/site-packages/
   - sudo add-apt-repository http://www.openfoam.org/download/ubuntu
   - sudo apt-get -qq update
   - sudo apt-get install -y --force-yes openfoam240
