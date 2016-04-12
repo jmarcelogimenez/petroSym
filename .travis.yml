@@ -9,7 +9,6 @@ before_install:
   - sudo apt-get install -y --force-yes python-pip python2.7-dev libxext-dev python-qt4 pyqt4-dev-tools build-essential
 #  - ln -s /usr/lib/python2.7/dist-packages/PyQt4/ ~/virtualenv/python2.7.10/lib/python2.7/site-packages/
 #  - ln -s /usr/lib/python2.7/dist-packages/sip.so ~/virtualenv/python2.7.10/lib/python2.7/site-packages/
-  - export DISPLAY=:0.0
 #Install PyQt4 and sip
   - sudo mkdir -p /downloads
   - sudo chmod a+rw /downloads
@@ -45,6 +44,9 @@ before_install:
   - source /opt/openfoam240/etc/bashrc
 install:
   - python setup.py install
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
 script:
   - petroSym
 #after_success:
