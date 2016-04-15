@@ -33,8 +33,8 @@ class CleanCommand(Command):
     def run(self):
         assert os.getcwd() == self.cwd, 'Must be in root: %s' % self.cwd
 	print "Burning everything"
-	time.sleep(1)
-        os.system('./Allwclean')
+	time.sleep(2)
+        os.system('./Allwclean.sh')
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
