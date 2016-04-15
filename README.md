@@ -24,7 +24,7 @@ run:
 Installation
 ------------
 
-Package petroSym requires python 2.7, matplotlib>=1.5.0, PyQt and pyFoam 0.6.4
+Package petroSym requires python 2.7, matplotlib>=1.5.0, PyQt and pyFoam 0.6.4:
 
     pip install -r requirements.txt
     ./install_foam_utilities.sh
@@ -48,6 +48,6 @@ Try:
 Cleaning
 -------
 
-To run the cleaner run::
+To run the cleaner run:
 
     python setup.py clean

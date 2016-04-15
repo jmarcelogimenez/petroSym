@@ -36,7 +36,7 @@ before_install:
   - sudo apt-get install -y --force-yes openfoam240
   - sudo apt-get install -y --force-yes paraviewopenfoam410
   - sudo apt-get install -y --force-yes libfreetype6-dev libpng12-dev
-  - pip install -r requirements.txt
+  - pip install -r requirements.txt --upgrade
   #- ./install_external.sh ##Ver si es necesario
   - python check_PyFoam.py #Para ver si pyFoam se instalo bien
   - . /opt/openfoam240/etc/bashrc
