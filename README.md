@@ -12,7 +12,7 @@ Requirements
 - OpenFOAM 2.4
 - Paraview
 
-run::
+run:
 
     sudo add-apt-repository http://www.openfoam.org/download/ubuntu
     sudo apt-get update -qq
@@ -27,16 +27,15 @@ Installation
 Package petroSym requires python 2.7, matplotlib>=1.5.0, PyQt and pyFoam 0.6.4
 
     pip install -r requirements.txt
-    ./install_external.sh
+    ./install_foam_utilities.sh
 
 Before installing or using petroSym, make sure the OpenFOAM environment variables are set by the following command:
 
     source /opt/openfoam240/etc/bashrc
 
-Installation is based on setuptools::
+Installation is based on setuptools. The --record option is important to uninstall files successfully:
 
-    # build and install
-    python setup.py install
+    sudo python setup.py install --record installation_files.txt
 
 
 Testing

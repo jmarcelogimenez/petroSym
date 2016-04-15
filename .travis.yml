@@ -7,8 +7,6 @@ virtualenv:
   system_site_packages: false
 before_install:
   - sudo apt-get install -y --force-yes python-pip python2.7-dev libxext-dev python-qt4 pyqt4-dev-tools build-essential
-#  - ln -s /usr/lib/python2.7/dist-packages/PyQt4/ ~/virtualenv/python2.7.10/lib/python2.7/site-packages/
-#  - ln -s /usr/lib/python2.7/dist-packages/sip.so ~/virtualenv/python2.7.10/lib/python2.7/site-packages/
 #Install PyQt4 and sip
   - sudo mkdir -p /downloads
   - sudo chmod a+rw /downloads
@@ -39,7 +37,8 @@ before_install:
   - sudo apt-get install -y --force-yes paraviewopenfoam410
   - sudo apt-get install -y --force-yes libfreetype6-dev libpng12-dev
   - pip install -r requirements.txt
-  - ./install_external.sh ##Ver si es necesario
+  #- ./install_external.sh ##Ver si es necesario
+  - python check_PyFoam.py #Para ver si pyFoam se instalo bien
   - . /opt/openfoam240/etc/bashrc
   - source /opt/openfoam240/etc/bashrc
 install:
@@ -51,5 +50,5 @@ before_script:
   - sleep 3 # give xvfb some time to start
 script:
   - python -m unittest discover
-#after_success:
-#  - petroSym
+after_success:
+  - python setup.py clean
