@@ -32,13 +32,13 @@ To check if PyFoam was succesfully installed, try:
 
     python check_PyFoam.py
 
-After installing this tools, run this script:
-
-    ./install_extras.sh
-
 Before installing or using petroSym, make sure the OpenFOAM environment variables are set by the following command:
 
     source /opt/openfoam240/etc/bashrc
+
+After setting the OpenFOAM variables, run this script:
+
+    ./install_extras.sh
 
 Installation is based on setuptools. The --record option is important to uninstall files successfully:
 
