@@ -9,6 +9,7 @@ from PyQt4 import QtGui, QtCore
 from mesh_ui import Ui_meshUI
 from utils import *
 import time
+import subprocess
 
 from PyFoam.RunDictionary.BoundaryDict import BoundaryDict
 from PyFoam.RunDictionary.ParsedParameterFile import ParsedParameterFile
@@ -51,30 +52,26 @@ class meshWidget(meshUI):
         
     def createMesh(self):
         command = 'touch %s/createMesh.log'%self.currentFolder
-        os.system(command)
-        while (os.system(command)):
-            time.sleep(0.2)
+        p=subprocess.Popen([command],shell=True)
+        p.wait()
         self.window().newLogTab('Create Mesh','%s/createMesh.log'%self.currentFolder)
-        command = 'blockMesh -case %s > %s/createMesh.log &'%(self.currentFolder,self.currentFolder)
-        while (os.system(command)):
-            time.sleep(0.2)
+        command = 'blockMesh -case %s > %s/createMesh.log'%(self.currentFolder,self.currentFolder)
+        p=subprocess.Popen([command],shell=True)
+        p.wait() 
         self.checkMesh()
         
         
     def checkMesh(self):
         command = 'touch %s/checkMesh.log'%self.currentFolder
-        os.system(command)
-        while (os.system(command)):
-            time.sleep(0.2)
+        p = subprocess.Popen([command],shell=True)
+        p.wait()
         self.window().newLogTab('Check Mesh','%s/checkMesh.log'%self.currentFolder)
-        command = 'checkMesh -case %s > %s/checkMesh.log &'%(self.currentFolder,self.currentFolder)
-        os.system(command)
-        while (os.system(command)):
-            time.sleep(0.2)
-        command = 'meshQuality -case %s -time 0 > %s/meshQuality.log &'%(self.currentFolder,self.currentFolder)
-        os.system(command)
-        while (os.system(command)):
-            time.sleep(0.2)
+        command = 'checkMesh -case %s > %s/checkMesh.log'%(self.currentFolder,self.currentFolder)
+        p = subprocess.Popen([command],shell=True)
+        p.wait() 
+        command = 'meshQuality -case %s -time 0 > %s/meshQuality.log'%(self.currentFolder,self.currentFolder)
+        p = subprocess.Popen([command],shell=True)
+        p.wait()
         
     def importMesh(self):
         dialog = QtGui.QFileDialog(self)

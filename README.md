@@ -27,7 +27,14 @@ Installation
 Package petroSym requires python 2.7, matplotlib>=1.5.0, PyQt and pyFoam 0.6.4:
 
     pip install -r requirements.txt
-    ./install_foam_utilities.sh
+
+To check if PyFoam was succesfully installed, try:
+
+    python check_PyFoam.py
+
+After installing this tools, run this script:
+
+    ./install_extras.sh
 
 Before installing or using petroSym, make sure the OpenFOAM environment variables are set by the following command:
 
@@ -37,6 +44,14 @@ Installation is based on setuptools. The --record option is important to uninsta
 
     sudo python setup.py install --record installation_files.txt
 
+If you want to install petroSym in a python virtual enviroment, you must create symbolic link of PyQt4 and sip:
+
+    ln -s /usr/lib/python2.7/dist-packages/PyQt4/ ~/.virtualenvs/myEnv/lib/python2.7/site-packages/
+    ln -s /usr/lib/python2.7/dist-packages/sip.so ~/.virtualenvs/myEnv/lib/python2.7/site-packages/
+
+Then, you must run the setup.py without "sudo":
+
+    python setup.py install --record installation_files.txt
 
 Testing
 -------

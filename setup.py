@@ -16,7 +16,7 @@ class InstallCommand(install):
         print "Hello, openfoamer, how are you? :)"
         time.sleep(2)	
         #os.system("./install_foam_utilities.sh") #Lo saco de acá porque necesito sudo para correr el install, y wmake no corre como sudo. (No pasa en los virtualenv porque /usr/local/lib no es de root)
-        os.system("./compileUI.sh")
+        #os.system("./compileUI.sh")
 	install.run(self)
 
 class CleanCommand(Command):
@@ -34,7 +34,19 @@ class CleanCommand(Command):
         assert os.getcwd() == self.cwd, 'Must be in root: %s' % self.cwd
 	print "Burning everything"
 	time.sleep(2)
+        f = file('installation_files.txt','r')
+        if f:
+                archivo = f.readline()
+                path=os.path.dirname(archivo)
+                f.close()
+                f = file('dirtoremove.txt','w')
+                f.write(path)
+                f.close()
+        else:
+                print "installation_files.txt not found"
+
         os.system('./Allwclean.sh')
+	print "Deinstallation complete"
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()

@@ -28,4 +28,6 @@ find . -iname "*pyc" | xargs rm -f #Busca y remueve .pyc
 #---Desinstalar paquetes instalados
 
 cat installation_files.txt | sudo xargs rm -rf #Desinstala todo, quedan las carpetas vacias. Para borrar las carpetas hay que hacerlo manualmente
+cat dirtoremove.txt | sudo xargs rm -rf
 rm installation_files.txt
+rm dirtoremove.txt

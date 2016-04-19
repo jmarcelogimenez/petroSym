@@ -8,6 +8,7 @@ Created on Wed Aug 19 17:08:36 2015
 from PyQt4 import QtGui, QtCore
 import os
 import time
+import subprocess
 
 types = {}
 types['p'] = 'scalar'
@@ -173,9 +174,8 @@ def currentFields(currentFolder,filterTurb=True):
         currtime = 0
         logname = '%s/dirFeatures.log' % currentFolder
         command = 'dirFeaturesFoam -case %s > %s' % (currentFolder,logname)
-        os.system(command)
-        while (os.system(command)):
-            time.sleep(0.2)
+        p = subprocess.Popen([command],shell=True)
+        p.wait()
         log = open(logname, 'r')
         for linea in log:
             if "Current Time" in linea:

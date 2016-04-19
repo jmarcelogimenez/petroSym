@@ -37,11 +37,12 @@ before_install:
   - sudo apt-get install -y --force-yes paraviewopenfoam410
   - sudo apt-get install -y --force-yes libfreetype6-dev libpng12-dev
   - pip install -r requirements.txt
+  - ./install_extras.sh
   #- ./install_external.sh ##Ver si es necesario
-  - . /opt/openfoam240/etc/bashrc
+  #- . /opt/openfoam240/etc/bashrc
   - source /opt/openfoam240/etc/bashrc
 install:
-  - python setup.py install
+  - python setup.py install --record installation_files.txt
 before_script:
 #To run tests requiring a graphical user interface on Travis CI, use xvfb (X Virtual Framebuffer) to imitate a display. 
   - export DISPLAY=:99.0 

@@ -9,13 +9,14 @@ from petroSym.petroSym import *
 import time
 import subprocess
 import signal
+import os
 
 class TestOpenGui(unittest.TestCase):
    """ Test case for open_gui """
-   def test_open(self):       
+   def test_open(self):
        #Ejecuto el comando petroSym durante 4 segundos y luego lo corto
        p = subprocess.Popen(['petroSym'])
-       time.sleep(4)       
+       time.sleep(4)
        #p.poll() devuelve None si tuvo exito
        assert(p.poll()==None)
        #si llego hasta aca tuvo exito, entonces lo corto

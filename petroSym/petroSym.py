@@ -370,9 +370,9 @@ class petroSym(petroSymUI):
 
     def closeLogTab(self,i):
         filename = self.tabWidget_2.widget(i).objectName()
-        del self.lastPos[filename]
-        del self.typeFile[filename]
-        self.fs_watcher.removePath(filename)
+        del self.lastPos[str(filename)]
+        del self.typeFile[str(filename)]
+        self.fs_watcher.removePath(str(filename))
         command = 'rm %s'%filename
         os.system(command)
         self.tabWidget_2.removeTab(i)
