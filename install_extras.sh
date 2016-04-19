@@ -38,5 +38,10 @@ pyuic4 -w petroSym/bc.ui -o petroSym/bc_ui.py
 pyuic4 petroSym/initialConditions.ui -o petroSym/initialConditions_ui.py
 pyuic4 -w petroSym/reset.ui -o petroSym/reset_ui.py
 pyuic4 -w petroSym/bcPatch.ui -o petroSym/bcPatch_ui.py
+
+if [ ! -d ~/.config/matplotlib/ ]; then
+   mkdir ~/.config/matplotlib/ #Esto lo puse para que no se queje travis, pero supuestamente este directorio a esta altura ya esta creado
+fi
 cp petroSym/matplotlibrc ~/.config/matplotlib/.
+
 echo "Finished"
