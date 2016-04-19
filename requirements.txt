@@ -2,6 +2,4 @@ setuptools
 numpy
 matplotlib
 PyFoam==0.6.4
-#coverage
-#flake8
-#sphinx
+#sphinx #Para documentacion
