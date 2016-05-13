@@ -37,7 +37,6 @@ from initialConditions import *
 from postpro import *
 from logTab import *
 from perpetualTimer import *
-from Ui_porcessProgress import *
 from loading_ui import *
 import os
 from math import *
