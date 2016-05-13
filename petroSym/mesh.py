@@ -273,6 +273,12 @@ class meshWidget(meshUI):
                     else:
                         patchDict['type'] = 'calculated'
                     fieldData['boundaryField'][ipatch] = patchDict
+            
+            # poner el campo interno uniforme en cero
+            if types[ifield] == 'scalar':
+                fieldData['internalField'] = 'uniform 0'
+            elif types[ifield] == 'vector':
+                fieldData['internalField'] = 'uniform (0 0 0)'
 
             fieldData.writeFile()
 
