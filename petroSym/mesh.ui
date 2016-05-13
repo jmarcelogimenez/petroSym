@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>556</width>
-    <height>484</height>
+    <width>696</width>
+    <height>478</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>1</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="font">
    <font>
@@ -26,431 +32,262 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>554</width>
-     <height>482</height>
+     <width>678</width>
+     <height>488</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout_5">
     <item>
-     <widget class="QSplitter" name="splitter_2">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="pushButton_import">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Import</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/newPrefix/images/fromHelyx/import16.png</normaloff>:/newPrefix/images/fromHelyx/import16.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_create">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>BlockMesh</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/newPrefix/images/fromHelyx/new16.png</normaloff>:/newPrefix/images/fromHelyx/new16.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_check">
+        <property name="text">
+         <string>Statistics</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/newPrefix/images/fromHelyx/monitoringFunction16.png</normaloff>:/newPrefix/images/fromHelyx/monitoringFunction16.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_view">
+        <property name="text">
+         <string>View Mesh</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/newPrefix/images/fromHelyx/paraview16.png</normaloff>:/newPrefix/images/fromHelyx/paraview16.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_5">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QWidget" name="layoutWidget">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>5</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QSplitter" name="splitter_2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QGroupBox" name="groupBox_draw">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string>Graphical Info:</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
+         <widget class="QComboBox" name="comboBox_histo">
           <item>
-           <widget class="QPushButton" name="pushButton_import">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Import</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/newPrefix/images/fromHelyx/import16.png</normaloff>:/newPrefix/images/fromHelyx/import16.png</iconset>
-            </property>
-           </widget>
+           <property name="text">
+            <string>Select</string>
+           </property>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_create">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Create</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/newPrefix/images/fromHelyx/new16.png</normaloff>:/newPrefix/images/fromHelyx/new16.png</iconset>
-            </property>
-           </widget>
+           <property name="text">
+            <string>Non-Orthogonality</string>
+           </property>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Manual Edit</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/newPrefix/images/fromHelyx/edit16.png</normaloff>:/newPrefix/images/fromHelyx/edit16.png</iconset>
-            </property>
-           </widget>
+           <property name="text">
+            <string>Skewness</string>
+           </property>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_check">
-            <property name="text">
-             <string>Check</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/newPrefix/images/fromHelyx/tick16.png</normaloff>:/newPrefix/images/fromHelyx/tick16.png</iconset>
-            </property>
-           </widget>
+           <property name="text">
+            <string>Volume</string>
+           </property>
           </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_4">
-            <property name="text">
-             <string>View Mesh</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/newPrefix/images/fromHelyx/paraview16.png</normaloff>:/newPrefix/images/fromHelyx/paraview16.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
+         </widget>
         </item>
         <item>
-         <widget class="Line" name="line_2">
+         <spacer name="verticalSpacer_4">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-         </widget>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>30</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="bm_xmin">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Elements:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QLabel" name="label_6">
-            <property name="font">
-             <font>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>Z</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="bm_xmax">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3">
-           <widget class="QLineEdit" name="bm_zmin">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QLineEdit" name="bm_ymax">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="2">
-           <widget class="QLineEdit" name="bm_ysize">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="3">
-           <widget class="QLineEdit" name="bm_zsize">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Grid Size</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLineEdit" name="bm_ymin">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="label_5">
-            <property name="font">
-             <font>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>Y</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3">
-           <widget class="QLineEdit" name="bm_zmax">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="3">
-           <widget class="QLineEdit" name="bm_nz">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="2" colspan="2">
-           <widget class="QPushButton" name="pushButton_3">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Save</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/newPrefix/images/fromHelyx/save16.png</normaloff>:/newPrefix/images/fromHelyx/save16.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLineEdit" name="bm_nx">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2">
-           <widget class="QLineEdit" name="bm_ny">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Min:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Max:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButton">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Draw</string>
-            </property>
-            <property name="icon">
-             <iconset resource="resources.qrc">
-              <normaloff>:/newPrefix/images/fromHelyx/externalMesh16.png</normaloff>:/newPrefix/images/fromHelyx/externalMesh16.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QLineEdit" name="bm_xsize">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="label_4">
-            <property name="font">
-             <font>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>X</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0" colspan="4">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
+         <layout class="QVBoxLayout" name="verticalLayout_draw"/>
         </item>
         <item>
-         <widget class="Line" name="line_3">
+         <spacer name="verticalSpacer_3">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_2">
-          <property name="title">
-           <string>Statistics:</string>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
           </property>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="6" column="0">
-            <widget class="QLabel" name="label_yrange">
-             <property name="text">
-              <string>Y Range: -</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_nfaces">
-             <property name="text">
-              <string>Faces: -</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QLabel" name="label_xrange">
-             <property name="text">
-              <string>X Range: -</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_ncells">
-             <property name="text">
-              <string>Cells: -</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_nifaces">
-             <property name="text">
-              <string>Internal Faces: -</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="0">
-            <spacer name="verticalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="7" column="0">
-            <widget class="QLabel" name="label_zrange">
-             <property name="text">
-              <string>Z Range: -</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_npoints">
-             <property name="text">
-              <string>Points: -</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="0">
-            <widget class="QPushButton" name="pushButton_5">
-             <property name="text">
-              <string>Update</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>140</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
       <widget class="QSplitter" name="splitter">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <widget class="QGroupBox" name="groupBox_draw">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="title">
-         <string>Graphical Info:</string>
+         <string>Statistics:</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QComboBox" name="comboBox_histo">
-           <item>
-            <property name="text">
-             <string>Select</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Non-Orthogonality</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Skewness</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Volume</string>
-            </property>
-           </item>
+          <widget class="QLabel" name="label_ncells">
+           <property name="text">
+            <string>Cells: -</string>
+           </property>
           </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_npoints">
+           <property name="text">
+            <string>Points: -</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_nfaces">
+           <property name="text">
+            <string>Faces: -</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_nifaces">
+           <property name="text">
+            <string>Internal Faces: -</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_xrange">
+           <property name="text">
+            <string>X Range: -</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_yrange">
+           <property name="text">
+            <string>Y Range: -</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_zrange">
+           <property name="text">
+            <string>Z Range: -</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
        <widget class="QGroupBox" name="groupBox_3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
           <pointsize>9</pointsize>
@@ -459,9 +296,12 @@
         <property name="title">
          <string>Cell Types:</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <layout class="QVBoxLayout" name="verticalLayout_6">
          <item>
           <layout class="QGridLayout" name="gridLayout_4">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetFixedSize</enum>
+           </property>
            <item row="5" column="0">
             <widget class="QLabel" name="label_ntetra">
              <property name="text">
@@ -514,7 +354,7 @@
           </layout>
          </item>
          <item>
-          <spacer name="verticalSpacer_4">
+          <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -546,7 +386,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>80</x>
-     <y>30</y>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>154</x>
@@ -558,31 +398,15 @@
    <sender>pushButton_create</sender>
    <signal>pressed()</signal>
    <receiver>meshUI</receiver>
-   <slot>createMesh()</slot>
+   <slot>blockMesh()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>92</x>
-     <y>62</y>
+     <x>259</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>181</x>
      <y>41</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_2</sender>
-   <signal>pressed()</signal>
-   <receiver>meshUI</receiver>
-   <slot>editBlockMesh()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>47</x>
-     <y>94</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>6</x>
-     <y>112</y>
     </hint>
    </hints>
   </connection>
@@ -593,8 +417,8 @@
    <slot>checkMesh()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>70</x>
-     <y>133</y>
+     <x>403</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>53</x>
@@ -603,34 +427,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton</sender>
+   <sender>pushButton_view</sender>
    <signal>pressed()</signal>
    <receiver>meshUI</receiver>
-   <slot>drawGeo()</slot>
+   <slot>viewMesh()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>152</x>
-     <y>181</y>
+     <x>592</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
-     <x>128</x>
-     <y>196</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_3</sender>
-   <signal>pressed()</signal>
-   <receiver>meshUI</receiver>
-   <slot>saveBlockMesh()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>337</x>
-     <y>175</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>333</x>
-     <y>201</y>
+     <x>7</x>
+     <y>225</y>
     </hint>
    </hints>
   </connection>
@@ -641,44 +449,12 @@
    <slot>drawStatistics()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>164</x>
-     <y>364</y>
+     <x>181</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>287</x>
      <y>238</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_4</sender>
-   <signal>pressed()</signal>
-   <receiver>meshUI</receiver>
-   <slot>viewMesh()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>93</x>
-     <y>161</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>7</x>
-     <y>225</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_5</sender>
-   <signal>pressed()</signal>
-   <receiver>meshUI</receiver>
-   <slot>loadMeshData()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>467</x>
-     <y>197</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>550</x>
-     <y>239</y>
     </hint>
    </hints>
   </connection>
@@ -693,5 +469,6 @@
   <slot>editBlockMesh()</slot>
   <slot>viewMesh()</slot>
   <slot>loadMeshData()</slot>
+  <slot>blockMesh()</slot>
  </slots>
 </ui>

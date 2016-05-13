@@ -36,6 +36,9 @@ from bc import *
 from initialConditions import *
 from postpro import *
 from logTab import *
+from perpetualTimer import *
+from Ui_porcessProgress import *
+from loading_ui import *
 import os
 from math import *
 import time
@@ -115,17 +118,34 @@ class petroSym(petroSymUI):
 
     def updateMeshPanel(self):
         QtGui.QMessageBox.about(self, "ERROR", "Primero se debe calcular!")
+        
+    def loadingmbox(self,title,msg):
+        self.w = QtGui.QMessageBox(QtGui.QMessageBox.Information,title,msg)
+        time.sleep(1)
+        QtGui.QApplication.processEvents()
+        self.w.show()
+        time.sleep(1)
+        QtGui.QApplication.processEvents()
 
     def openCase(self):
-        posibleDir = str(QtGui.QFileDialog.getExistingDirectory(self, 'Open Folder', './'))
+        QFileDialog=QtGui.QFileDialog()
+        posibleDir = str(QFileDialog.getExistingDirectory(self, 'Open Folder', './',  QtGui.QFileDialog.DontUseNativeDialog | QtGui.QFileDialog.ShowDirsOnly))
+        
         if posibleDir:
             if os.path.isdir('%s/system'%posibleDir) and os.path.isdir('%s/constant'%posibleDir):
+                #--Ventana de loading
+                self.loadingmbox("Opening","Loading the selected case...")
+                #--Loading
                 self.currentFolder = posibleDir
+                QtGui.QApplication.processEvents()
                 self.load_config()
                 self.OnOff(True)
             else:
                 w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "The selected directory is not an OpenFOAM case")
-                w.exec_()                
+                w.exec_()
+            
+            self.w.close()
+
 
     def saveAsCase(self):
         oldFolder = self.currentFolder
@@ -143,12 +163,14 @@ class petroSym(petroSymUI):
         result = w.exec_()
 
         if result:
-            
             data = w.getData()
             self.currentFolder = os.path.join(data[1],data[0])
             if os.path.isdir('%s/system'%self.currentFolder) and os.path.isdir('%s/constant'%self.currentFolder):
+                self.loadingmbox("Opening","Opening selected case...")
+                QtGui.QApplication.processEvents()
                 self.load_config()
             else:
+                self.loadingmbox("Creating","Creating selected case...")
                 #Levantar dependiendo del caso predefinido elegido
                 typeSim = data[2]
                 if typeSim == 'Skimmer Tank':
@@ -163,12 +185,16 @@ class petroSym(petroSymUI):
                     self.solvername = 'icoFoam'
                 #para que pueda sacar algunos datos
                 self.meshW.setCurrentFolder(self.currentFolder)
+                QtGui.QApplication.processEvents()
                 self.meshW.createMesh()
 
             self.OnOff(True)
             self.meshW.setCurrentFolder(self.currentFolder)
             self.runW.setCurrentFolder(self.currentFolder,self.solvername)
             self.postproW.setCurrentFolder(self.currentFolder)
+        
+        [self.timedir, self.fields, currtime] = currentFields(self.currentFolder)
+        self.w.close()
         return result
 
     def saveCase(self):
@@ -369,27 +395,35 @@ class petroSym(petroSymUI):
 
 
     def closeLogTab(self,i):
+        print "Cerrando tabla de log"
         filename = self.tabWidget_2.widget(i).objectName()
         del self.lastPos[str(filename)]
         del self.typeFile[str(filename)]
         self.fs_watcher.removePath(str(filename))
-        command = 'rm %s'%filename
-        os.system(command)
+        #command = 'rm %s'%filename
+        #os.system(command)
         self.tabWidget_2.removeTab(i)
+        toModify = self.findChild(QtGui.QWidget,filename)        
+        textEdit = toModify.findChild(QtGui.QTextEdit,_fromUtf8("textEdit"))
+        textEdit.clear()
+        toModify.deleteLater()
+        
 
     def file_changed(self,path):
+        #print "En file changed"
         path = str(path)
         self.fs_watcher.removePath(path)
         
         if self.typeFile[path]=='log':
             toModify = self.findChild(QtGui.QWidget,path)
             textEdit = toModify.findChild(QtGui.QTextEdit,_fromUtf8("textEdit"))
+
             N = self.lastPos[path]
             with open(path, 'r') as yourFile:
                 yourFile.seek(N)
                 newTexto = yourFile.read()
             
-            if(len(newTexto)>1):
+            if(len(newTexto)>1):                
                 textEdit.append(newTexto)
                 self.lastPos[path] = N + len(newTexto)
 
@@ -483,7 +517,9 @@ class petroSym(petroSymUI):
             else:
                 i = i+1
 
-        self.timer = threading.Timer(5.0, self.update_watcher)
+        #self.timer = threading.Timer(5.0, self.update_watcher)
+        #self.timer.start()
+        self.timer = perpetualTimer(2.0,self.update_watcher)
         self.timer.start()
 
     def save_config(self):
@@ -732,11 +768,11 @@ class petroSym(petroSymUI):
         elif menu=='Numerical Schemes':
             widget = numericalSchemes(self.currentFolder)
         elif menu=='Solver Settings':
-            widget = solverSettings(self.currentFolder,self.solvername)
+            widget = solverSettings(self.currentFolder,self.solvername,self.fields)
         else:
             #do nothing
             return           
-
+        
         self.splitter_3.widget(1).deleteLater()
         self.splitter_3.insertWidget(1,widget)
         #scrollArea_case_setup.layout().addWidget(widget, 0, 1, 1, 1)

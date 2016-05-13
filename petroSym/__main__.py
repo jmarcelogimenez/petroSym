@@ -8,7 +8,7 @@ import pkg_resources
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    def _fromUtf8(s):
+    def _fromUtf8(s):   
         return s
 
 try:
@@ -18,6 +18,7 @@ try:
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+                
 
 def main():
     

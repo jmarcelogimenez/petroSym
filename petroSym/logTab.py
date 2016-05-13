@@ -94,10 +94,9 @@ class logTab(QtGui.QWidget):
             f.close()
             time.sleep(0.1)
 
-        self.window().runW.pushButton_run.setEnabled(True)  
-        self.window().runW.pushButton_reset.setEnabled(True)  
+        self.window().runW.pushButton_run.setEnabled(True)
+        self.window().runW.pushButton_reset.setEnabled(True)
         self.window().updateLogFiles()
-            
 
     def saveLog(self):
         outfile = QtGui.QFileDialog.getSaveFileName(self, 'Select filename', self.currentFolder, 'Log File (*.log)');

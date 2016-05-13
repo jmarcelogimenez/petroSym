@@ -174,8 +174,9 @@ def currentFields(currentFolder,filterTurb=True):
         currtime = 0
         logname = '%s/dirFeatures.log' % currentFolder
         command = 'dirFeaturesFoam -case %s > %s' % (currentFolder,logname)
-        p = subprocess.Popen([command],shell=True)
-        p.wait()
+        #p = subprocess.Popen([command],shell=True)
+        #p.wait()
+        os.system(command)
         log = open(logname, 'r')
         for linea in log:
             if "Current Time" in linea:

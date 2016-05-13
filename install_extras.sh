@@ -38,13 +38,15 @@ pyuic4 -w petroSym/bc.ui -o petroSym/bc_ui.py
 pyuic4 petroSym/initialConditions.ui -o petroSym/initialConditions_ui.py
 pyuic4 -w petroSym/reset.ui -o petroSym/reset_ui.py
 pyuic4 -w petroSym/bcPatch.ui -o petroSym/bcPatch_ui.py
+pyuic4 -w petroSym/blockmesh.ui -o petroSym/blockmesh_ui.py
+pyuic4 -w petroSym/loading.ui -o petroSym/loading_ui.py
 
 #Esto lo puse para que no se queje travis, pero supuestamente estos directorios a esta altura ya esta creados
-if [ ! -d ~/.config/ ]; then
-   mkdir ~/.config/ 
-fi
+#if [ ! -d ~/.config/ ]; then
+#   mkdir ~/.config/ 
+#fi
 if [ ! -d ~/.config/matplotlib/ ]; then
-   mkdir ~/.config/matplotlib/
+   mkdir -p ~/.config/matplotlib/
 fi
 cp petroSym/matplotlibrc ~/.config/matplotlib/.
 
