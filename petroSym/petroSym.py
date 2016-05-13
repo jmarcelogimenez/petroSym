@@ -637,12 +637,12 @@ class petroSym(petroSymUI):
         if solvername == 'pimpleFoam':
             command = 'rm -rf %s/*' % self.currentFolder
             os.system(command)
-            command = 'cp -r templates/template_skimmer/* %s/.' % self.currentFolder
+            command = 'cp -r %s/templates/template_skimmer/* %s/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
             os.system(command)            
         elif solvername =='icoFoam':
             command = 'rm -rf %s/*' % self.currentFolder
             os.system(command)
-            command = 'cp -r templates/template_icoFoam/* %s/.' % self.currentFolder
+            command = 'cp -r %s/templates/template_icoFoam/* %s/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
             os.system(command)
             
         for i in range(self.nPlots):
