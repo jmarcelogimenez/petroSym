@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>392</width>
+    <width>415</width>
     <height>480</height>
    </rect>
   </property>
@@ -26,45 +26,128 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>374</width>
-     <height>589</height>
+     <width>413</width>
+     <height>478</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="1">
-     <widget class="QLabel" name="label_solver">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>solverFoam</string>
-      </property>
-     </widget>
+    <item row="4" column="0" rowspan="2">
+     <layout class="QGridLayout" name="gridLayout_7">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Current Folder:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_info">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>solverInfo</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Solver Type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Current Solver:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_solver">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>solverFoam</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_folder">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>folderFoam</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </item>
-    <item row="4" column="0">
-     <widget class="QRadioButton" name="radioTime1">
-      <property name="text">
-       <string>Steady</string>
-      </property>
-      <attribute name="buttonGroup">
-       <string notr="true">buttonGroup</string>
-      </attribute>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QRadioButton" name="radioFlow1">
-      <property name="text">
-       <string>Compressible</string>
-      </property>
-      <attribute name="buttonGroup">
-       <string notr="true">buttonGroup_2</string>
-      </attribute>
-     </widget>
-    </item>
-    <item row="0" column="0" colspan="2">
+    <item row="0" column="0" colspan="5">
      <widget class="QPushButton" name="pushButton">
       <property name="text">
        <string>Apply</string>
@@ -75,166 +158,20 @@
       </property>
      </widget>
     </item>
-    <item row="11" column="0">
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
+    <item row="18" column="0" colspan="5">
+     <widget class="QListWidget" name="listWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="7" column="0">
-     <widget class="QCheckBox" name="checkBoxMultiphase">
-      <property name="text">
-       <string>Multiphase</string>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>Current Solver:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0" colspan="2">
-     <widget class="QListWidget" name="listWidget"/>
-    </item>
-    <item row="10" column="1">
-     <widget class="QGroupBox" name="groupBox_3">
-      <property name="title">
-       <string>Gravity (m/s^2)</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>y-component</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="gy"/>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="gx"/>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>x-component:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>z-component</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="gz"/>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="9" column="0" colspan="2">
-     <widget class="QGroupBox" name="groupBox_turbulence">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="title">
-       <string>Turbulence</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QRadioButton" name="radioTurb1">
-         <property name="text">
-          <string>Laminar</string>
-         </property>
-         <attribute name="buttonGroup">
-          <string notr="true">buttonGroup_3</string>
-         </attribute>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioTurb2">
-         <property name="text">
-          <string>RANS</string>
-         </property>
-         <attribute name="buttonGroup">
-          <string notr="true">buttonGroup_3</string>
-         </attribute>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioTurb3">
-         <property name="text">
-          <string>LES</string>
-         </property>
-         <attribute name="buttonGroup">
-          <string notr="true">buttonGroup_3</string>
-         </attribute>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="comboBoxTurb">
-         <item>
-          <property name="text">
-           <string>Select Model</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="10" column="0">
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="title">
-       <string>Other Equations</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="4" column="0">
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QPushButton" name="pushButton_2">
-         <property name="text">
-          <string>Tracers</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QRadioButton" name="radioTime2">
-      <property name="text">
-       <string>Transient</string>
-      </property>
-      <attribute name="buttonGroup">
-       <string notr="true">buttonGroup</string>
-      </attribute>
-     </widget>
-    </item>
-    <item row="3" column="0">
+    <item row="8" column="0">
      <widget class="QLabel" name="label_6">
       <property name="font">
        <font>
@@ -247,27 +184,189 @@
       </property>
      </widget>
     </item>
+    <item row="21" column="0">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Expanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="12" column="2">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="12" column="0">
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="2">
+       <widget class="QCheckBox" name="checkBoxTurbulence">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Turbulence</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QRadioButton" name="radioTime2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Transient</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">buttonGroup</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="radioFlow2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Incompressible</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">buttonGroup_2</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="checkBoxMultiphase">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Multiphase</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="radioTime1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Steady</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">buttonGroup</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="radioFlow1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Compressible</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">buttonGroup_2</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="checkBoxBuoyancy">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Buoyancy</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="20" column="0">
+     <widget class="QPushButton" name="info_button">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/newPrefix/images/fromHelyx/info16.png</normaloff>:/newPrefix/images/fromHelyx/info16.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item row="15" column="3">
+     <widget class="Line" name="line_3">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+    </item>
     <item row="6" column="0">
-     <widget class="QCheckBox" name="checkBoxTurbulence">
-      <property name="text">
-       <string>Turbulence</string>
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QRadioButton" name="radioFlow2">
-      <property name="text">
-       <string>Incompressible</string>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
       </property>
-      <attribute name="buttonGroup">
-       <string notr="true">buttonGroup_2</string>
-      </attribute>
-     </widget>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
-    <item row="8" column="0">
-     <widget class="QCheckBox" name="checkBoxBuoyancy">
-      <property name="text">
-       <string>Buoyancy</string>
+    <item row="7" column="0">
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
@@ -295,22 +394,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton_2</sender>
-   <signal>pressed()</signal>
-   <receiver>solutionModelingUI</receiver>
-   <slot>editTracers()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>112</x>
-     <y>477</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>202</x>
-     <y>195</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>radioTime1</sender>
    <signal>toggled(bool)</signal>
    <receiver>solutionModelingUI</receiver>
@@ -318,7 +401,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>72</x>
-     <y>183</y>
+     <y>159</y>
     </hint>
     <hint type="destinationlabel">
      <x>325</x>
@@ -334,7 +417,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>47</x>
-     <y>205</y>
+     <y>235</y>
     </hint>
     <hint type="destinationlabel">
      <x>356</x>
@@ -349,8 +432,8 @@
    <slot>filtering()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>192</x>
-     <y>204</y>
+     <x>74</x>
+     <y>207</y>
     </hint>
     <hint type="destinationlabel">
      <x>275</x>
@@ -366,7 +449,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>75</x>
-     <y>234</y>
+     <y>264</y>
     </hint>
     <hint type="destinationlabel">
      <x>327</x>
@@ -382,7 +465,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>60</x>
-     <y>261</y>
+     <y>291</y>
     </hint>
     <hint type="destinationlabel">
      <x>295</x>
@@ -398,7 +481,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>59</x>
-     <y>288</y>
+     <y>318</y>
     </hint>
     <hint type="destinationlabel">
      <x>346</x>
@@ -413,60 +496,12 @@
    <slot>filtering()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>226</x>
-     <y>177</y>
+     <x>108</x>
+     <y>180</y>
     </hint>
     <hint type="destinationlabel">
      <x>307</x>
      <y>48</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioTurb1</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>solutionModelingUI</receiver>
-   <slot>changeTurbList()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>64</x>
-     <y>342</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>371</x>
-     <y>288</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioTurb2</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>solutionModelingUI</receiver>
-   <slot>changeTurbList()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>90</x>
-     <y>369</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>373</x>
-     <y>322</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioTurb3</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>solutionModelingUI</receiver>
-   <slot>changeTurbList()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>76</x>
-     <y>392</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>375</x>
-     <y>353</y>
     </hint>
    </hints>
   </connection>
@@ -477,12 +512,28 @@
    <slot>changeSolverSelection()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>281</x>
-     <y>103</y>
+     <x>433</x>
+     <y>184</y>
     </hint>
     <hint type="destinationlabel">
      <x>370</x>
      <y>114</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>info_button</sender>
+   <signal>pressed()</signal>
+   <receiver>solutionModelingUI</receiver>
+   <slot>show_info()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>449</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>229</x>
+     <y>239</y>
     </hint>
    </hints>
   </connection>
@@ -494,6 +545,7 @@
   <slot>filtering()</slot>
   <slot>changeTurbList()</slot>
   <slot>changeSolverSelection()</slot>
+  <slot>show_info()</slot>
  </slots>
  <buttongroups>
   <buttongroup name="buttonGroup_2"/>

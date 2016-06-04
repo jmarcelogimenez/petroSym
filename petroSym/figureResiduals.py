@@ -59,9 +59,8 @@ class figureResiduals(figureResidualsUI):
         
         figureResidualsUI.__init__(self)
         self.currentFolder = currentFolder
+        [self.timedir,self.fields,curtime] = currentFields(self.currentFolder)
         self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
-        
-        [self.timedir,self.fields,bas] = currentFields(self.currentFolder)
 
         for field in self.fields:
             if field not in unknowns:
@@ -225,4 +224,10 @@ class figureResidualsWidget(QtGui.QWidget):
         
         canvas = self.findChild(FigureCanvas)
         canvas.figure.gca().cla()
+        #Seteo de nuevo esto porque lo de arriba me lo borra
+        axes = canvas.figure.gca()
+        axes.set_title(self.name)
+        axes.set_xlabel('Time [s]')
+        axes.set_ylabel('|R|')
+        axes.legend(loc=1, fontsize = 'small')
         canvas.draw()

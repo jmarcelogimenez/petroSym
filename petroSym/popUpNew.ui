@@ -51,6 +51,9 @@
      </item>
      <item row="2" column="0" colspan="3">
       <widget class="QGroupBox" name="groupBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="title">
         <string>Simulation Type</string>
        </property>

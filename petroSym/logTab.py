@@ -43,7 +43,7 @@ class logTab(QtGui.QWidget):
         new_pushButton.setIcon(icon3)
         new_pushButton.setObjectName(_fromUtf8("pushButton"))
         new_gridLayout.addWidget(new_pushButton, 0, 1, 1, 1)
-        new_textEdit = QtGui.QTextEdit(self)
+        new_textEdit = QtGui.QPlainTextEdit(self)
         palette = QtGui.QPalette()
         command_window(palette)
         new_textEdit.setPalette(palette)
@@ -94,10 +94,12 @@ class logTab(QtGui.QWidget):
             f.close()
             time.sleep(0.1)
 
+        self.window().runningpid = -1
+        self.window().save_config()
         self.window().runW.pushButton_run.setEnabled(True)
         self.window().runW.pushButton_reset.setEnabled(True)
-        self.window().updateLogFiles()
-
+        #self.window().updateLogFiles()
+        
     def saveLog(self):
         outfile = QtGui.QFileDialog.getSaveFileName(self, 'Select filename', self.currentFolder, 'Log File (*.log)');
         if outfile:

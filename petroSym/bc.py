@@ -433,7 +433,7 @@ class bcWidget(bcUI):
             
     def changePatchType(self,item):
         texto = str(item.text())
-        w = bcPatch(self.boundaries[texto]['type'])  
+        w = bcPatch(self.boundaries[texto]['type'])
         result = w.exec_()
         if result:
             patchType = w.getPatchType()

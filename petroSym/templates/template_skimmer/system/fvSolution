@@ -129,6 +129,20 @@ solvers
         relTol          0.001;
     }
 
+    Phi
+    {
+    solver GAMG;
+    smoother GaussSeidel;
+    cacheAgglomeration no;
+    agglomerator faceAreaPair;
+    nCellsInCoarsestLevel 10;
+    mergeLevels 1;
+    nPreSweeps 0;
+    nPostSweeps 1;
+    tolerance 1e-08;
+    relTol 0.01;
+    }
+
 }
 
 PIMPLE
@@ -173,4 +187,10 @@ relaxationFactors
     }
 }
 
+potentialFlow
+{
+    nNonOrthogonalCorrectors 10;
+    PhiRefCell 0; 
+    PhiRefValue 0;
+}
 // ************************************************************************* //

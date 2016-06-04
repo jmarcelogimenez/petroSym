@@ -12,6 +12,7 @@ import os
 from reset import *
 from time import localtime, strftime, struct_time
 from logTab import *
+from ExampleThread import *
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -50,6 +51,8 @@ class runWidget(runUI):
         parsedData['stopAt'] = 'endTime'
         parsedData.writeFile()
         
+        self.window().removeFilesPostPro()
+        
         #retraso un minuto la edicion del control dict
         tt = list(localtime())
         tt[4] = tt[4]-1
@@ -60,10 +63,19 @@ class runWidget(runUI):
         self.window().newLogTab('Run',filename)
         command = '%s -case %s > %s &'%(self.solvername,self.currentFolder,filename)
         os.system(command)
+        #proc = subprocess.Popen(command,shell=True)
+        #self.window().runningpid = (proc.pid+2) #Ver porque me tira 2 menos siempre
+        command = 'pidof %s'%self.solvername
+        import subprocess
+        self.window().runningpid = subprocess.check_output(command, shell=True)
+        self.window().runningpid.replace('\n','') #Me lo devuelve con un espacio al final
+        self.window().runningpid = int(self.window().runningpid) #Y como string
+        self.window().save_config()
         
         self.pushButton_run.setEnabled(False)
         self.pushButton_reset.setEnabled(False)
         self.window().findChild(logTab,'%s/run.log'%self.currentFolder).findChild(QtGui.QPushButton,'pushButton_3').setEnabled(True)
+        self.window().updateLogFiles()
         
     def changeType(self):
         if self.type_serial.isChecked():
@@ -91,7 +103,11 @@ class runWidget(runUI):
             parsedData['startFrom'] = 'startTime'            
             parsedData['startTime'] = '0'
             parsedData.writeFile()
+            self.window().typeFile = {}
+            self.window().pending_files = []
+            self.window().pending_dirs = []
             self.window().updateLogFiles()
+            self.window().save_config()
 
     def decomposeCase(self):
         return

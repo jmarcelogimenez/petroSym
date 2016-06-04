@@ -12,6 +12,7 @@ from ExampleThread import *
 from utils import *
 import time
 import subprocess
+from myNavigationToolbar import *
 
 from PyFoam.RunDictionary.BoundaryDict import BoundaryDict
 from PyFoam.RunDictionary.ParsedParameterFile import ParsedParameterFile
@@ -44,6 +45,7 @@ class meshWidget(meshUI):
     def __init__(self):
         meshUI.__init__(self)
         self.canvas = ''
+        self.toolbar = ''
         self.fig = ''
 
         for iatt in self.__dict__.keys():
@@ -66,6 +68,7 @@ class meshWidget(meshUI):
         
         threadblockmesh = ExampleThread(command)
         self.connect(threadblockmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
+        self.connect(threadblockmesh, QtCore.SIGNAL("finished()"), threadblockmesh.terminate)
         threadblockmesh.start()
         
     def blockMesh(self):
@@ -81,6 +84,7 @@ class meshWidget(meshUI):
         self.pushButton_check.setEnabled(False)        
         self.pushButton_import.setEnabled(False)
         self.pushButton_view.setEnabled(False)
+        self.pushButton_create.setEnabled(False)
         self.comboBox_histo.setEnabled(False)
         #--Crear el log
         command = 'touch %s/checkMesh.log'%self.currentFolder
@@ -90,9 +94,10 @@ class meshWidget(meshUI):
         
         #--Creo un thread para checkMesh y lo inicio
         command = 'checkMesh -case %s > %s/checkMesh.log'%(self.currentFolder,self.currentFolder)
-        threadcheckmesh = ExampleThread(command)
-        self.connect(threadcheckmesh, QtCore.SIGNAL("finished()"), self.loadMeshData)
-        threadcheckmesh.start()
+        self.threadcheckmesh = ExampleThread(command)
+        self.connect(self.threadcheckmesh, QtCore.SIGNAL("finished()"), self.loadMeshData)
+        self.connect(self.threadcheckmesh, QtCore.SIGNAL("finished()"), self.threadcheckmesh.terminate)
+        self.threadcheckmesh.start()
         
         #--Comando meshQuality
         command = 'meshQuality -case %s -time 0 > %s/meshQuality.log'%(self.currentFolder,self.currentFolder)
@@ -104,6 +109,13 @@ class meshWidget(meshUI):
         dialog.setWindowTitle('Select Mesh to Import')
         dialog.setDirectory(self.currentFolder)
         if dialog.exec_():
+            #-- Desabilitar los botones
+            self.pushButton_check.setEnabled(False)        
+            self.pushButton_import.setEnabled(False)
+            self.pushButton_view.setEnabled(False)
+            self.pushButton_create.setEnabled(False)
+            self.comboBox_histo.setEnabled(False)            
+            
             filename = dialog.selectedFiles()[0];
             tipo = dialog.selectedNameFilter()
             if 'Fluent 3D' in tipo:
@@ -118,10 +130,11 @@ class meshWidget(meshUI):
             self.window().newLogTab('Import Mesh','%s/importMesh.log'%self.currentFolder)
             command = '%s -case %s %s > %s/importMesh.log' %(utility, self.currentFolder, filename, self.currentFolder)
             #os.system(command)
-            threadimportmesh = ExampleThread(command)
-            self.connect(threadimportmesh, QtCore.SIGNAL("finished()"), self.updateFieldFiles)
-            self.connect(threadimportmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
-            threadimportmesh.start()            
+            self.threadimportmesh = ExampleThread(command)
+            self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.updateFieldFiles)
+            self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
+            self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.threadimportmesh.terminate)
+            self.threadimportmesh.start()
             
             #self.updateFieldFiles()
             
@@ -171,10 +184,10 @@ class meshWidget(meshUI):
             QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "CheckMesh must be executed before").exec_()
                     
         self.pushButton_check.setEnabled(True)                
-        self.pushButton_import.setEnabled(True)
+        self.pushButton_import.setEnabled(True)        
+        self.pushButton_create.setEnabled(True)
         self.pushButton_view.setEnabled(True)
         self.comboBox_histo.setEnabled(True)
-
 
     def drawStatistics(self):
         print 'En draw statistics'
@@ -191,6 +204,16 @@ class meshWidget(meshUI):
                 item=self.groupBox_draw.findChild(matplotlib.backends.backend_qt4agg.FigureCanvasAgg)
                 item.close()
                 item.deleteLater()
+                
+            if self.toolbar != '':
+                self.verticalLayout_draw.removeWidget(self.toolbar)
+                self.toolbar.destroy()
+                self.toolbar.close()
+                self.toolbar = ''
+                #import matplotlib
+                #item=self.groupBox_draw.findChild(matplotlib.backends.backend_qt4agg.FigureCanvasAgg)
+                #item.close()
+                #item.deleteLater()
                 
             keys = ['nonOrth','skew','vol']
             bins = {}
@@ -233,9 +256,16 @@ class meshWidget(meshUI):
 
             for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] + \
              ax.get_xticklabels() + ax.get_yticklabels()):
-                 item.set_fontsize(5)
+                 item.set_fontsize(7)
+                 
+            self.toolbar = myNavigationToolbar(self.canvas,self)
+            self.toolbar.removeAction(self.toolbar.actions()[7]) #elimino el boton de eliminar
+            
+            self.toolbar.setFixedHeight(32)
             
             self.verticalLayout_draw.addWidget(self.canvas,1)
+            self.verticalLayout_draw.addWidget(self.toolbar,0,QtCore.Qt.AlignCenter)
+            
 
         return
 
@@ -269,7 +299,10 @@ class meshWidget(meshUI):
                         continue
                     patchDict={}
                     if ifield in unknowns:
-                        patchDict['type'] = 'zeroGradient'
+                        if boundaries[ipatch]['type']=='empty':
+                            patchDict['type'] = 'empty'
+                        else:
+                            patchDict['type'] = 'zeroGradient'
                     else:
                         patchDict['type'] = 'calculated'
                     fieldData['boundaryField'][ipatch] = patchDict

@@ -20,8 +20,9 @@ types['omega'] = 'scalar'
 types['alpha'] = 'scalar'
 types['nut'] = 'scalar'
 types['nuTilda'] = 'scalar'
+types['nuSgs'] = 'scalar'
 
-unknowns = ['U','p','p_rgh','alpha','k','epsilon','omega','nut','nuTilda']
+unknowns = ['U','p','p_rgh','alpha','k','nuSgs','epsilon','omega','nut','nuTilda']
 
 
 def drange(start, stop, step):
@@ -205,7 +206,7 @@ def currentFields(currentFolder,filterTurb=True):
                     allturb.remove('k')
                     allturb.remove('omega')
             elif tprop['simulationType']=='LESModel':
-                filename = '%s/constant/LESProperties'%self.currentFolder
+                filename = '%s/constant/LESProperties'%currentFolder
                 Lprop = ParsedParameterFile(filename,createZipped=False)    
                 if Lprop['LESModel']=='Smagorinsky':  
                     allturb.remove('nuSgs')
@@ -219,5 +220,12 @@ def currentFields(currentFolder,filterTurb=True):
         os.system(command)
         while not os.path.isfile(logname):
             continue
+        
+        #Esta linea la agrego porque a veces se resetea el caso y se borra
+        #el folder de currentTime. Por eso uso el 0, siempre estoy seguro que
+        #esta presente
+        if not os.path.isdir(str(timedir)):
+            timedir = '%s/0'%currentFolder
+        
         fields = [ f for f in os.listdir(timedir) if (f not in NO_FIELDS and f in unknowns) ]
         return [timedir,fields,currtime]

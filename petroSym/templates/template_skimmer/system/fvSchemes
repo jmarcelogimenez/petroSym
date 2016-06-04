@@ -57,6 +57,7 @@ fluxRequired
     default         no;
     p_rgh;
     p;
+    Phi;
 }
 
 

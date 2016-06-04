@@ -17,7 +17,6 @@ from utils import *
 
 import numpy
 
-
 import pylab
 
 try:
@@ -141,7 +140,7 @@ class figureTracers(figureTracersUI):
             parsedData['functions'] = {}
         
         dicc['outputInterval'] = self.spinBox.value()
-        fields = []        
+        fields = []
         for i in range(self.listWidget.count()):
             if self.listWidget.item(i).checkState() == QtCore.Qt.Checked:
                 fields.append(str(self.listWidget.item(i).text()))
@@ -176,6 +175,7 @@ class figureTracersWidget(QtGui.QWidget):
         
         self.dataPlot = []
         self.dirList = []
+        self.currentime = 0
         self.dirType = 'Tracers'
         self.lastPos = -1
         self.name = name
@@ -190,6 +190,7 @@ class figureTracersWidget(QtGui.QWidget):
         canvas = self.findChild(FigureCanvas)
         axes = canvas.figure.gca()
         N = self.lastPos
+        #print N
 
         data = pylab.loadtxt(path,skiprows=N)
                 
@@ -210,13 +211,27 @@ class figureTracersWidget(QtGui.QWidget):
                 self.dataPlot = data
             else:
                 self.dataPlot = numpy.vstack((self.dataPlot,data))
+        
 
             if data.ndim==1:
                 self.lastPos = N + 1
             else:
                 self.lastPos = N + data.shape[0]
 
-            #print self.dataPlot
+            #Esta logica es agregada ya que para valores muy chicos en el rango 
+            #de la variable dependiente, matplot tira errores de overflow cuando
+            #trata de graficar, por lo que si el valor que tengo es menor a una
+            #tolerancia determinada, la seteo a cero                
+            if len(self.dataPlot)>0:
+                if self.dataPlot.ndim==2:
+                    for i in range(len(self.dataPlot)):
+                        if self.dataPlot[i][1] < 1e-80:
+                            self.dataPlot[i][1] = 0
+                else:
+                    for i in range(len(self.dataPlot)-1):
+                        if self.dataPlot[1] < 1e-80:
+                            self.dataPlot[1] = 0
+
             if(self.dataPlot.ndim>1):
                 #self.dataPlot = self.dataPlot[-250:,:]
                 axes.clear()
@@ -238,4 +253,11 @@ class figureTracersWidget(QtGui.QWidget):
         
         canvas = self.findChild(FigureCanvas)
         canvas.figure.gca().cla()
+        #Seteo de nuevo esto porque lo de arriba me lo borra
+        axes = canvas.figure.gca()
+        axes.set_title(self.name)
+        axes.set_xlabel('Time [s]')
+        axes.set_ylabel('T')
+        self.currentime = 0
+        axes.autoscale(True)
         canvas.draw()

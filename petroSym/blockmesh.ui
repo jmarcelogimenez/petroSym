@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
-    <height>201</height>
+    <width>450</width>
+    <height>193</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -36,49 +36,35 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="1" column="1">
-     <widget class="QPushButton" name="pushButton_4">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="resources.qrc">
-        <normaloff>:/newPrefix/images/fromHelyx/cellField16.png</normaloff>:/newPrefix/images/fromHelyx/cellField16.png</iconset>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="7">
+    <item row="2" column="8">
      <widget class="Line" name="line_3">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="7" column="1">
+    <item row="7" column="2">
      <widget class="Line" name="line_7">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
+    <item row="1" column="3">
      <widget class="Line" name="line_21">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
+    <item row="2" column="2">
      <widget class="Line" name="line_16">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="5" column="1">
+    <item row="5" column="2">
      <widget class="QLabel" name="label_3">
       <property name="font">
        <font>
@@ -92,42 +78,42 @@
       </property>
      </widget>
     </item>
-    <item row="6" column="3">
+    <item row="6" column="4">
      <widget class="QLineEdit" name="bm_xsize">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="3" column="3">
+    <item row="3" column="4">
      <widget class="QLineEdit" name="bm_xmin">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="4" column="3">
+    <item row="4" column="4">
      <widget class="QLineEdit" name="bm_xmax">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="3" column="7">
+    <item row="3" column="8">
      <widget class="QLineEdit" name="bm_zmin">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="3" column="5">
+    <item row="3" column="6">
      <widget class="QLineEdit" name="bm_ymin">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="1" column="5">
+    <item row="1" column="6">
      <widget class="QLabel" name="label_5">
       <property name="font">
        <font>
@@ -144,35 +130,42 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="7">
+    <item row="4" column="8">
      <widget class="QLineEdit" name="bm_zmax">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="5" column="7">
+    <item row="5" column="8">
      <widget class="QLineEdit" name="bm_nz">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="5" column="3">
+    <item row="5" column="4">
      <widget class="QLineEdit" name="bm_nx">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="5" column="5">
+    <item row="5" column="6">
      <widget class="QLineEdit" name="bm_ny">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
+    <item row="7" column="6">
+     <widget class="Line" name="line_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2">
      <widget class="QLabel" name="label">
       <property name="font">
        <font>
@@ -186,14 +179,14 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="2">
+    <item row="3" column="3">
      <widget class="Line" name="line_17">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="1" column="7">
+    <item row="1" column="8">
      <widget class="QLabel" name="label_6">
       <property name="font">
        <font>
@@ -210,21 +203,21 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="5">
+    <item row="4" column="6">
      <widget class="QLineEdit" name="bm_ymax">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="6" column="7">
+    <item row="6" column="8">
      <widget class="QLineEdit" name="bm_zsize">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="4" column="1">
+    <item row="4" column="2">
      <widget class="QLabel" name="label_2">
       <property name="font">
        <font>
@@ -238,8 +231,14 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="3">
+    <item row="1" column="4">
      <widget class="QLabel" name="label_4">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="font">
        <font>
         <pointsize>9</pointsize>
@@ -256,7 +255,7 @@
       </property>
      </widget>
     </item>
-    <item row="6" column="1">
+    <item row="6" column="2">
      <widget class="QLabel" name="label_7">
       <property name="font">
        <font>
@@ -270,63 +269,49 @@
       </property>
      </widget>
     </item>
-    <item row="6" column="5">
+    <item row="6" column="6">
      <widget class="QLineEdit" name="bm_ysize">
       <property name="enabled">
        <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="6" column="2">
+    <item row="6" column="3">
      <widget class="Line" name="line_20">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="7" column="3">
+    <item row="7" column="4">
      <widget class="Line" name="line_4">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="1" column="8">
+    <item row="1" column="9">
      <widget class="Line" name="line_22">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
+    <item row="4" column="1">
      <widget class="Line" name="line_10">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="6" column="8">
+    <item row="6" column="9">
      <widget class="Line" name="line_15">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="3" column="8">
-     <widget class="Line" name="line_12">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="Line" name="line_9">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="13" column="1" colspan="7">
+    <item row="13" column="2" colspan="7">
      <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -339,89 +324,122 @@
       </property>
      </spacer>
     </item>
-    <item row="2" column="5">
-     <widget class="Line" name="line_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="2">
-     <widget class="Line" name="line_19">
+    <item row="3" column="9">
+     <widget class="Line" name="line_12">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="5" column="8">
+    <item row="5" column="1">
+     <widget class="Line" name="line_9">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="9">
      <widget class="Line" name="line_14">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="2" column="3">
+    <item row="2" column="6">
+     <widget class="Line" name="line_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="3">
+     <widget class="Line" name="line_19">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="4">
      <widget class="Line" name="line">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="7" column="5">
-     <widget class="Line" name="line_5">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="8">
+    <item row="4" column="9">
      <widget class="Line" name="line_13">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="6" column="0">
+    <item row="6" column="1">
      <widget class="Line" name="line_8">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="4" column="2">
+    <item row="4" column="3">
      <widget class="Line" name="line_18">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="7" column="7">
+    <item row="7" column="8">
      <widget class="Line" name="line_6">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
+    <item row="3" column="1">
      <widget class="Line" name="line_11">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="1" column="4">
+    <item row="1" column="5">
      <widget class="Line" name="line_23">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="1" column="6">
+    <item row="1" column="7">
      <widget class="Line" name="line_24">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
+    </item>
+    <item row="4" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="4" column="10">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>

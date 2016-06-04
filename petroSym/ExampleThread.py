@@ -8,7 +8,7 @@ Created on Wed Apr 27 18:01:53 2016
 #import threading
 from PyQt4.QtCore import QThread
 import os
-#import commands 
+#import commands
 import subprocess
 
 class ExampleThread(QThread):
@@ -18,7 +18,7 @@ class ExampleThread(QThread):
         
     def __del__(self):        
         self.wait()
-        self.terminate()
+    #    self.terminate()
 
     def run(self):
         #os.system(self.cmd)

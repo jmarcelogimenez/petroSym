@@ -8,7 +8,7 @@ import pkg_resources
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    def _fromUtf8(s):   
+    def _fromUtf8(s):
         return s
 
 try:
@@ -29,7 +29,7 @@ def main():
     splash = QtGui.QSplashScreen(pixmap,QtCore.Qt.WindowStaysOnTopHint)
     splash.show()
     app.processEvents()
-    #time.sleep(5) 
+    #time.sleep(5)
     window = petroSym()
     splash.finish(window);
     w = window.newCase()

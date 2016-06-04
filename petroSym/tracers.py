@@ -66,6 +66,8 @@ class tracers(tracersUI):
         self.loadCaseData()
         self.refreshTable()
         self.refreshTimeline()
+        
+        self.pushButton_3.setEnabled(False)
 
     def loadCaseData(self):
         filename = '%s/system/controlDict'%self.currentFolder
@@ -87,6 +89,8 @@ class tracers(tracersUI):
             for ipatch in self.patches:
                 if UData['boundaryField'][ipatch]['type']=='empty':
                     self.emptys.append(ipatch)
+                    
+        self.pushButton_3.setEnabled(True)
         
 
     def refreshTable(self):
@@ -108,6 +112,8 @@ class tracers(tracersUI):
             self.tableWidget.setCellWidget(i,0,wdg1) 
             self.tableWidget.setItem(i,1,item2)
             self.tableWidget.setCellWidget(i,1,wdg2)
+            
+        self.pushButton_3.setEnabled(True)
 
     def refreshTimeline(self):
         if not self.firstPlot:
@@ -142,6 +148,8 @@ class tracers(tracersUI):
         self.ax.legend(loc=0, fontsize = 'small')       
         
         self.figureLayout.addWidget(self.canvas)
+        
+        self.pushButton_3.setEnabled(True)
 
     def newTracer(self):
         i = self.tableWidget.rowCount()
@@ -156,16 +164,25 @@ class tracers(tracersUI):
         self.tableWidget.setCellWidget(i,0,wdg1) 
         self.tableWidget.setItem(i,1,item2)
         self.tableWidget.setCellWidget(i,1,wdg2)
+        
+        self.pushButton_3.setEnabled(True)
                 
 
     def removeTracer(self):
         ii = self.tableWidget.currentRow()
         self.tableWidget.removeRow(ii)
+        self.drawTracers()
+        self.pushButton_3.setEnabled(True)
         return
         
-    def saveCaseData(self, doTopoSet=False):
+    def saveCaseData(self):
+        self.drawTracers(True)
+        self.pushButton_3.setEnabled(False)
+        
+    def drawTracers(self, doTopoSet=False):
 
         for dd in self.tracersData:
+            print dd['name']
             del self.parsedData['functions'][dd['name']]
         
         if 'functions' not in self.parsedData.getValueDict().keys():
@@ -191,11 +208,11 @@ class tracers(tracersUI):
         if doTopoSet:
             spatches = set(patches)
             ii = 0
-            cmd = 'cp %s/caseDicts/topoSetDict %s/system/.'%(os.path.dirname(__file__),self.currentFolder)
+            cmd = 'cp %s/caseDicts/topoSetDict %s/system/.'%(os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
             os.system(cmd)
             
             filename = '%s/system/topoSetDict'%self.currentFolder
-            topoSetData = ParsedParameterFile(filename,createZipped=False)        
+            topoSetData = ParsedParameterFile(filename,createZipped=False)     
             
             #armo el topoSet de manera de generar los cellSet deseados
             for ipatch in spatches:

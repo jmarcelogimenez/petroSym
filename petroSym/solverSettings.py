@@ -73,7 +73,7 @@ dicTemplate['solvers']['relaxationFactors'] = OrderedDict()
 dicTemplate['solvers']['relaxationFactors']['fields'] = OrderedDict()
 
 unknowns = ['U', 'p', 'pFinal', 'UFinal', 'k', 'kFinal', 'epsilon',
-'epsilonFinal', 'nuTilda', 'nuTildaFinal', 'omega', 'omegaFinal']
+'epsilonFinal', 'nuTilda', 'nuTildaFinal', 'omega', 'omegaFinal', 'Phi']
 dic_unknowsSymetric = ['p', 'pFinal']
 dic_unknowsNoSymetric = ['U', 'UFinal', 'k', 'kFinal', 'epsilon',
 'epsilonFinal', 'omega', 'omegaFinal', 'nuTilda', 'nuTildaFinal']
@@ -149,10 +149,9 @@ class solverSettingsUI(QtGui.QScrollArea, Ui_solverSettingsUI):
 
 class solverSettings(solverSettingsUI):
 
-    def __init__(self, folder, solvername, fields):
+    def __init__(self, folder, solvername):
         self.currentFolder = folder
         self.solvername = solvername
-        self.fields0 = fields
         solverSettingsUI.__init__(self)
         self.loadData()
         self.addTabs()
@@ -289,9 +288,8 @@ class solverSettings(solverSettingsUI):
                                                        createZipped=False)
 
         #self.fields = self.parsedData['solvers'].keys()#No hay que meter todos
-        #[self.timedir, self.fields, currtime] = \
-        #currentFields(self.currentFolder)
-        self.fields = deepcopy(self.fields0)
+        [self.timedir, self.fields, currtime] = \
+        currentFields(self.currentFolder)
         
         fieldsconglomerate = list()
         for ikey in self.parsedData['solvers'].keys():
@@ -323,6 +321,11 @@ class solverSettings(solverSettingsUI):
             for ifield in self.fieldsoriginal:
                 newfield = ifield+"Final"
                 self.fields.append(newfield)
+                
+        if ('potentialFlowEnabled' in self.parsedData.content.keys()):
+            val = self.parsedData['potentialFlowEnabled']
+            if val=='yes':
+                self.fields.append('Phi')
 
         return
 

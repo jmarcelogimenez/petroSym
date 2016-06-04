@@ -32,6 +32,20 @@ solvers
         tolerance       1e-05;
         relTol          0;
     }
+    
+    Phi
+    {
+    solver GAMG;
+    smoother GaussSeidel;
+    cacheAgglomeration no;
+    agglomerator faceAreaPair;
+    nCellsInCoarsestLevel 10;
+    mergeLevels 1;
+    nPreSweeps 0;
+    nPostSweeps 1;
+    tolerance 1e-08;
+    relTol 0.01;
+    }
 }
 
 PISO
@@ -42,5 +56,10 @@ PISO
     pRefValue       0;
 }
 
-
+potentialFlow
+{
+    nNonOrthogonalCorrectors 10;
+    PhiRefCell 0; 
+    PhiRefValue 0;
+}
 // ************************************************************************* //
