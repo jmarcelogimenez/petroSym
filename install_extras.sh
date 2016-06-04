@@ -40,6 +40,9 @@ pyuic4 -w petroSym/reset.ui -o petroSym/reset_ui.py
 pyuic4 -w petroSym/bcPatch.ui -o petroSym/bcPatch_ui.py
 pyuic4 -w petroSym/blockmesh.ui -o petroSym/blockmesh_ui.py
 pyuic4 -w petroSym/loading.ui -o petroSym/loading_ui.py
+pyuic4 -w petroSym/solvers_info.ui -o petroSym/solvers_info_ui.py
+pyuic4 -w petroSym/turbulence.ui -o petroSym/turbulence_ui.py
+pyuic4 -w petroSym/gravity.ui -o petroSym/gravity_ui.py
 
 #Esto lo puse para que no se queje travis, pero supuestamente estos directorios a esta altura ya esta creados
 #if [ ! -d ~/.config/ ]; then
