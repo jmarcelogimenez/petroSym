@@ -191,8 +191,7 @@ class petroSym(petroSymUI):
                 #typeSim = data[2]
                 typeSim = 'Skimmer Tank'
                 if typeSim == 'Skimmer Tank':
-                    #command = 'cp -r %s/templates/template_skimmer/* %s/.' % (os.path.dirname(__file__),self.currentFolder)
-                    command = 'cp -r %s/templates/template_skimmer/* %s/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
+                    command = 'cp -r %s/templates/template_pimpleFoam/* %s/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
                     os.system(command)
                     self.solvername = 'pimpleFoam'
                 elif typeSim =='Generic':
@@ -763,7 +762,7 @@ class petroSym(petroSymUI):
         if solvername == 'pimpleFoam':
             command = 'rm -rf %s/*' % self.currentFolder
             os.system(command)
-            command = 'cp -r %s/templates/template_skimmer/* %s/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
+            command = 'cp -r %s/templates/template_pimpleFoam/* %s/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
             os.system(command)            
         elif solvername =='icoFoam':
             command = 'rm -rf %s/*' % self.currentFolder

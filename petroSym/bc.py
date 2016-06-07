@@ -235,8 +235,8 @@ class bcWidget(bcUI):
         self.boundaries = BoundaryDict(str(self.currentFolder))
         
         #veo los campos que tengo en el directorio inicial
-        [self.timedir,self.fields,currtime] = currentFields(self.currentFolder)
-        print self.fields
+        [self.timedir,self.fields,self.currtime] = currentFields(self.currentFolder)
+        #print self.fields
         self.loadData()
 
 
@@ -263,16 +263,26 @@ class bcWidget(bcUI):
             layout = self.tabWidget.widget(itab).findChildren(QtGui.QVBoxLayout)[0]
             self.clearLayout(layout,0)
         self.tabWidget.clear()
+        
+        fileDict = '%s/system/changeDictionaryPetroSym'%self.currentFolder
+        dictDict = []
+        if os.path.isfile(fileDict):
+            dictDict = ParsedParameterFile(fileDict,createZipped=False)
+                
         for ifield in self.fields:
             if ifield not in unknowns:
                 continue
             widget = QtGui.QWidget()
             layout = QtGui.QVBoxLayout(widget)
             if ipatch:
-                filename = '%s/%s'%(self.timedir,ifield)
-                parsedData = ParsedParameterFile(filename,listLengthUnparsed=20,createZipped=False)
-                thisPatch = parsedData['boundaryField'][ipatch]
-                
+                if dictDict==[]:                
+                    filename = '%s/%s'%(self.timedir,ifield)
+                    parsedData = ParsedParameterFile(filename,listLengthUnparsed=20,createZipped=False)
+                    thisPatch = parsedData['boundaryField'][ipatch]
+                else:
+                    thisPatch = dictDict['dictionaryReplacement'][ifield]['boundaryField'][ipatch]
+                    
+                print thisPatch
                 
                 newComboBox = QtGui.QComboBox()
                 newComboBox.addItems(types[self.boundaries[ipatch]['type']][ifield])
@@ -292,7 +302,7 @@ class bcWidget(bcUI):
                     layout2 = layout.itemAt(l).layout()
                     if layout2:
                         if layout2.itemAt(1).widget().currentText() != 'table':
-                            data = str(parsedData['boundaryField'][ipatch][extraInfo[iExtra*4]])
+                            data = str(thisPatch[extraInfo[iExtra*4]])
                             data = data.replace('(','').replace(')','').split()
                             if layout2.count()==3:
                                 layout2.itemAt(1).widget().setCurrentIndex(layout2.itemAt(1).widget().findText(data[0]))
@@ -379,36 +389,65 @@ class bcWidget(bcUI):
     def saveBCs(self):
         
         ipatch = str(self.listWidget.currentItem().text())
+        
+        fileDict = '%s/system/changeDictionaryPetroSym'%self.currentFolder
+        dictDict = []
+        if os.path.isfile(fileDict):
+            dictDict = ParsedParameterFile(fileDict,createZipped=False)
+            
         for itab in range(self.tabWidget.count()):
             ifield = str(self.tabWidget.tabText(itab))
             itype = str(self.tabWidget.widget(itab).findChildren(QtGui.QComboBox)[0].currentText())
             layout = self.tabWidget.widget(itab).findChildren(QtGui.QVBoxLayout)[0]
-            filename = '%s/%s'%(self.timedir,ifield)
-            parsedData = ParsedParameterFile(filename,listLengthUnparsed=20,createZipped=False)
-            parsedData['boundaryField'][ipatch] = {}
-            parsedData['boundaryField'][ipatch]['type'] = itype
+            if dictDict == []:
+                filename = '%s/%s'%(self.timedir,ifield)
+                parsedData = ParsedParameterFile(filename,listLengthUnparsed=20,createZipped=False)
+                thisPatch = parsedData['boundaryField'][ipatch]
+            else:
+                thisPatch = dictDict['dictionaryReplacement'][ifield]['boundaryField'][ipatch]
+
+            thisPatch = {}
+            thisPatch['type'] = itype
+                
             #debo tomar los valores extras, si los tiene
             extraInfo = extras[ifield][itype]
             L = range(layout.count())
             L = L[1:-1]
             iExtra = 0
-            print ipatch
+            #print ipatch
             
             for l in L:
                 layout2 = layout.itemAt(l).layout()
                 if layout2:
                     if layout2.itemAt(1).widget().currentText() != 'table':
                         if layout2.count()==3:
-                             parsedData['boundaryField'][ipatch][extraInfo[iExtra*4]] = '%s %s' %(layout2.itemAt(1).widget().currentText(),layout2.itemAt(2).widget().text())
+                             thisPatch[extraInfo[iExtra*4]] = '%s %s' %(layout2.itemAt(1).widget().currentText(),layout2.itemAt(2).widget().text())
                         else:
-                             parsedData['boundaryField'][ipatch][extraInfo[iExtra*4]] = '%s (%s %s %s)' %(layout2.itemAt(1).widget().currentText(),layout2.itemAt(2).widget().text(),layout2.itemAt(3).widget().text(),layout2.itemAt(4).widget().text())
+                             thisPatch[extraInfo[iExtra*4]] = '%s (%s %s %s)' %(layout2.itemAt(1).widget().currentText(),layout2.itemAt(2).widget().text(),layout2.itemAt(3).widget().text(),layout2.itemAt(4).widget().text())
                     else:
                         #determinar que hacer si quiero cargar una table!!!     
                         #('table', [[0, 0.0], [1e6-0.01, 0.0], [1e6, 1.0], [1e6, 1.0]])
                         tabla = self.getTabla(itab)
-                        parsedData['boundaryField'][ipatch][extraInfo[iExtra*4]] = ('table',tabla)
+                        thisPatch[extraInfo[iExtra*4]] = ('table',tabla)
                     iExtra = iExtra+1
-            parsedData.writeFile()
+            
+            if dictDict == []:
+                parsedData['boundaryField'][ipatch] = thisPatch
+                parsedData.writeFile()
+            else:
+                dictDict['dictionaryReplacement'][ifield]['boundaryField'][ipatch] = thisPatch
+                dictDict.writeFile()
+                dictDictBak = ParsedParameterFile(fileDict,createZipped=False)
+                keysDict = dictDict['dictionaryReplacement'].keys()
+                dictDictBak['dictionaryReplacement'] = {}
+                for ikey in keysDict:
+                    if ikey in self.fields:
+                        dictDictBak['dictionaryReplacement'][ikey] = {}
+                        dictDictBak['dictionaryReplacement'][ikey]['boundaryField'] = dictDict['dictionaryReplacement'][ikey]['boundaryField']
+                dictDictBak.writeFileAs('%s/system/changeDictionaryPetroSym.bak'%self.currentFolder)
+                #chequear que no bloquee
+                command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+                os.system(command)
         self.pushButton.setEnabled(False)
         return
         
@@ -440,10 +479,18 @@ class bcWidget(bcUI):
             self.boundaries[texto]['type'] = patchType
             self.boundaries.writeFile()
             
+            fileDict = '%s/system/changeDictionaryPetroSym'%self.currentFolder
+            dictDict = []
+            if os.path.isfile(fileDict):
+                dictDict = ParsedParameterFile(fileDict,createZipped=False)
+                
             for ifield in self.fields:
                 
-                filename = '%s/%s'%(self.timedir,ifield)
-                fieldData = ParsedParameterFile(filename,listLengthUnparsed=20,createZipped=False)
+                if dictDict==[]:
+                    filename = '%s/%s'%(self.timedir,ifield)
+                    fieldData = ParsedParameterFile(filename,listLengthUnparsed=20,createZipped=False)
+                else:
+                    fieldData = dictDict['dictionaryReplacement'][ifield]
 
                 newDict = {}
                 if patchType == 'empty':
@@ -456,6 +503,24 @@ class bcWidget(bcUI):
                 
                 fieldData['boundaryField'][texto] = newDict
 
-                fieldData.writeFile()
-
+                if dictDict==[]:
+                    fieldData.writeFile()
+                else:
+                    dictDict['dictionaryReplacement'][ifield] = fieldData
+            
+            if dictDict!=[]:
+                dictDict.writeFile()
+                dictDict.writeFile()
+                dictDictBak = ParsedParameterFile(fileDict,createZipped=False)
+                keysDict = dictDict['dictionaryReplacement'].keys()
+                dictDictBak['dictionaryReplacement'] = {}
+                for ikey in keysDict:
+                    if ikey in self.fields:
+                        dictDictBak['dictionaryReplacement'][ikey] = {}
+                        dictDictBak['dictionaryReplacement'][ikey] = dictDict['dictionaryReplacement'][ikey]['boundaryField']
+                dictDictBak.writeFileAs('%s/system/changeDictionaryPetroSym.bak'%self.currentFolder)
+                #chequear que no bloquee
+                command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+                os.system(command)
+            
             self.loadData()

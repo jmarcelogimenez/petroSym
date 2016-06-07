@@ -65,7 +65,7 @@ class initialConditionsWidget(initialConditionsUI):
         
     def setInitialConditions(self,field):
         filename = '%s/%s' % (self.timedir,field)
-        filenamefield = ParsedParameterFile(filename,createZipped=False)
+        filenamefield = ParsedParameterFile(filename,listLengthUnparsed=20,createZipped=False)
         unifield = filenamefield['internalField']
         if (unifield.isUniform()):
             return unifield.val

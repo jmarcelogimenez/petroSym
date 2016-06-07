@@ -287,10 +287,18 @@ class meshWidget(meshUI):
         boundaries = BoundaryDict(self.currentFolder)
         #veo los campos que tengo en el directorio inicial
         [timedir,fields,currtime] = currentFields(self.currentFolder, False)
+        
+        fileDict = '%s/system/changeDictionaryPetroSym'%self.currentFolder
+        dictDict = []
+        if os.path.isfile(fileDict):
+            dictDict = ParsedParameterFile(fileDict,createZipped=False)
 
         for ifield in fields:
-            filename = '%s/%s'%(timedir,ifield)
-            fieldData = ParsedParameterFile(filename,createZipped=False)
+            if dictDict==[]:
+                filename = '%s/%s'%(timedir,ifield)
+                fieldData = ParsedParameterFile(filename,createZipped=False)
+            else:
+                fieldData = dictDict['dictionaryReplacement'][ifield]
 
             fieldData['boundaryField'] = {}
             for ipatch in boundaries.getValueDict():
@@ -313,6 +321,20 @@ class meshWidget(meshUI):
             elif types[ifield] == 'vector':
                 fieldData['internalField'] = 'uniform (0 0 0)'
 
-            fieldData.writeFile()
+            if dictDict==[]:
+                fieldData.writeFile()
+
+        if dictDict!=[]:
+            dictDict.writeFile()
+            dictDictBak = ParsedParameterFile(fileDict,createZipped=False)
+            keysDict = dictDict['dictionaryReplacement'].keys()
+            dictDictBak['dictionaryReplacement'] = {}
+            for ikey in keysDict:
+                if ikey in self.fields:
+                    dictDictBak['dictionaryReplacement'][ikey] = dictDict['dictionaryReplacement'][ikey]
+            dictDictBak.writeFileAs('%s/system/changeDictionaryPetroSym.bak'%self.currentFolder)
+            #chequear que no bloquee
+            command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+            os.system(command)
 
         return

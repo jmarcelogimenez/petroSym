@@ -1,0 +1,137 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      changeDictionaryDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dictionaryReplacement
+{
+	U
+	{
+		internalField   uniform (0 0 0);
+		boundaryField
+		{
+			fixedWalls
+			{
+				type            fixedValue;
+				value           uniform (0 0 0);
+			}
+			movingWall
+			{
+				type            fixedValue;
+				value           uniform (1 0 0);
+			}
+			frontAndBack
+			{
+				type            empty;
+			}
+		}
+	}
+
+	p
+	{
+		internalField   uniform 0;
+		boundaryField
+		{
+			fixedWalls
+			{
+				type            zeroGradient;
+			}
+			movingWall
+			{
+				type            zeroGradient;
+			}
+			frontAndBack
+			{
+				type            empty;
+			}
+		}
+	}
+	omega
+	{
+		internalField   uniform 0;
+		boundaryField
+		{
+			fixedWalls
+			{
+				type            zeroGradient;
+			}
+			movingWall
+			{
+				type            zeroGradient;
+			}
+			frontAndBack
+			{
+				type            empty;
+			}
+		}
+	}
+	nuSgs
+	{
+		internalField   uniform 0;
+		boundaryField
+		{
+			fixedWalls
+			{
+				type            zeroGradient;
+			}
+			movingWall
+			{
+				type            zeroGradient;
+			}
+			frontAndBack
+			{
+				type            empty;
+			}
+		}
+	}
+	k
+	{
+		internalField   uniform 0;
+		boundaryField
+		{
+			fixedWalls
+			{
+				type            zeroGradient;
+			}
+			movingWall
+			{
+				type            zeroGradient;
+			}
+			frontAndBack
+			{
+				type            empty;
+			}
+		}
+	}
+	epsilon
+	{
+		internalField   uniform 0;
+		boundaryField
+		{
+			fixedWalls
+			{
+				type            zeroGradient;
+			}
+			movingWall
+			{
+				type            zeroGradient;
+			}
+			frontAndBack
+			{
+				type            empty;
+			}
+		}
+	}
+}
+
