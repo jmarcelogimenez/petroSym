@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'petroSym/solvers_info.ui'
 #
-# Created: Fri May 27 12:34:07 2016
+# Created: Tue Jun  7 15:41:38 2016
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!

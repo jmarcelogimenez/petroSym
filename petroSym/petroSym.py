@@ -81,7 +81,8 @@ class petroSym(petroSymUI):
         #self.fs_watcher.moveToThread(self.thread_watcher)
 
         self.pending_files = []
-        self.pending_dirs = []
+        self.pending_dirs = []        
+        self.runningpid = -1
         self.update_watcher()
         
         self.firstPlot = 1
@@ -95,7 +96,6 @@ class petroSym(petroSymUI):
         self.nPlots = 0
         self.typeFigure = ['Residuals', 'Tracers', 'Probes', 'Sampled Line', 'General Snapshot']
         self.colors = ['r', 'b', 'k', 'g', 'y', 'c']
-        self.runningpid = -1
 
         self.addNewFigureButton()
         
@@ -166,8 +166,23 @@ class petroSym(petroSymUI):
     def saveAsCase(self):
         oldFolder = self.currentFolder
         self.currentFolder = str(QtGui.QFileDialog.getExistingDirectory(self, 'Save As...', './'))
-        command = 'cp -r %s %s' % (oldFolder, self.currentFolder);
-        os.system(command)
+        
+        w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Save As", "Do you want to keep the running folders? (If not, only the folders 0, system and constant will copy)", QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
+        ret = w.exec_()
+        import subprocess
+        if(QtGui.QMessageBox.Yes == ret):
+            command = 'cp -r %s/. %s' % (oldFolder,self.currentFolder)
+            subprocess.check_call(command,shell=True)
+        else:
+            command = 'pyFoamCloneCase.py %s %s' % (oldFolder,self.currentFolder)
+            subprocess.check_call(command,shell=True)
+            oldCase = oldFolder.split('/')
+            oldCase = oldCase[len(oldCase)-1]
+            command = 'mv %s/%s/* %s/.' % (self.currentFolder,oldCase,self.currentFolder)
+            subprocess.check_call(command,shell=True)
+            command = 'rm -r %s/%s' % (self.currentFolder,oldCase)
+            subprocess.check_call(command,shell=True)
+        
         self.save_config()
 
     def newCase(self):
@@ -281,12 +296,14 @@ class petroSym(petroSymUI):
                 self.pending_files.append(filename)
 
         if self.typeFigure[index] == 'Tracers':
-            w = figureTracers(self.currentFolder)
+            w = figureTracers(self.currentFolder)        
             result = w.exec_()
             filename = ''
+            
             if result:
-                data = w.getData()
                 [bas1,bas2,currtime] = currentFields(self.currentFolder)
+                
+                data = w.getData()
                 addFigure = True
                 filename = '%s/postProcessing/%s/%s/faceSource.dat'%(self.currentFolder,str(data['name']),currtime)
                 if(os.path.isfile(filename)):
@@ -306,7 +323,7 @@ class petroSym(petroSymUI):
             result = w.exec_()
             if result:
                 data = w.getData()
-                print data
+                #print data
                 dirname = 'postProcessing/%s'%data['name']
                 addFigure = True
                 if(os.path.isdir('%s/%s'%(self.currentFolder,dirname))):
@@ -583,6 +600,12 @@ class petroSym(petroSymUI):
             else:
                 i = i+1
 
+        #Chequear si la corrida termino (Si esta corriendo algo)
+        import psutil
+        if self.runningpid != -1 and not(psutil.pid_exists(self.runningpid)):
+            tab=self.findChild(logTab,'%s/run.log'%self.currentFolder)
+            tab.stopRun()
+
     def save_config(self):
         filename = '%s/petroSym.config'%self.currentFolder
         config = {}
@@ -664,6 +687,21 @@ class petroSym(petroSymUI):
                     ww = figureResidualsWidget(self.scrollAreaWidgetContents,namePlots[i])
                     filename = '%s/postProcessing/%s/%s/residuals.dat'%(self.currentFolder,namePlots[i],currtime)
                     self.pending_files.append(filename)
+                    
+                    filename2 = '%s/postProcessing/%s'%(self.currentFolder,namePlots[i])
+                    if os.path.isdir(filename2):    
+                        latest = -1
+                        listdirs = os.listdir(filename2)
+                        for dirs in listdirs:
+                            if float(dirs)>latest:
+                                latest=float(dirs)
+                            filename2 = '%s/postProcessing/%s'%(self.currentFolder,namePlots[i])
+                            filename2 += '/%s/residuals.dat'%dirs
+                            ww.plot(filename2)
+                            ww.lastPos = -1
+                        filename2 = '%s/postProcessing/%s/%s/residuals.dat'%(self.currentFolder,namePlots[i],str(latest))
+                        self.pending_files.append(filename2)
+                    
                 elif typePlots[i]=='Sampled Line':
                     ww = figureSampledLineWidget(self.scrollAreaWidgetContents,namePlots[i])      
                     dirname = 'postProcessing/%s'%namePlots[i]
@@ -713,10 +751,12 @@ class petroSym(petroSymUI):
                 if os.path.isfile(filename):
                     command = 'rm %s'%filename
                     os.system(command)
+                
                 if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot[self.qfigWidgets[i].lastPos][0] > float(currtime)):
                     self.qfigWidgets[i].resetFigure()
                 else:
                     self.qfigWidgets[i].lastPos = -1
+
             if isinstance(self.qfigWidgets[i],figureTracersWidget):  
                 filename = '%s/postProcessing/%s/%s/faceSource.dat'%(self.currentFolder,namePlot,currtime)
                 
@@ -913,6 +953,7 @@ class petroSym(petroSymUI):
             widget = turbulence(self.currentFolder,self.solvername)
         elif menu=='Gravity':
             widget = gravity(self.currentFolder,self.solvername)
+            widget.setDisabled(True) #Gravity desactivada por el momento
         elif menu=='Run Time Controls':
             widget = runTimeControls(self.currentFolder)
         elif 'phase' in menu:

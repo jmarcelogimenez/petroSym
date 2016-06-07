@@ -136,8 +136,15 @@ class figureTracers(figureTracersUI):
     def accept(self):
         filename = '%s/system/controlDict'%(self.currentFolder)
         parsedData = ParsedParameterFile(filename,createZipped=False)
+        
         if 'functions' not in parsedData.getValueDict().keys():
             parsedData['functions'] = {}
+            
+        for key in self.parsedData['functions'].keys():
+            if key == str(self.name.text()):
+                w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "The name of the new figure and the name of the tracer must be different. Please select another name")
+                w.exec_()
+                return
         
         dicc['outputInterval'] = self.spinBox.value()
         fields = []
@@ -190,7 +197,6 @@ class figureTracersWidget(QtGui.QWidget):
         canvas = self.findChild(FigureCanvas)
         axes = canvas.figure.gca()
         N = self.lastPos
-        #print N
 
         data = pylab.loadtxt(path,skiprows=N)
                 

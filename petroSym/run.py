@@ -39,10 +39,17 @@ class runWidget(runUI):
         runUI.__init__(self)
         self.solvername = solvername
         self.currentFolder = currentFolder
+        
 
     def setCurrentFolder(self, currentFolder, solvername):
         self.currentFolder = currentFolder
         self.solvername = solvername
+        
+        #Si abro la gui y hay un caso corriendo, desabilito estos botones
+        if (self.window().runningpid!= -1):
+            self.pushButton_run.setEnabled(False)
+            self.pushButton_reset.setEnabled(False)
+            
         
     def runCase(self):
         #modifico el control dict porque pude haber parado la simulacion        
@@ -63,8 +70,7 @@ class runWidget(runUI):
         self.window().newLogTab('Run',filename)
         command = '%s -case %s > %s &'%(self.solvername,self.currentFolder,filename)
         os.system(command)
-        #proc = subprocess.Popen(command,shell=True)
-        #self.window().runningpid = (proc.pid+2) #Ver porque me tira 2 menos siempre
+        
         command = 'pidof %s'%self.solvername
         import subprocess
         self.window().runningpid = subprocess.check_output(command, shell=True)

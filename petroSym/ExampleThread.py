@@ -8,7 +8,6 @@ Created on Wed Apr 27 18:01:53 2016
 #import threading
 from PyQt4.QtCore import QThread
 import os
-#import commands
 import subprocess
 
 class ExampleThread(QThread):

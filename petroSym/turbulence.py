@@ -41,8 +41,32 @@ class turbulence(turbulenceUI):
         turbulenceUI.__init__(self)
         self.currentFolder = currentFolder
         self.currentSolver = currentSolver
-        self.radioTurb1.setChecked(True)
+        #self.radioTurb1.setChecked(True)
+        self.loadData()
         self.apply_button.setEnabled(False)
+        return
+        
+    def loadData(self):
+        filename = '%s/constant/turbulenceProperties'%self.currentFolder
+        tprop = ParsedParameterFile(filename,createZipped=False)
+        symType = tprop['simulationType']
+        if (symType=='laminar'):
+            self.radioTurb1.setChecked(True)
+        elif (symType=='RASModel'):
+            self.radioTurb2.setChecked(True)
+            filename = '%s/constant/RASProperties'%self.currentFolder
+            Rprop = ParsedParameterFile(filename,createZipped=False)
+            RASModelName = Rprop['RASModel']
+            #self.comboBoxTurb.addItems(RASModels)
+            self.comboBoxTurb.setCurrentIndex(self.comboBoxTurb.findText(RASModelName))
+        elif (symType=='LESModel'):
+            self.radioTurb3.setChecked(True)
+            filename = '%s/constant/LESProperties'%self.currentFolder
+            Lprop = ParsedParameterFile(filename,createZipped=False)
+            LESodelName = Lprop['LESModel']
+            #self.comboBoxTurb.addItems(LESModels)
+            self.comboBoxTurb.setCurrentIndex(self.comboBoxTurb.findText(LESodelName))
+        
         return
         
     def aplicar(self):
@@ -99,7 +123,7 @@ class turbulence(turbulenceUI):
             tprop['simulationType'] = 'laminar'
             
         tprop.writeFile()
-        self.updateFieldFiles(self.timedir, self.fields, currtime)
+        self.updateFieldFiles(self.timedir, self.fields, currtime) #Esto no es necesario o si?
         self.apply_button.setEnabled(False)
         return
         
@@ -122,7 +146,10 @@ class turbulence(turbulenceUI):
                         continue
                     patchDict={}
                     if ifield in unknowns:
-                        patchDict['type'] = 'zeroGradient'
+                        if boundaries[ipatch]['type']=='empty':
+                            patchDict['type'] = 'empty'
+                        else:
+                            patchDict['type'] = 'zeroGradient'
                     else:
                         patchDict['type'] = 'calculated'
                     fieldData['boundaryField'][ipatch] = patchDict
@@ -136,6 +163,9 @@ class turbulence(turbulenceUI):
             fieldData.writeFile()
 
         return
+        
+    def changeComboBox(self):
+        self.apply_button.setEnabled(True)
         
     def changeTurbList(self):
         self.apply_button.setEnabled(True)

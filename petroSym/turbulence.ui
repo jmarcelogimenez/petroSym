@@ -177,9 +177,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>comboBoxTurb</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>turbulence</receiver>
+   <slot>changeComboBox()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>203</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>changeTurbList()</slot>
   <slot>aplicar()</slot>
+  <slot>changeComboBox()</slot>
  </slots>
 </ui>

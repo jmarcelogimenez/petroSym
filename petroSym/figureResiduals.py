@@ -199,14 +199,16 @@ class figureResidualsWidget(QtGui.QWidget):
 
             #print self.dataPlot
             if(self.dataPlot.ndim>1):
-                self.dataPlot = self.dataPlot[-100:,:]
+                #self.dataPlot = self.dataPlot[-100:,:]
                 axes.clear()
                 for i in range(len(headers)):
                     line = axes.plot(self.dataPlot[:,0],self.dataPlot[:,i+1],self.colors[i%6], label=headers[i])
                 miny = numpy.amin(self.dataPlot[:,1:])
                 maxy = miny*1e3
                 axes.set_ylim(miny,maxy)
+                
                 axes.set_yscale('log')
+                axes.autoscale(True)
 
                 axes.set_title(self.name)
                 axes.set_xlabel('Time [s]')

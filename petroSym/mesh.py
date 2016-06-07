@@ -125,9 +125,23 @@ class meshWidget(meshUI):
             elif 'GMSH' in tipo:
                 utility = 'gmshToFoam'
             
+            with open(filename,'r') as fil:
+                l1=fil.readline()   
+                
+            if '$MeshFormat' in l1 and utility!='gmshToFoam': #Agregar la logica para las dos restantes
+                w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "Bad Mesh Format")
+                w.exec_()
+                self.pushButton_check.setEnabled(True)                
+                self.pushButton_import.setEnabled(True)        
+                self.pushButton_create.setEnabled(True)
+                self.pushButton_view.setEnabled(True)
+                self.comboBox_histo.setEnabled(True)                
+                return
+            
             command = 'touch %s/importMesh.log'%self.currentFolder
             os.system(command)            
             self.window().newLogTab('Import Mesh','%s/importMesh.log'%self.currentFolder)
+            
             command = '%s -case %s %s > %s/importMesh.log' %(utility, self.currentFolder, filename, self.currentFolder)
             #os.system(command)
             self.threadimportmesh = ExampleThread(command)
