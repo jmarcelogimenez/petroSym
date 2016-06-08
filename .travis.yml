@@ -6,7 +6,7 @@ python:
 virtualenv:
   system_site_packages: false
 before_install:
-  - sudo apt-get install -y --force-yes python-pip python2.7-dev libxext-dev python-qt4 pyqt4-dev-tools build-essential
+  - sudo apt-get install -y --force-yes python-pip python2.7-dev libxext-dev python-qt4 pyqt4-dev-tools build-essential python-psutil
 #Install PyQt4 and sip
   - sudo mkdir -p /downloads
   - sudo chmod a+rw /downloads
