@@ -39,6 +39,7 @@ before_install:
   - pip install -r requirements.txt
   - pip install coverage
   - pip install coveralls
+  - pip install psutil
   #- pip install flake8
   - source /opt/openfoam240/etc/bashrc
   - ./install_extras.sh
