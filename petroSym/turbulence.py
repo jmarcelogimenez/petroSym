@@ -57,14 +57,12 @@ class turbulence(turbulenceUI):
             filename = '%s/constant/RASProperties'%self.currentFolder
             Rprop = ParsedParameterFile(filename,createZipped=False)
             RASModelName = Rprop['RASModel']
-            #self.comboBoxTurb.addItems(RASModels)
             self.comboBoxTurb.setCurrentIndex(self.comboBoxTurb.findText(RASModelName))
         elif (symType=='LESModel'):
             self.radioTurb3.setChecked(True)
             filename = '%s/constant/LESProperties'%self.currentFolder
             Lprop = ParsedParameterFile(filename,createZipped=False)
             LESodelName = Lprop['LESModel']
-            #self.comboBoxTurb.addItems(LESModels)
             self.comboBoxTurb.setCurrentIndex(self.comboBoxTurb.findText(LESodelName))
         
         return

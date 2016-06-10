@@ -139,7 +139,8 @@ class figureTracers(figureTracersUI):
         
         if 'functions' not in parsedData.getValueDict().keys():
             parsedData['functions'] = {}
-            
+        
+        #Logica para evitar nombres repetidos
         for key in self.parsedData['functions'].keys():
             if key == str(self.name.text()):
                 w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "The name of the new figure and the name of the tracer must be different. Please select another name")
