@@ -128,14 +128,15 @@ dicSmoothSolver[3] = ['relTol', 'Relative Tolerance: ', 0, 'line_reltol_ss',
 "-?\d+\.?\d*e-?\d+", 0] #0 lineedit
 
 dicPIMPLE = {}
-dicPIMPLE['solver'] = ['PIMPLE', 6]
+dicPIMPLE['solver'] = ['PIMPLE', 7]
 dicPIMPLE[0] = ['nNonOrthogonalCorrectors', 'Non-Orthogonal Correctors: ',
 1, 'spin_nonoc_pim']
 dicPIMPLE[1] = ['nOuterCorrectors', 'Outer Correctors: ', 1, 'spin_outcor_pim']
 dicPIMPLE[2] = ['nCorrectors', 'Correctors: ', 1, 'spin_cor_pim']
 dicPIMPLE[3] = ['momentumPredictor', 'Momentum Predictor: ', 3, 'chb_mom_pim']
-dicPIMPLE[4] = ['pRefCell', 'Cell: ', 1, 'spin_refcell_pim']
-dicPIMPLE[5] = ['pRefValue', 'Value: ', 0, 'line_refval_pim',
+dicPIMPLE[4] = ['','',4] #4 spacer horizontal, 5 spacer vertical
+dicPIMPLE[5] = ['pRefCell', 'Pressure Reference Cell: ', 1, 'spin_refcell_pim']
+dicPIMPLE[6] = ['pRefValue', 'Pressure Reference Value: ', 0, 'line_refval_pim',
 "-?\d+\.?\d*e-?\d+", 0]
 
 dicRelaxation = {}
@@ -181,7 +182,9 @@ class solverSettings(solverSettingsUI):
 
             layoutH = QtGui.QHBoxLayout()
             cb = QtGui.QComboBox()
-#Le pongo el mismo nombre que el campo para la busqueda en el boton de aplicar
+            
+            #Le pongo el mismo nombre que el campo para la 
+            #busqueda en el boton de aplicar
             cb.setObjectName(ifield)
 
             if ifield in dic_unknowsSymetric:
@@ -238,6 +241,7 @@ class solverSettings(solverSettingsUI):
 
             for ifield in range(0, dicPIMPLE['solver'][1]):
                 self.generateItems(dicPIMPLE[ifield], layoutV, ifield)
+            
             #Para que no patee setValues
             self.OriginalWidgetIndexDict['PIMPLE'] = -1
             self.setValues(False, dicPIMPLE, solver, widget, 'PIMPLE')
@@ -520,9 +524,18 @@ class solverSettings(solverSettingsUI):
     def generateItems(self, dic, layoutV, ifield):
 
         layoutH = QtGui.QHBoxLayout()
-        textlabel = QtGui.QLabel()
-        textlabel.setText(dic[1])
-        layoutH.addWidget(textlabel)
+        #Si es algo que no requiere textlabels (separadores,splitters,etc)
+        #entra por true, sino entra por false
+        if dic[1]=='': 
+            line = QtGui.QFrame()
+            line.setFrameShape(QtGui.QFrame.HLine)
+            line.setFrameShadow(QtGui.QFrame.Sunken)
+            layoutH.addWidget(line,0)
+        else:
+            textlabel = QtGui.QLabel()
+            textlabel.setText(dic[1])
+            layoutH.addWidget(textlabel)
+            
         layoutV.addLayout(layoutH, ifield+2, 0)
         tipo = dic[2]
 
@@ -560,6 +573,11 @@ class solverSettings(solverSettingsUI):
             layoutH.addWidget(cbox)
             QtCore.QObject.connect(cbox, QtCore.SIGNAL(
             _fromUtf8("stateChanged(int)")), self.onChangeSomething)
+        elif tipo==4:
+            line = QtGui.QFrame()
+            line.setFrameShape(QtGui.QFrame.HLine)
+            line.setFrameShadow(QtGui.QFrame.Sunken)
+            layoutH.addWidget(line,0)
 
         #layoutV.addLayout(layoutH)
         layoutV.setAlignment(QtCore.Qt.AlignLeft)
@@ -624,8 +642,8 @@ class solverSettings(solverSettingsUI):
     def setValues(self, creation, dic, solver, widget, state):
 
         ###NO ME CONVENCE
-#Si es la primer vez que lo creo, o si el estado original era ese
-#(Solo para fields)
+    #Si es la primer vez que lo creo, o si el estado original era ese
+    #(Solo para fields)
         if creation or (self.OriginalWidgetIndexDict[solver] == state):
             parsedData = self.parsedData['solvers'][str(solver)]
         elif state == 'PIMPLE': #Si lo llamo para PIMPLE
