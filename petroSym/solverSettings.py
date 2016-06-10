@@ -526,7 +526,7 @@ class solverSettings(solverSettingsUI):
         layoutH = QtGui.QHBoxLayout()
         #Si es algo que no requiere textlabels (separadores,splitters,etc)
         #entra por true, sino entra por false
-        if dic[1]=='': 
+        if dic[1]=='':
             line = QtGui.QFrame()
             line.setFrameShape(QtGui.QFrame.HLine)
             line.setFrameShadow(QtGui.QFrame.Sunken)

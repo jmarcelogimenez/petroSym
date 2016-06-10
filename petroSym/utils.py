@@ -229,3 +229,8 @@ def currentFields(currentFolder,filterTurb=True):
         
         fields = [ f for f in os.listdir(timedir) if (f not in NO_FIELDS and f in unknowns) ]
         return [timedir,fields,currtime]
+        
+        
+def backupFile(filename,currentFolder):
+    if os.path.isfile(filename):
+        
