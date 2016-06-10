@@ -231,6 +231,11 @@ def currentFields(currentFolder,filterTurb=True):
         return [timedir,fields,currtime]
         
         
-def backupFile(filename,currentFolder):
-    if os.path.isfile(filename):
-        
+def backupFile(f):
+    filename = f
+    currentFolder = f.replace(filename,'')
+    filepath = currentFolder+filename
+    if os.path.isfile(filename) and os.path.getsize(filename) > 0:
+        newfilepath = currentFolder+filename+'.backup'
+        command = 'cp %s %s'%(filepath,newfilepath)
+        os.system(command)

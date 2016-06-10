@@ -285,6 +285,8 @@ class solverSettings(solverSettingsUI):
         "templates/fvSolutionTemplate")
         #self.filename2 = "%s/templates/fvSolutionTemplate"
         #% os.path.dirname(__file__)
+        
+        backupFile(self.filename)
 
         self.parsedData = ParsedParameterFile(self.filename,
                                               createZipped=False)
