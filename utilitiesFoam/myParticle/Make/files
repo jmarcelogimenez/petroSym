@@ -1,0 +1,5 @@
+myParticle.C
+myParticleIO.C
+myParticleCloud.C
+
+LIB = $(FOAM_USER_LIBBIN)/libmyParticle

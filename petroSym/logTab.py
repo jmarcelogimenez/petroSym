@@ -82,24 +82,26 @@ class logTab(QtGui.QWidget):
         parsedData = ParsedParameterFile(filename,createZipped=False)
         parsedData['stopAt'] = 'writeNow'
         parsedData.writeFile()
-        time.sleep(0.1)
         
         self.findChild(QtGui.QPushButton,'pushButton_3').setEnabled(False)
 
-#        while 1:
-#            command = 'ps | cut -d " " -f 7 | grep Foam > %s/runningNow'%self.currentFolder
-#            os.system(command)
-#            f = open('%s/runningNow'%self.currentFolder, 'r')
-#            if not f.read():
-#                break
-#            f.close()
-#            time.sleep(0.1)
-
-        import psutil
-        if self.window().runningpid != -1 and psutil.pid_exists(self.window().runningpid):
-            command = 'kill %s'%self.window().runningpid
+        while 1:
+            command = 'ps | cut -d " " -f 7 | grep Foam > %s/runningNow'%self.currentFolder
             os.system(command)
+            f = open('%s/runningNow'%self.currentFolder, 'r')
+            if not f.read():
+                break
+            f.close()
+            time.sleep(0.1)
 
+#        import psutil
+#        while psutil.pid_exists(self.window().runningpid):
+#            time.sleep(0.1)
+#
+#        if psutil.pid_exists(self.window().runningpid):
+#            command = 'kill %s'%self.window().runningpid
+#            os.system(command)
+        
         self.window().runningpid = -1
         self.window().save_config()
         self.window().runW.pushButton_run.setEnabled(True)

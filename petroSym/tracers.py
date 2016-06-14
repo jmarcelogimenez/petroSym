@@ -167,13 +167,18 @@ class tracers(tracersUI):
         
         self.pushButton_3.setEnabled(True)
                 
-
     def removeTracer(self):
         ii = self.tableWidget.currentRow()
-        self.tableWidget.removeRow(ii)
-        self.drawTracers()
-        self.pushButton_3.setEnabled(True)
-        return
+        if ii==-1:
+            QtGui.QMessageBox.about(self, "ERROR", "No tracer selected")
+            return
+        w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Removing", "Do you want to remove tracer data?", QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
+        ret = w.exec_()
+        if(QtGui.QMessageBox.Yes == ret):
+            self.tableWidget.removeRow(ii)
+            self.drawTracers()
+            self.pushButton_3.setEnabled(False)
+        return        
         
     def saveCaseData(self):
         self.drawTracers(True)
@@ -182,7 +187,7 @@ class tracers(tracersUI):
     def drawTracers(self, doTopoSet=False):
 
         for dd in self.tracersData:
-            print dd['name']
+            #print dd['name']
             del self.parsedData['functions'][dd['name']]
         
         if 'functions' not in self.parsedData.getValueDict().keys():

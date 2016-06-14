@@ -42,6 +42,7 @@ from loading_ui import *
 from turbulence import *
 from tracers import *
 from gravity import *
+from particleTracking import *
 import os
 from math import *
 import time
@@ -969,6 +970,8 @@ class petroSym(petroSymUI):
             widget = solverSettings(self.currentFolder,self.solvername)
         elif menu=='Tracers':
             widget = tracers(self.currentFolder)
+        elif menu=='Particle Tracking':
+            widget = particleTracking(self.currentFolder)
             #result = w.exec_()
             #if result:
             #    w.saveCaseData(True)

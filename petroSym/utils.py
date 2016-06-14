@@ -233,9 +233,11 @@ def currentFields(currentFolder,filterTurb=True):
         
 def backupFile(f):
     filename = f
-    currentFolder = f.replace(filename,'')
-    filepath = currentFolder+filename
+    #print filename
+    #currentFolder = f.replace(filename,'')
+    #print currentFolder
+    #filepath = filename
     if os.path.isfile(filename) and os.path.getsize(filename) > 0:
-        newfilepath = currentFolder+filename+'.backup'
-        command = 'cp %s %s'%(filepath,newfilepath)
+        newfilepath = filename+'.backup'
+        command = 'cp %s %s'%(filename,newfilepath)
         os.system(command)

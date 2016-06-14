@@ -16,6 +16,7 @@ from PyFoam.RunDictionary.ParsedParameterFile import ParsedParameterFile
 from utils import *
 
 import numpy
+from collections import OrderedDict
 
 import pylab
 
@@ -182,6 +183,7 @@ class figureTracersWidget(QtGui.QWidget):
         self.setLayout(plotLayout)
         
         self.dataPlot = []
+        #self.dataPlot = OrderedDict()
         self.dirList = []
         self.currentime = 0
         self.dirType = 'Tracers'
@@ -192,6 +194,13 @@ class figureTracersWidget(QtGui.QWidget):
         # prevent the canvas to shrink beyond a point
         #original size looks like a good minimum size
         canvas.setMinimumSize(canvas.size())
+        
+    
+    def unique2d(self,a):
+        x, y = a.T
+        b = x + y*1.0j 
+        idx = numpy.unique(b,return_index=True)[1]
+        return a[idx] 
 
     def plot(self,path):
         
@@ -213,12 +222,16 @@ class figureTracersWidget(QtGui.QWidget):
                 headers[i].replace(' ','')
             archi.close()
 
+
+        
         if len(data)>0:
             if self.dataPlot == []:
                 self.dataPlot = data
             else:
                 self.dataPlot = numpy.vstack((self.dataPlot,data))
-        
+                
+            #self.dataPlot[:,0].sort()
+            self.unique2d(self.dataPlot)
 
             if data.ndim==1:
                 self.lastPos = N + 1

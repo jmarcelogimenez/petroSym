@@ -3,3 +3,4 @@ numpy
 matplotlib
 PyFoam==0.6.4
 #sphinx #Para documentacion
+psutil
