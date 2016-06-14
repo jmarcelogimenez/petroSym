@@ -230,7 +230,6 @@ class figureTracersWidget(QtGui.QWidget):
             else:
                 self.dataPlot = numpy.vstack((self.dataPlot,data))
                 
-            #self.dataPlot[:,0].sort()
             self.unique2d(self.dataPlot)
 
             if data.ndim==1:

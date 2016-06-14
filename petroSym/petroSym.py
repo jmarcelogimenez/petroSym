@@ -605,7 +605,12 @@ class petroSym(petroSymUI):
         import psutil
         if self.runningpid != -1 and not(psutil.pid_exists(self.runningpid)):
             tab=self.findChild(logTab,'%s/run.log'%self.currentFolder)
-            tab.stopRun()
+            if tab:
+                tab.stopRun()
+            else:
+                #Si exploto el caso y me quedo corriendo
+                self.runningpid = -1
+                self.save_config()
 
     def save_config(self):
         filename = '%s/petroSym.config'%self.currentFolder
@@ -693,11 +698,18 @@ class petroSym(petroSymUI):
                     if os.path.isdir(filename2):    
                         latest = -1
                         listdirs = os.listdir(filename2)
+                        listdirsfloat = []
+                        for ikey in listdirs:
+                            listdirsfloat.append(float(ikey))
+                        listdirsfloat.sort()
                         for dirs in listdirs:
                             if float(dirs)>latest:
-                                latest=float(dirs)
+                                latest=dirs
                             filename2 = '%s/postProcessing/%s'%(self.currentFolder,namePlots[i])
-                            filename2 += '/%s/residuals.dat'%dirs
+                            if dirs.is_integer():
+                                filename2 += '/%s/residuals.dat'%str(int(dirs))
+                            else:
+                                filename2 += '/%s/residuals.dat'%str(dirs)
                             ww.plot(filename2)
                             ww.lastPos = -1
                         filename2 = '%s/postProcessing/%s/%s/residuals.dat'%(self.currentFolder,namePlots[i],str(latest))
@@ -719,13 +731,20 @@ class petroSym(petroSymUI):
                     if os.path.isdir(filename2):    
                         latest = -1
                         listdirs = os.listdir(filename2)
-                        for dirs in listdirs:
-                            if float(dirs)>latest:
-                                latest=float(dirs)
+                        listdirsfloat = []
+                        for ikey in listdirs:
+                            listdirsfloat.append(float(ikey))
+                        listdirsfloat.sort()
+                        for dirs in listdirsfloat:
+                            if dirs>latest:
+                                latest=dirs
                             filename2 = '%s/postProcessing/%s'%(self.currentFolder,namePlots[i])
-                            filename2 += '/%s/faceSource.dat'%dirs
-                            ww.plot(filename2)
+                            if dirs.is_integer():
+                                filename2 += '/%s/faceSource.dat'%str(int(dirs))
+                            else:
+                                filename2 += '/%s/faceSource.dat'%str(dirs)
                             ww.lastPos = -1
+                            ww.plot(filename2)
                         filename2 = '%s/postProcessing/%s/%s/faceSource.dat'%(self.currentFolder,namePlots[i],str(latest))
                         self.pending_files.append(filename2)
                 
@@ -753,7 +772,7 @@ class petroSym(petroSymUI):
                     command = 'rm %s'%filename
                     os.system(command)
                 
-                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot[self.qfigWidgets[i].lastPos][0] > float(currtime)):
+                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0] > float(currtime)):
                     self.qfigWidgets[i].resetFigure()
                 else:
                     self.qfigWidgets[i].lastPos = -1
@@ -765,7 +784,11 @@ class petroSym(petroSymUI):
                     command = 'rm %s'%filename
                     os.system(command)
                 
-                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot[self.qfigWidgets[i].lastPos][0] > float(currtime)):
+                if len(self.qfigWidgets[i].dataPlot)>0:
+                    print 'lastpos: '+str(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0])
+                print 'currtime: '+str(currtime)
+                print 'len: '+str(len(self.qfigWidgets[i].dataPlot))
+                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0] > float(currtime)):
                     self.qfigWidgets[i].resetFigure()
                 else:
                     self.qfigWidgets[i].lastPos = -1
