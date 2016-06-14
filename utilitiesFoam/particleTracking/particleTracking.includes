@@ -1,0 +1,5 @@
+.
+/opt/openfoam240/src/finiteVolume/lnInclude
+/opt/openfoam240/src/OpenFOAM/lnInclude
+/opt/openfoam240/src/lagrangian/solidParticle/lnInclude
+../myParticle
