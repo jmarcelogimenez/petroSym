@@ -61,10 +61,10 @@ class runWidget(runUI):
         self.window().removeFilesPostPro()
         
         #retraso un minuto la edicion del control dict
-        tt = list(localtime())
-        tt[4] = tt[4]-1
-        command = 'touch -d "%s" %s'%(strftime("%Y-%m-%d %H:%M:%S", struct_time(tuple(tt))),filename)
-        os.system(command)
+#        tt = list(localtime())
+#        tt[4] = tt[4]-1
+#        command = 'touch -d "%s" %s'%(strftime("%Y-%m-%d %H:%M:%S", struct_time(tuple(tt))),filename)
+#        os.system(command)
         
         filename = '%s/run.log'%self.currentFolder
         self.window().newLogTab('Run',filename)
