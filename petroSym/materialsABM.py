@@ -46,9 +46,8 @@ class materialsABM(materialsABMUI):
         for key in emptys.keys():
             if key != 'name':
                 self.__getattribute__(key).setValidator(QtGui.QDoubleValidator())
-                
-        #filename = '%s/caseDicts/materialProperties.incompressible'%os.path.dirname(__file__)
-        filename = '%s/caseDicts/materialProperties.incompressible'%os.path.dirname(os.path.realpath(__file__))
+        
+        filename = '%s/caseDicts/materialProperties.incompressible'%os.path.dirname(os.path.realpath(__file__)) #Path de python
         parsedData = ParsedParameterFile(filename,createZipped=False)
             
         self.defaults = parsedData['defaults']

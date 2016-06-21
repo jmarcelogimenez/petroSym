@@ -125,7 +125,7 @@ class figureResiduals(figureResidualsUI):
 #                if ()
             
         #Logica para evitar nombres repetidos
-        for key in self.parsedData['functions'].keys():
+        for key in parsedData['functions'].keys():
             if key == str(self.name.text()):
                 w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "The name of the new figure and the name of the field must be different. Please select another name")
                 w.exec_()
@@ -181,6 +181,12 @@ class figureResidualsWidget(QtGui.QWidget):
         #prevent the canvas to shrink beyond a point
         #original size looks like a good minimum size
         canvas.setMinimumSize(canvas.size())
+        
+    def unique2d(self,a):
+        x, y = a.T
+        b = x + y*1.0j 
+        idx = numpy.unique(b,return_index=True)[1]
+        return a[idx]
 
     def plot(self,path):
         
@@ -205,6 +211,9 @@ class figureResidualsWidget(QtGui.QWidget):
                 self.dataPlot = data
             else:
                 self.dataPlot = numpy.vstack((self.dataPlot,data))
+                
+            self.unique2d(self.dataPlot)
+            #self.dataPlot[:,0].sort()
 
             if data.ndim==1:
                 self.lastPos = N + 1
@@ -245,5 +254,4 @@ class figureResidualsWidget(QtGui.QWidget):
         axes.set_title(self.name)
         axes.set_xlabel('Time [s]')
         axes.set_ylabel('|R|')
-        axes.legend(loc=1, fontsize = 'small')
         canvas.draw()

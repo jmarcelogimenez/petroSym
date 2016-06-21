@@ -611,6 +611,8 @@ class petroSym(petroSymUI):
                 #Si exploto el caso y me quedo corriendo
                 self.runningpid = -1
                 self.save_config()
+                self.window().runW.pushButton_run.setEnabled(True)
+                self.window().runW.pushButton_reset.setEnabled(True)
 
     def save_config(self):
         filename = '%s/petroSym.config'%self.currentFolder
@@ -702,16 +704,22 @@ class petroSym(petroSymUI):
                         for ikey in listdirs:
                             listdirsfloat.append(float(ikey))
                         listdirsfloat.sort()
-                        for dirs in listdirs:
-                            if float(dirs)>latest:
-                                latest=dirs
+                        
+                        for j in range(len(listdirsfloat)-1):
+                            #if dirs>latest:
+                            #    latest=dirs
                             filename2 = '%s/postProcessing/%s'%(self.currentFolder,namePlots[i])
-                            if dirs.is_integer():
-                                filename2 += '/%s/residuals.dat'%str(int(dirs))
+                            if listdirsfloat[j].is_integer():
+                                filename2 += '/%s/residuals.dat'%str(int(listdirsfloat[j]))
                             else:
-                                filename2 += '/%s/residuals.dat'%str(dirs)
+                                filename2 += '/%s/residuals.dat'%str(listdirsfloat[j])
                             ww.plot(filename2)
                             ww.lastPos = -1
+                        
+                        if listdirsfloat[len(listdirsfloat)-1].is_integer():
+                            latest = int(listdirsfloat[len(listdirsfloat)-1])
+                        else:
+                            latest = listdirsfloat[len(listdirsfloat)-1]
                         filename2 = '%s/postProcessing/%s/%s/residuals.dat'%(self.currentFolder,namePlots[i],str(latest))
                         self.pending_files.append(filename2)
                     
@@ -735,16 +743,22 @@ class petroSym(petroSymUI):
                         for ikey in listdirs:
                             listdirsfloat.append(float(ikey))
                         listdirsfloat.sort()
-                        for dirs in listdirsfloat:
-                            if dirs>latest:
-                                latest=dirs
+                        
+                        for j in range(len(listdirsfloat)-1):
+                            #if dirs>latest:
+                            #    latest=dirs
                             filename2 = '%s/postProcessing/%s'%(self.currentFolder,namePlots[i])
-                            if dirs.is_integer():
-                                filename2 += '/%s/faceSource.dat'%str(int(dirs))
+                            if listdirsfloat[j].is_integer():
+                                filename2 += '/%s/faceSource.dat'%str(int(listdirsfloat[j]))
                             else:
-                                filename2 += '/%s/faceSource.dat'%str(dirs)
+                                filename2 += '/%s/faceSource.dat'%str(listdirsfloat[j])
                             ww.lastPos = -1
                             ww.plot(filename2)
+                        
+                        if listdirsfloat[len(listdirsfloat)-1].is_integer():
+                            latest = int(listdirsfloat[len(listdirsfloat)-1])
+                        else:
+                            latest = listdirsfloat[len(listdirsfloat)-1]
                         filename2 = '%s/postProcessing/%s/%s/faceSource.dat'%(self.currentFolder,namePlots[i],str(latest))
                         self.pending_files.append(filename2)
                 

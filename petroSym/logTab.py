@@ -8,6 +8,7 @@ Created on Tue Aug 25 13:08:19 2015
 from PyQt4 import QtGui, QtCore
 import os
 import time
+from time import localtime, strftime, struct_time
 
 from utils import command_window
 
@@ -93,7 +94,7 @@ class logTab(QtGui.QWidget):
 #                break
 #            f.close()
 #            time.sleep(0.1)
-
+        
         import psutil
         while psutil.pid_exists(self.window().runningpid):
             time.sleep(0.1)
