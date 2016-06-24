@@ -584,7 +584,7 @@ class petroSym(petroSymUI):
                     self.typeFile[filename] = 'log'
                 else:
                     self.typeFile[filename] = 'plot'
-                
+
                 self.file_changed(filename)
             else:
                 i = i+1
@@ -694,6 +694,7 @@ class petroSym(petroSymUI):
                 if typePlots[i]=='Residuals':
                     ww = figureResidualsWidget(self.scrollAreaWidgetContents,namePlots[i])
                     filename = '%s/postProcessing/%s/%s/residuals.dat'%(self.currentFolder,namePlots[i],currtime)
+                    ww.lastPos = -1
                     self.pending_files.append(filename)
                     
                     filename2 = '%s/postProcessing/%s'%(self.currentFolder,namePlots[i])
@@ -706,8 +707,6 @@ class petroSym(petroSymUI):
                         listdirsfloat.sort()
                         
                         for j in range(len(listdirsfloat)-1):
-                            #if dirs>latest:
-                            #    latest=dirs
                             filename2 = '%s/postProcessing/%s'%(self.currentFolder,namePlots[i])
                             if listdirsfloat[j].is_integer():
                                 filename2 += '/%s/residuals.dat'%str(int(listdirsfloat[j]))
@@ -745,8 +744,6 @@ class petroSym(petroSymUI):
                         listdirsfloat.sort()
                         
                         for j in range(len(listdirsfloat)-1):
-                            #if dirs>latest:
-                            #    latest=dirs
                             filename2 = '%s/postProcessing/%s'%(self.currentFolder,namePlots[i])
                             if listdirsfloat[j].is_integer():
                                 filename2 += '/%s/faceSource.dat'%str(int(listdirsfloat[j]))
@@ -760,6 +757,7 @@ class petroSym(petroSymUI):
                         else:
                             latest = listdirsfloat[len(listdirsfloat)-1]
                         filename2 = '%s/postProcessing/%s/%s/faceSource.dat'%(self.currentFolder,namePlots[i],str(latest))
+                        ww.lastPos = -1
                         self.pending_files.append(filename2)
                 
                 ww.setObjectName(namePlots[i])

@@ -212,8 +212,7 @@ class figureResidualsWidget(QtGui.QWidget):
             else:
                 self.dataPlot = numpy.vstack((self.dataPlot,data))
                 
-            self.unique2d(self.dataPlot)
-            #self.dataPlot[:,0].sort()
+            self.dataPlot = self.unique2d(self.dataPlot)
 
             if data.ndim==1:
                 self.lastPos = N + 1
