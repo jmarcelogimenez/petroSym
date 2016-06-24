@@ -115,8 +115,22 @@ class figureResiduals(figureResidualsUI):
     def accept(self):
         filename = '%s/system/controlDict'%(self.currentFolder)
         parsedData = ParsedParameterFile(filename,createZipped=False)
+
         if 'functions' not in parsedData.getValueDict().keys():
             parsedData['functions'] = {}
+            
+        #Logica para evitar que se llamen T* (como los tracers)
+#        if len(str(self.name.text()))>=2 and self.name.text()[0]=='T':
+#            for i in range(1,len(str(self.name.text()))):
+#                if ()
+            
+        #Logica para evitar nombres repetidos
+        for key in parsedData['functions'].keys():
+            if key == str(self.name.text()):
+                w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "The name of the new figure and the name of the field must be different. Please select another name")
+                w.exec_()
+                return
+            
         if str(self.name.text()) not in parsedData['functions'].keys():
             parsedData['functions'][str(self.name.text())] = {}
         
@@ -151,7 +165,7 @@ class figureResidualsWidget(QtGui.QWidget):
         axes.set_xlabel('Time [s]')
         axes.set_ylabel('|R|')
 
-         # place plot components in a layout
+        # place plot components in a layout
         plotLayout = QtGui.QVBoxLayout()
         plotLayout.addWidget(canvas)
         plotLayout.addWidget(toolbar)
@@ -164,9 +178,15 @@ class figureResidualsWidget(QtGui.QWidget):
         self.name = name
         self.colors = ['r', 'b', 'k', 'g', 'y', 'c']
         
-        # prevent the canvas to shrink beyond a point
+        #prevent the canvas to shrink beyond a point
         #original size looks like a good minimum size
         canvas.setMinimumSize(canvas.size())
+        
+    def unique2d(self,a):
+        x, y = a.T
+        b = x + y*1.0j 
+        idx = numpy.unique(b,return_index=True)[1]
+        return a[idx]
 
     def plot(self,path):
         
@@ -191,6 +211,8 @@ class figureResidualsWidget(QtGui.QWidget):
                 self.dataPlot = data
             else:
                 self.dataPlot = numpy.vstack((self.dataPlot,data))
+                
+            self.dataPlot = self.unique2d(self.dataPlot)
 
             if data.ndim==1:
                 self.lastPos = N + 1
@@ -231,5 +253,4 @@ class figureResidualsWidget(QtGui.QWidget):
         axes.set_title(self.name)
         axes.set_xlabel('Time [s]')
         axes.set_ylabel('|R|')
-        axes.legend(loc=1, fontsize = 'small')
         canvas.draw()

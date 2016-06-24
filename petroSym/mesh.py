@@ -169,22 +169,21 @@ class meshWidget(meshUI):
     def loadMeshData(self):
         filename = '%s/checkMesh.log'%self.currentFolder
         if os.path.isfile(filename):
-            log = open(filename, 'r')
-            store = False
-            info = ''
-            for linea in log:
-                if store:
-                    info = info + linea
-                else:
+            
+            with open(filename, 'r') as log:
+                content = log.readlines()
+                for i in range(len(content)):
+                    linea = content[i]
+
                     self.label_npoints.setText(linea.replace('\n','').strip()) if 'points:' in linea else None
                     self.label_ncells.setText(linea.replace('\n','').strip()) if 'cells:' in linea else None
-                    self.label_nfaces.setText(linea.replace('\n','').strip()) if 'faces: ' in linea else None
+                    self.label_nfaces.setText(linea.replace('\n','').strip()) if '   faces: ' in linea else None
                     self.label_nifaces.setText(linea[:-1].strip()) if 'internal faces: ' in linea else None
-                    if 'boundingBox:' in linea:
+                    if 'bounding box' in linea:
                         limits = linea.replace('(','').replace(')','').strip().split()
-                        self.label_xrange.setText('X Range: [%s, %s]'%(limits[5],limits[8]))
-                        self.label_yrange.setText('Y Range: [%s, %s]'%(limits[6],limits[9]))
-                        self.label_zrange.setText('Z Range: [%s, %s]'%(limits[7],limits[10]))
+                        self.label_xrange.setText('x Range: [%s, %s]'%(limits[4],limits[7]))
+                        self.label_yrange.setText('y Range: [%s, %s]'%(limits[5],limits[8]))
+                        self.label_zrange.setText('z Range: [%s, %s]'%(limits[6],limits[9]))
                     self.label_nhexa.setText(linea.replace('\n','').strip()) if 'hexa' in linea else None
                     self.label_nprisms.setText(linea.replace('\n','').strip()) if 'prism' in linea else None
                     self.label_nwedges.setText(linea.replace('\n','').strip()) if 'wedges:' in linea and 'tet' not in linea else None
@@ -192,15 +191,12 @@ class meshWidget(meshUI):
                     self.label_ntet.setText(linea.replace('\n','').strip()) if 'tet wedges:' in linea else None
                     self.label_ntetra.setText(linea.replace('\n','').strip()) if 'tetra' in linea else None
                     self.label_npoly.setText(linea[:-1].strip()) if 'polyhedra:' in linea else None
-                    store = True if 'Checking geometry...' in linea else None
-            log.close()
-            if 0:
-                self.textEdit_quality.setText(info)
+                log.close()
         else:
             QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "CheckMesh must be executed before").exec_()
                     
-        self.pushButton_check.setEnabled(True)                
-        self.pushButton_import.setEnabled(True)        
+        self.pushButton_check.setEnabled(True)          
+        self.pushButton_import.setEnabled(True)   
         self.pushButton_create.setEnabled(True)
         self.pushButton_view.setEnabled(True)
         self.comboBox_histo.setEnabled(True)

@@ -207,7 +207,12 @@ extras['nuTilda']['empty'] = []
 extras['nuTilda']['symmetry'] = []
 extras['nuTilda']['zeroGradient'] = []
 
-
+extras['nuSgs'] = {}
+extras['nuSgs']['wedge'] = []
+extras['nuSgs']['fixedValue'] = ['value','[m2/s2]',['uniform'],1]
+extras['nuSgs']['empty'] = []
+extras['nuSgs']['symmetry'] = []
+extras['nuSgs']['zeroGradient'] = []
 
 class bcWidget(bcUI):
 

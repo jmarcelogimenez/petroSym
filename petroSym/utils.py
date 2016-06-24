@@ -234,3 +234,11 @@ def currentFields(currentFolder,filterTurb=True,nproc=1):
         
         fields = [ f for f in os.listdir(timedir) if (f not in NO_FIELDS and f in unknowns) ]
         return [timedir,fields,currtime]
+        
+        
+def backupFile(f):
+    filename = f
+    if os.path.isfile(filename) and os.path.getsize(filename) > 0:
+        newfilepath = filename+'.backup'
+        command = 'cp %s %s'%(filename,newfilepath)
+        os.system(command)

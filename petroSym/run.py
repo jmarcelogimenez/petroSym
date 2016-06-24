@@ -80,7 +80,7 @@ class runWidget(runUI):
         
         #retraso un minuto la edicion del control dict
         tt = list(localtime())
-        tt[4] = tt[4]-1
+        tt[4] = (tt[4]-1)%60 #Agrego el modulo porque cuando el min es 0, 0-1 = -1
         command = 'touch -d "%s" %s'%(strftime("%Y-%m-%d %H:%M:%S", struct_time(tuple(tt))),filename)
         os.system(command)
         

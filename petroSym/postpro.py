@@ -79,7 +79,7 @@ class postproWidget(postproUI):
         elif opt=='Fluent':
             action = 'foamMeshToFluent -case %s &' %(self.currentFolder)
             os.system(action)
-            'cp caseDicts/foamDataToFluentDict %s/system/foamDataToFluentDict'%self.currentFolder
+            action = 'cp %s/caseDicts/foamDataToFluentDict %s/system/foamDataToFluentDict'%(os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
             os.system(action)
             parsedData = ParsedParameterFile('%s/system/foamDataToFluentDict'%self.currentFolder,createZipped=False)
             ii = 10

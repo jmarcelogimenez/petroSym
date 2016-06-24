@@ -38,7 +38,7 @@ class materials(materialsUI):
         self.currentFolder = currentFolder
         self.iphase = iphase
         self.loadData()
-        print self.data
+        #print self.data
         self.setData()
         
         

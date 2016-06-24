@@ -46,10 +46,19 @@ class materialsABM(materialsABMUI):
         for key in emptys.keys():
             if key != 'name':
                 self.__getattribute__(key).setValidator(QtGui.QDoubleValidator())
-                
-        #filename = '%s/caseDicts/materialProperties.incompressible'%os.path.dirname(__file__)
-        filename = '%s/caseDicts/materialProperties.incompressible'%os.path.dirname(os.path.realpath(__file__))
-        parsedData = ParsedParameterFile(filename,createZipped=False)
+        
+        filename = '%s/caseDicts/materialProperties.incompressible'%os.path.dirname(os.path.realpath(__file__)) #Path de python
+        from os.path import expanduser
+        self.home = expanduser('~')
+        filename2 = '%s/.config/petroSym/materialProperties.incompressible'%self.home #Path en home
+        
+        if not os.path.isfile(filename2) or (os.path.isfile(filename2) and os.path.getsize(filename2) == 0): #Si no existe, o existe y esta vacio
+            command = 'mkdir -p %s/.config/petroSym/'%self.home #-p por si ya existe el directorio
+            os.system(command)
+            command = 'cp %s %s/.config/petroSym/'%(filename,self.home) #copio el archivo
+            os.system(command)
+        
+        parsedData = ParsedParameterFile(filename2,createZipped=False)
             
         self.defaults = parsedData['defaults']
         self.userLibrary = parsedData['userLibrary']
@@ -65,7 +74,7 @@ class materialsABM(materialsABMUI):
                 
 
     def loadUserLibrary(self):
-        filename = '%s/caseDicts/materialProperties.incompressible'%os.path.dirname(__file__)
+        filename = '%s/.config/petroSym/materialProperties.incompressible'%self.home #Path en home
         parsedData = ParsedParameterFile(filename,createZipped=False)
             
         self.userLibrary = parsedData['userLibrary']
@@ -74,7 +83,7 @@ class materialsABM(materialsABMUI):
             self.list_user.addItem(key)
         
     def saveUserLibrary(self):
-        filename = '%s/caseDicts/materialProperties.incompressible'%os.path.dirname(__file__)
+        filename = '%s/.config/petroSym/materialProperties.incompressible'%self.home #Path en home
         parsedData = ParsedParameterFile(filename,createZipped=False)
         parsedData['userLibrary'] = self.userLibrary
         parsedData.writeFile()
@@ -83,7 +92,7 @@ class materialsABM(materialsABMUI):
 
     def changeSelectionDefault(self):
         if not self.list_default.selectedItems():
-            print 'No hay selected'
+            #print 'No hay selected'
             return
         key = str(self.list_default.selectedItems()[0].text())
         for item in self.list_user.selectedItems():
@@ -132,7 +141,7 @@ class materialsABM(materialsABMUI):
         data = self.getSelectedData()
         if data:
             self.updateParameters(data)
-            texto = self.name.text() + "_copy"
+            texto = str(self.name.text()) + "_copy"
             self.name.setText(texto)
             self.OnOff(True)    
         
@@ -158,7 +167,7 @@ class materialsABM(materialsABMUI):
                 del self.userLibrary[str(uitem[0].text())]
                 self.saveUserLibrary()
                 self.loadUserLibrary()
-                print 'ojo que no cambia la seleccion luego de eliminar'                
+                #print 'ojo que no cambia la seleccion luego de eliminar'                
                 self.list_default.setFocus()
                 self.list_default.item(0).setSelected(True)
                 self.changeSelectionDefault()
@@ -179,13 +188,20 @@ class materialsABM(materialsABMUI):
         
         
     def addMaterial(self):
-        name = self.name.text()
+        name = str(self.name.text())
         self.userLibrary[name] = self.defaults['air'].copy()
         keys = emptys.keys()
         for key in keys:
             if key=='name':
-                self.userLibrary[name][key] = self.__getattribute__(key).text()
+                self.userLibrary[name][key] = str(self.__getattribute__(key).text())
             else:
-                self.userLibrary[name][key][-1] = self.__getattribute__(key).text()
+                self.userLibrary[name][key][-1] = str(self.__getattribute__(key).text())
         self.saveUserLibrary()
         self.loadUserLibrary()  
+        
+    def accept(self):
+        if not self.list_default.selectedItems() and not self.list_user.selectedItems():
+            w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Caution", "Nothing selected, please select a material", QtGui.QMessageBox.Ok)
+            w.exec_()
+            return
+        materialsABMUI.accept(self)
