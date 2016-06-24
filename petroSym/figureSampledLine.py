@@ -69,7 +69,7 @@ class figureSampledLine(figureSampledLineUI):
         self.currentFolder = currentFolder        
         self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
         
-        [self.timedir,self.fields,bas] = currentFields(self.currentFolder)
+        [self.timedir,self.fields,bas] = currentFields(self.currentFolder,nproc=self.window().nproc)
         
         self.comboBox.clear()
         for field in self.fields:

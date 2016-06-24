@@ -150,6 +150,11 @@
        <string>Normal Restitution Coef.</string>
       </property>
      </row>
+     <row>
+      <property name="text">
+       <string>Output Interval</string>
+      </property>
+     </row>
     </widget>
    </item>
   </layout>

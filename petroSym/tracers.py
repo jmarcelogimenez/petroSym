@@ -30,7 +30,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 from PyFoam.RunDictionary.ParsedParameterFile import ParsedParameterFile
-
+from PyFoam.RunDictionary.BoundaryDict import BoundaryDict
 
 dicc = {}
 dicc['type'] = 'scalarTransport';
@@ -53,10 +53,11 @@ dicc['fvOptions']['S']['scalarExplicitSetValueCoeffs']['injectionRate']['T0'] = 
 
 class tracers(tracersUI):
 
-    def __init__(self, currentFolder):
+    def __init__(self, currentFolder, nproc):
         tracersUI.__init__(self)
         self.currentFolder = currentFolder
-        [self.timedir,fields,self.currtime] = utils.currentFields(str(self.currentFolder))
+        self.nproc = nproc
+        [self.timedir,fields,self.currtime] = utils.currentFields(str(self.currentFolder),nproc=self.nproc)
         
         self.patches = []
         self.emptys = []
@@ -83,11 +84,14 @@ class tracers(tracersUI):
                     self.tracersData.append(tracer)
                         
         if self.patches==[]:
-            filename = '%s/U'%(self.timedir)
-            UData = ParsedParameterFile(filename,createZipped=False)
-            self.patches = UData['boundaryField'].keys()
+            boundaries = BoundaryDict(str(self.currentFolder))
+            self.patches = boundaries.patches()           
+            #filename = '%s/U'%(self.timedir)
+            #UData = ParsedParameterFile(filename,createZipped=False)
+            #self.patches = UData['boundaryField'].keys()
             for ipatch in self.patches:
-                if UData['boundaryField'][ipatch]['type']=='empty':
+                if boundaries[ipatch]['type']=='empty':
+                #if UData['boundaryField'][ipatch]['type']=='empty':
                     self.emptys.append(ipatch)
                     
         self.pushButton_3.setEnabled(True)
@@ -108,6 +112,8 @@ class tracers(tracersUI):
             wdg1.setText(str(self.tracersData[i]['startTime']))
             wdg2.setCurrentIndex(wdg2.findText(self.tracersData[i]['patchName']))
                 
+            QtCore.QObject.connect(wdg1,QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
+            
             self.tableWidget.setItem(i,0,item1)
             self.tableWidget.setCellWidget(i,0,wdg1) 
             self.tableWidget.setItem(i,1,item2)
@@ -160,10 +166,12 @@ class tracers(tracersUI):
         wdg2 = QtGui.QComboBox()
         wdg2.addItems(list(set(self.patches)-set(self.emptys)))
         wdg1.setText('0')
+        QtCore.QObject.connect(wdg1,QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
         self.tableWidget.setItem(i,0,item1)
         self.tableWidget.setCellWidget(i,0,wdg1) 
         self.tableWidget.setItem(i,1,item2)
         self.tableWidget.setCellWidget(i,1,wdg2)
+        
         
         self.pushButton_3.setEnabled(True)
                 
@@ -181,9 +189,10 @@ class tracers(tracersUI):
         return        
         
     def saveCaseData(self):
-        self.drawTracers(True)
-        self.pushButton_3.setEnabled(False)
-        
+        saved = self.drawTracers(True)
+        if saved:
+            self.pushButton_3.setEnabled(False)
+
     def drawTracers(self, doTopoSet=False):
 
         for dd in self.tracersData:
@@ -236,8 +245,23 @@ class tracers(tracersUI):
                         
             cmd = 'topoSet -case %s > run_topoSet.log &'%self.currentFolder
             os.system(cmd)
+        
+        self.loadCaseData()
+        self.refreshTable()
+        self.refreshTimeline()
+        
+        return True
+        
+        
+    def checkAccept(self):
+        
+        ready = True
+        edits = self.findChildren(QtGui.QLineEdit)
+        for E in edits:
+            if E.isEnabled():
+                if not E.text():
+                        ready = False
+        if ready:
+            self.pushButton_3.setEnabled(True)
         else:
-            self.loadCaseData()
-            self.refreshTable()
-            self.refreshTimeline()
-        return
+            self.pushButton_3.setEnabled(False)

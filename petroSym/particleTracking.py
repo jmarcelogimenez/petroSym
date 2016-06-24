@@ -7,7 +7,6 @@ Created on Tue Aug 25 13:08:19 2015
 
 from PyQt4 import QtGui, QtCore
 from particleTracking_ui import particleTrackingUI
-import os
 import utils
 import copy
 
@@ -46,6 +45,8 @@ dicc['d'] = 0.01
 dicc['rhop'] = 1000
 dicc['e'] = 1
 dicc['mu'] = 0.01
+dicc['outputControl'] = 'timeStep'
+dicc['outputInterval'] = 1
 
 doubleData = [1,2,6,7,8,9,10]
 intData = [3]
@@ -53,10 +54,11 @@ vecData = [4,5]
 
 class particleTracking(particleTrackingUI):
 
-    def __init__(self, currentFolder):
+    def __init__(self, currentFolder,nproc):
         particleTrackingUI.__init__(self)
         self.currentFolder = currentFolder
-        [self.timedir,fields,self.currtime] = utils.currentFields(str(self.currentFolder))
+        self.nproc = nproc
+        [self.timedir,fields,self.currtime] = utils.currentFields(str(self.currentFolder),nproc=self.nproc)
         
         self.patches = []
         self.emptys = []
@@ -76,18 +78,20 @@ class particleTracking(particleTrackingUI):
         if 'functions' in self.parsedData.getValueDict().keys():
             for key in self.parsedData['functions'].keys():
                 if self.parsedData['functions'][key]['type'] == 'particleTracking':
+                    D = self.parsedData['functions'][key]
                     track = {}
                     track['name'] = key
-                    track['tInjStart'] = self.parsedData['functions'][key]['tInjStart']
-                    track['tInjEnd'] = self.parsedData['functions'][key]['tInjEnd']
-                    track['npByDt'] = self.parsedData['functions'][key]['npByDt']
-                    track['center'] = self.parsedData['functions'][key]['center']
-                    track['r0'] = self.parsedData['functions'][key]['r0']
-                    track['rho'] = self.parsedData['functions'][key]['rho']
-                    track['d'] = self.parsedData['functions'][key]['d']
-                    track['rhop'] = self.parsedData['functions'][key]['rhop']
-                    track['mu'] = self.parsedData['functions'][key]['mu']
-                    track['e'] = self.parsedData['functions'][key]['e']
+                    track['tInjStart'] = D['tInjStart'] if D.__contains__('tInjStart') else dicc['tInjStart']  
+                    track['tInjEnd'] = D['tInjEnd'] if D.__contains__('tInjEnd') else dicc['tInjEnd']  
+                    track['npByDt'] = D['npByDt'] if D.__contains__('npByDt') else dicc['npByDt']  
+                    track['center'] = D['center'] if D.__contains__('center') else dicc['center']  
+                    track['r0'] = D['r0'] if D.__contains__('r0') else dicc['r0']  
+                    track['rho'] = D['rho'] if D.__contains__('rho') else dicc['rho']  
+                    track['d'] = D['d'] if D.__contains__('d') else dicc['d']  
+                    track['rhop'] = D['rhop'] if D.__contains__('rhop') else dicc['rhop']  
+                    track['mu'] = D['mu'] if D.__contains__('mu') else dicc['mu']  
+                    track['e'] = D['e'] if D.__contains__('e') else dicc['e']  
+                    track['outputInterval'] = D['outputInterval'] if D.__contains__('outputInterval') else dicc['outputInterval']  
                     
                     self.trackingData.append(track)
                         
@@ -100,9 +104,9 @@ class particleTracking(particleTrackingUI):
         
         for i in range(len(self.trackingData)):
             self.tableWidget.insertColumn(i)
-            N = 11
+            N = 12
             items = [QtGui.QTableWidgetItem() for irow in range(N)]
-            wdgs = [QtGui.QLineEdit() for irow in range(N)]
+            wdgs = [QtGui.QLineEdit() for irow in range(N-1)]
             
             wdgs[0].setText(str(self.trackingData[i]['name']))
             wdgs[0].setEnabled(False)
@@ -117,6 +121,11 @@ class particleTracking(particleTrackingUI):
             wdgs[9].setText(str(self.trackingData[i]['mu']))
             wdgs[10].setText(str(self.trackingData[i]['e']))
 
+            wdgs.append(QtGui.QSpinBox())
+            wdgs[11].setMinimum(1)
+            wdgs[11].setMaximum(1000)
+            wdgs[11].setValue(self.trackingData[i]['outputInterval'])
+        
             for irow in range(N):
                 if irow in doubleData:
                     wdgs[irow].setValidator(QtGui.QDoubleValidator())
@@ -174,9 +183,9 @@ class particleTracking(particleTrackingUI):
         i = self.tableWidget.columnCount()
         self.tableWidget.insertColumn(i)
         
-        N = 11
+        N = 12
         items = [QtGui.QTableWidgetItem() for irow in range(N)]
-        wdgs = [QtGui.QLineEdit() for irow in range(N)]
+        wdgs = [QtGui.QLineEdit() for irow in range(N-1)]
         
         wdgs[0].setText(str('newCloud'))
         wdgs[1].setText(str(dicc['tInjStart']))
@@ -190,6 +199,10 @@ class particleTracking(particleTrackingUI):
         wdgs[9].setText(str(dicc['mu']))
         wdgs[10].setText(str(dicc['e']))
 
+        wdgs.append(QtGui.QSpinBox())
+        wdgs[11].setMinimum(1)
+        wdgs[11].setMaximum(1000)
+            
         for irow in range(N):
             if irow in doubleData:
                 wdgs[irow].setValidator(QtGui.QDoubleValidator())
@@ -197,7 +210,10 @@ class particleTracking(particleTrackingUI):
                 wdgs[irow].setValidator(QtGui.QIntValidator())
             if irow in vecData:
                 wdgs[irow].setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("\({1}-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\){1}")))
-            QtCore.QObject.connect(wdgs[irow],QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
+            if irow<(N-1):
+                QtCore.QObject.connect(wdgs[irow],QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
+            else:
+                QtCore.QObject.connect(wdgs[irow],QtCore.SIGNAL(_fromUtf8("valueChanged(QString)")), self.checkAccept)
             self.tableWidget.setItem(irow,i,items[irow])
             self.tableWidget.setCellWidget(irow,i,wdgs[irow]) 
                 
@@ -230,6 +246,13 @@ class particleTracking(particleTrackingUI):
             if ct[-1]!=')' or  r0[-1]!=')':
                 QtGui.QMessageBox.about(self, "ERROR", "Wrong regular expression in vector type")
                 return False
+                
+            tini = float(self.tableWidget.cellWidget(1,i).text())
+            tend = float(self.tableWidget.cellWidget(2,i).text())
+            
+            if tend<tini:
+                QtGui.QMessageBox.about(self, "ERROR", "Wrong seeding interval")
+                return False                
 
         for dd in self.trackingData:
             del self.parsedData['functions'][dd['name']]
@@ -237,7 +260,6 @@ class particleTracking(particleTrackingUI):
         if 'functions' not in self.parsedData.getValueDict().keys():
             self.parsedData['functions'] = {}
             
-        patches = []
         for i in range(self.tableWidget.columnCount()):
             track = copy.deepcopy(dicc)
             
@@ -252,6 +274,7 @@ class particleTracking(particleTrackingUI):
             track['rhop'] = str(self.tableWidget.cellWidget(8,i).text())
             track['mu'] = str(self.tableWidget.cellWidget(9,i).text())
             track['e'] = str(self.tableWidget.cellWidget(10,i).text())
+            track['outputInterval'] = str(self.tableWidget.cellWidget(11,i).value())
             
             while keyname in self.parsedData['functions'].keys():
                 keyname = keyname+'1'                

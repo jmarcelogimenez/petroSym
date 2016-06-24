@@ -38,6 +38,26 @@ inline Foam::myParticle::trackingData::trackingData
     rhoInterp_(rhoInterp),
     UInterp_(UInterp),
     nuInterp_(nuInterp),
+    UoldInterp_(UInterp),
+    g_(g)
+{}
+
+
+inline Foam::myParticle::trackingData::trackingData
+(
+    myParticleCloud& spc,
+    const interpolationCellPoint<scalar>& rhoInterp,
+    const interpolationCellPoint<vector>& UInterp,
+    const interpolationCellPoint<scalar>& nuInterp,
+    const interpolationCellPoint<vector>& UoldInterp,
+    const vector& g
+)
+:
+    particle::TrackingData<myParticleCloud>(spc),
+    rhoInterp_(rhoInterp),
+    UInterp_(UInterp),
+    nuInterp_(nuInterp),
+    UoldInterp_(UoldInterp),
     g_(g)
 {}
 
@@ -81,6 +101,12 @@ inline const Foam::interpolationCellPoint<Foam::scalar>&
 Foam::myParticle::trackingData::nuInterp() const
 {
     return nuInterp_;
+}
+
+inline const Foam::interpolationCellPoint<Foam::vector>&
+Foam::myParticle::trackingData::UoldInterp() const
+{
+    return UoldInterp_;
 }
 
 inline const Foam::vector& Foam::myParticle::trackingData::g() const

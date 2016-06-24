@@ -71,15 +71,19 @@ bool Foam::myParticleCloud::hasWallImpactDistance() const
 void Foam::myParticleCloud::move(const dimensionedVector& g)
 {
     const volScalarField& rho = mesh_.lookupObject<const volScalarField>("rho");
-    const volVectorField& U = mesh_.lookupObject<const volVectorField>("U");
+    volVectorField& U = const_cast<volVectorField&>(mesh_.lookupObject<const volVectorField>("U"));
     const volScalarField& nu = mesh_.lookupObject<const volScalarField>("nu");
 
     interpolationCellPoint<scalar> rhoInterp(rho);
     interpolationCellPoint<vector> UInterp(U);
     interpolationCellPoint<scalar> nuInterp(nu);
+    interpolationCellPoint<vector> UoldInterp(U.oldTime().oldTime());
+
+    //myParticle::trackingData
+    //    td(*this, rhoInterp, UInterp, nuInterp, g.value());
 
     myParticle::trackingData
-        td(*this, rhoInterp, UInterp, nuInterp, g.value());
+        td(*this, rhoInterp, UInterp, nuInterp, UoldInterp, g.value());
 
     Cloud<myParticle>::move(td, mesh_.time().deltaTValue());
 }

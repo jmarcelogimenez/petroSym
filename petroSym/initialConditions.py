@@ -41,11 +41,11 @@ class initialConditionsUI(QtGui.QScrollArea, Ui_initialConditionsUI):
 
 class initialConditionsWidget(initialConditionsUI):
 
-    def __init__(self,folder):
+    def __init__(self,folder,nproc):
         self.currentFolder = folder
         initialConditionsUI.__init__(self)
-        
-        [self.timedir,self.fields,currtime] = currentFields(self.currentFolder)        
+        self.nproc = nproc
+        [self.timedir,self.fields,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
         self.addTabs()
 
         #--Ver si runPFlow esta habilitado
@@ -164,8 +164,11 @@ class initialConditionsWidget(initialConditionsUI):
         self.window().newLogTab('Potential Foam','%s/potentialFoam.log'%self.currentFolder)
         
         #--Creo un thread para potentialFoam
-        command = 'potentialFoam -case %s > %s/potentialFoam.log'%(self.currentFolder,self.currentFolder)
-        
+        if int(self.nproc)<=1:
+            command = 'potentialFoam -case %s > %s/potentialFoam.log'%(self.currentFolder,self.currentFolder)
+        else:
+            command = 'mpirun -np %s potentialFoam -case %s -parallel > %s/potentialFoam.log'%(str(self.nproc), self.currentFolder,self.currentFolder)
+
         self.threadpotentialFoam = ExampleThread(command)
         self.connect(self.threadpotentialFoam, QtCore.SIGNAL("finished()"), self.enableButton) #Esto es una porqueria pero no encontre otra forma
         self.connect(self.threadpotentialFoam, QtCore.SIGNAL("finished()"), self.threadpotentialFoam.terminate)

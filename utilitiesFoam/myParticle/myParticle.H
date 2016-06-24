@@ -70,7 +70,6 @@ class myParticle
         //- Previous relative velocity
         vector Urold_;
 
-
 public:
 
     friend class Cloud<myParticle>;
@@ -85,6 +84,7 @@ public:
             const interpolationCellPoint<scalar>& rhoInterp_;
             const interpolationCellPoint<vector>& UInterp_;
             const interpolationCellPoint<scalar>& nuInterp_;
+            const interpolationCellPoint<vector>& UoldInterp_;
 
         //- Local gravitational or other body-force acceleration
         const vector& g_;
@@ -103,12 +103,23 @@ public:
                 const vector& g
             );
 
+            inline trackingData
+            (
+                myParticleCloud& spc,
+                const interpolationCellPoint<scalar>& rhoInterp,
+                const interpolationCellPoint<vector>& UInterp,
+                const interpolationCellPoint<scalar>& nuInterp,
+                const interpolationCellPoint<vector>& UoldInterp,
+                const vector& g
+            );
 
         // Member functions
 
             inline const interpolationCellPoint<scalar>& rhoInterp() const;
 
             inline const interpolationCellPoint<vector>& UInterp() const;
+
+            inline const interpolationCellPoint<vector>& UoldInterp() const;
 
             inline const interpolationCellPoint<scalar>& nuInterp() const;
 

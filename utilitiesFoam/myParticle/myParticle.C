@@ -55,25 +55,18 @@ bool Foam::myParticle::move
             Info<< "Time = " << mesh_.time().timeName()
                 << " trackTime = " << trackTime
                 << " tEnd = " << tEnd
-                << " steptFraction() = " << stepFraction() << endl;
+                << " stepFraction() = " << stepFraction() << endl;
         }
-
-        // set the lagrangian time-step
-        scalar dt = min(dtMax, tEnd);
 
         // remember which cell the parcel is in
         // since this will change if a face is hit
         label cellI = cell();
 
-        dt *= trackToFace(position() + dt*U_, td);
-
-        tEnd -= dt;
-        stepFraction() = 1.0 - tEnd/trackTime;
-
         cellPointWeight cpw(mesh_, position(), cellI, face());
         scalar rhoc = td.rhoInterp().interpolate(cpw);
         vector Uc = td.UInterp().interpolate(cpw);
         scalar nuc = td.nuInterp().interpolate(cpw);
+        vector Ucold = td.UoldInterp().interpolate(cpw);
 
         scalar rhop = td.cloud().rhop();
 
@@ -81,11 +74,10 @@ bool Foam::myParticle::move
         scalar magUr = mag(Ur);
 
         vector dUr = Ur-Urold_;
-        //Info<<"Ur: "<<Ur<<endl;
-        //Info<<"Urold: "<<Urold_<<endl;
-        //Info<<"dUr/dt: "<<(Ur-Urold_)/(1e-10+dt)<<endl;
+        vector dU = Uc-Ucold;
 
         scalar Re = magUr*d_/nuc;
+
         scalar ReFunc = 1.0;
         if (Re > 0.01)
         {
@@ -93,35 +85,48 @@ bool Foam::myParticle::move
         }
         scalar Dc = (24.0*nuc/d_)*ReFunc*(3.0/4.0)*(rhoc/(d_*rhop));
 
+        //implemento mi modelo de particula
+        scalar Cd = 0;
+        Cd = 24/Re + (2.6*Re/5.0)/(1+pow(Re/5.0,1.52));
+        Cd += 0.411*pow(Re/263000.0,-7.94)/(1+pow(Re/263000.0,-8.0));
+        Cd += pow(Re,0.8)/461000.0;
+
+        // set the lagrangian time-step
+        //mejorar la estimacion del paso de tiempo para el tracking
+        //scalar tRelax = (rhop*d_*d_/(18*rhoc*nuc+1e-12))/(1+0.15*pow(Re,0.687));
+        //scalar dt = min(dtMax, min(tEnd,tRelax));
+        scalar dt = min(dtMax, tEnd);
+
+        dt *= trackToFace(position() + dt*U_, td);
+
+        tEnd -= dt;
+        stepFraction() = 1.0 - tEnd/trackTime;
+
         if(0){
             //Modelo basico de Foam            
             U_ = (U_ + dt*(Dc*Uc + (1.0 - rhoc/rhop)*td.g()))/(1.0 + dt*Dc);
         }else{
-            //implemento mi modelo de particula
-            scalar Cd = 0;
-            if (Re < 0.1)
-            {
-                Cd = 24/(Re+1e-10);
-            }else{
-                if (Re < 1000){
-                    Cd = 24/Re + 3/sqrt(3.0) + 0.34;
-                }else{
-                    Cd = 0.445;
-                }
-            }
             //Cd = Dc;
             //Fuerza de Drag
-            vector Fd = (3.0/4.0)*rhoc/d_*Cd*Ur*magUr;
-            //Fuerza de inercia (necesito la variacion de la velocidad en el tiempo)
-            vector Fi = vector(0,0,0);
+            //vector Fd = (3.0/4.0)*rhoc/d_*Cd*Ur*magUr;
+            //Fuerza de Drag en Fluent
+            vector Fd = (18.0*rhoc*nuc/(rhop*d_*d_))*Cd*Re/24.0*Ur;
+            //Fuerza de inercia
+            vector Fi = rhoc*dU/(1e-10+trackTime);
             //Fuerza de boyancia
             vector Fb = (rhop-rhoc)*td.g();
             //Fuerza de masa agregada
             vector Fm = rhoc/2.0*dUr/(1e-10+dt);
 
+            Urold_ = Ur;
+
+            //Info<<"Fi: "<<Fi<<endl;
+            //Info<<"Fd: "<<Fd<<endl;
+            //Info<<"Fb: "<<Fb<<endl;
+            //Info<<"Fm: "<<Fm<<endl;
             U_ = (U_ + dt/rhop*(Fd+Fi+Fb+Fm));
 
-            Urold_ = Ur;
+
 
         }
 
@@ -173,6 +178,7 @@ void Foam::myParticle::hitWallPatch
     vector nw = tetIs.faceTri(mesh_).normal();
     nw /= mag(nw);
 
+    //Info<<"hiting wall in "<<position()<<" enter with U: "<<U_<<endl;
     scalar Un = U_ & nw;
     vector Ut = U_ - Un*nw;
 
@@ -182,6 +188,7 @@ void Foam::myParticle::hitWallPatch
     }
 
     U_ -= td.cloud().mu()*Ut;
+    //Info<<"hiting wall leave with U: "<<U_<<endl;
 }
 
 
