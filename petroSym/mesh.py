@@ -47,13 +47,15 @@ class meshWidget(meshUI):
         self.canvas = ''
         self.toolbar = ''
         self.fig = ''
-
+        
         for iatt in self.__dict__.keys():
             if 'bm_' in iatt:
                 self.__getattribute__(iatt).setValidator(QtGui.QDoubleValidator())
 
     def setCurrentFolder(self, currentFolder):
         self.currentFolder = currentFolder
+        self.nproc = self.window().nproc
+        [self.timedir,self.fields,self.currtime] = currentFields(str(self.currentFolder),nproc=self.nproc)
     
     def createMesh(self):
         #--Creacion del log (instantaneo)
@@ -300,7 +302,7 @@ class meshWidget(meshUI):
         #imponerles alguna CB por defecto dependiendo del tipo de patch
         boundaries = BoundaryDict(self.currentFolder)
         #veo los campos que tengo en el directorio inicial
-        [timedir,fields,currtime] = currentFields(self.currentFolder, False)
+        [timedir,fields,currtime] = currentFields(self.currentFolder, nproc = self.window().nproc, filterTurb=False)
         
         fileDict = '%s/system/changeDictionaryPetroSym'%self.currentFolder
         dictDict = []
@@ -314,6 +316,7 @@ class meshWidget(meshUI):
             else:
                 fieldData = dictDict['dictionaryReplacement'][ifield]
 
+            oldKeys = fieldData['boundaryField'].keys()
             fieldData['boundaryField'] = {}
             for ipatch in boundaries.getValueDict():
                 if ipatch not in fieldData['boundaryField']:
@@ -323,10 +326,16 @@ class meshWidget(meshUI):
                     if ifield in unknowns:
                         if boundaries[ipatch]['type']=='empty':
                             patchDict['type'] = 'empty'
+                            if ipatch in oldKeys:
+                                patchDict['ZZvalue'] = '0'
                         else:
                             patchDict['type'] = 'zeroGradient'
+                            if ipatch in oldKeys:
+                                patchDict['ZZvalue'] = '0'
                     else:
                         patchDict['type'] = 'calculated'
+                        if ipatch in oldKeys:
+                                patchDict['ZZvalue'] = '0'
                     fieldData['boundaryField'][ipatch] = patchDict
             
             # poner el campo interno uniforme en cero
@@ -347,8 +356,15 @@ class meshWidget(meshUI):
                 if ikey in self.fields:
                     dictDictBak['dictionaryReplacement'][ikey] = dictDict['dictionaryReplacement'][ikey]
             dictDictBak.writeFileAs('%s/system/changeDictionaryPetroSym.bak'%self.currentFolder)
-            #chequear que no bloquee
-            command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+            
+            command = 'sed -i "s/ZZ/~/g" %s/system/changeDictionaryPetroSym.bak'%(self.currentFolder)
             os.system(command)
-
+            
+            #chequear que no bloquee
+            if self.window().nproc<=1:
+                command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+            else:
+                command = 'mpirun -np %s changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak -parallel > %s/changeDictionary.log &'%(str(self.nproc),self.currentFolder,self.currentFolder,self.currentFolder)
+            os.system(command)
+            
         return

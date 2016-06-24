@@ -75,7 +75,7 @@ class turbulence(turbulenceUI):
             w.exec_()
             return
             
-        [self.timedir, self.fields, currtime] = currentFields(self.currentFolder)
+        [self.timedir, self.fields, currtime] = currentFields(self.currentFolder,nproc=self.window().nproc)
         
         filename = '%s/constant/turbulenceProperties'%self.currentFolder
         tprop = ParsedParameterFile(filename,createZipped=False)

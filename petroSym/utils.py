@@ -169,12 +169,17 @@ def command_window(palette):
     palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.ToolTipText, brush)
     
     
-def currentFields(currentFolder,filterTurb=True):
+def currentFields(currentFolder,filterTurb=True,nproc=1):
     #veo los campos que tengo en el directorio inicial
         timedir = 0
         currtime = 0
         logname = '%s/dirFeatures.log' % currentFolder
-        command = 'dirFeaturesFoam -case %s > %s' % (currentFolder,logname)
+        #print 'nproc: %s'%nproc
+        if nproc<=1:
+            command = 'dirFeaturesFoam -case %s > %s' % (currentFolder,logname)
+        else:
+            command = 'mpirun -np %s dirFeaturesFoam -case %s -parallel > %s' % (nproc,currentFolder,logname)
+        #print 'command: %s'%command
         #p = subprocess.Popen([command],shell=True)
         #p.wait()
         os.system(command)

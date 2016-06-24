@@ -13,6 +13,7 @@ from reset import *
 from time import localtime, strftime, struct_time
 from logTab import *
 from ExampleThread import *
+from utils import *
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -39,19 +40,36 @@ class runWidget(runUI):
         runUI.__init__(self)
         self.solvername = solvername
         self.currentFolder = currentFolder
-        
 
     def setCurrentFolder(self, currentFolder, solvername):
         self.currentFolder = currentFolder
         self.solvername = solvername
+        [self.timedir,self.fields,self.currtime] = currentFields(self.currentFolder,nproc=self.window().nproc)
         
         #Si abro la gui y hay un caso corriendo, desabilito estos botones
         if (self.window().runningpid!= -1):
             self.pushButton_run.setEnabled(False)
             self.pushButton_reset.setEnabled(False)
-            
         
+        if self.window().nproc<=1:
+            self.type_serial.setChecked(True)
+            self.type_parallel.setChecked(False)            
+        else:
+            self.type_serial.setChecked(False)
+            self.type_parallel.setChecked(True)            
+            self.num_proc.setValue(self.window().nproc)
+            
+        self.pushButton_decompose.setEnabled(False)
+        self.changeType()
+
     def runCase(self):
+    
+#        if self.window().nproc>1:        
+#            w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Is the case decomposed?", "Simulation will be done only if case decompositione was done previously. Continue?", QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
+#            ret = w.exec_()
+#            if(QtGui.QMessageBox.No == ret):
+#                return
+        
         #modifico el control dict porque pude haber parado la simulacion        
         filename = '%s/system/controlDict'%self.currentFolder
         parsedData = ParsedParameterFile(filename,createZipped=False)
@@ -68,7 +86,10 @@ class runWidget(runUI):
         
         filename = '%s/run.log'%self.currentFolder
         self.window().newLogTab('Run',filename)
-        command = '%s -case %s > %s &'%(self.solvername,self.currentFolder,filename)
+        if self.window().nproc<=1:
+            command = '%s -case %s > %s &'%(self.solvername,self.currentFolder,filename)
+        else:
+            command = 'mpirun -np %s %s -case %s -parallel > %s & '%(str(self.window().nproc),self.solvername,self.currentFolder,filename)
         os.system(command)
         
         command = 'pidof %s'%self.solvername
@@ -84,13 +105,27 @@ class runWidget(runUI):
         self.window().updateLogFiles()
         
     def changeType(self):
+        nprocOld = self.window().nproc
         if self.type_serial.isChecked():
             self.num_proc.setEnabled(False)
-            self.reconstruct.setEnabled(False)
-            self.pushButton_decompose.setEnabled(False)
+            if nprocOld==1:            
+                self.pushButton_decompose.setText('Apply')
+                icon = QtGui.QIcon()
+                icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/fromHelyx/save16.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            else:
+                self.pushButton_decompose.setText('Apply and Reconstruct Case')
+                icon = QtGui.QIcon()
+                icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/fromHelyx/reconstruct16.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.pushButton_decompose.setIcon(icon)
+            self.pushButton_reconstruct.setEnabled(False)
+            self.pushButton_decompose.setEnabled(True)
         else:
             self.num_proc.setEnabled(True)
-            self.reconstruct.setEnabled(True)
+            self.pushButton_decompose.setText('Apply and Decompose Case')
+            icon = QtGui.QIcon()
+            icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/fromHelyx/decompose16.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.pushButton_decompose.setIcon(icon)
+            self.pushButton_reconstruct.setEnabled(False)
             self.pushButton_decompose.setEnabled(True)
 
     def resetCase(self):
@@ -113,7 +148,69 @@ class runWidget(runUI):
             self.window().pending_files = []
             self.window().pending_dirs = []
             self.window().updateLogFiles()
+            
+            self.type_serial.setChecked(True)
+            self.type_parallel.setChecked(False)
+            self.window().nproc = 1
+            self.changeType()
+                        
             self.window().save_config()
 
+
     def decomposeCase(self):
+        nprocOld = self.window().nproc
+        if self.type_serial.isChecked():
+            if nprocOld>1:
+                self.reconstructCase()
+            self.window().nproc = 1                
+        else:
+            if nprocOld == self.num_proc.value():
+                QtGui.QMessageBox.about(self, "ERROR", "Case already decomposed.")
+                return            
+            if nprocOld>1 and nprocOld != self.num_proc.value():
+                QtGui.QMessageBox.about(self, "ERROR", "The case must be reconstructed before decompose with other number of processors.")
+                return
+            self.window().nproc = self.num_proc.value()
+            
+            #modifico el diccionario
+            filename = '%s/system/decomposeParDict'%(self.currentFolder)
+            parsedData = ParsedParameterFile(filename,createZipped=False)
+            parsedData['numberOfSubdomains'] = self.window().nproc
+            parsedData.writeFile()        
+        
+            #voy a descomponer solo los campos que estoy utilizando en el solver, el resto los dejo intactos
+            command = 'mv %s %s.bak'%(self.timedir,self.timedir)
+            os.system(command)
+            
+            command = 'mkdir %s'%(self.timedir)
+            os.system(command)
+            
+            for ifield in self.fields:
+                command = 'cp %s.bak/%s %s/.'%(self.timedir,ifield,self.timedir)
+                os.system(command)
+            
+            filename = '%s/decompose.log'%self.currentFolder
+            self.window().newLogTab('Decompose',filename)
+            command = 'decomposePar -force -case %s -time %s > %s'%(self.currentFolder,self.currtime,filename)
+            os.system(command)
+    
+            command = 'rm -r %s'%(self.timedir)
+            os.system(command)
+            
+            command = 'mv %s.bak %s'%(self.timedir,self.timedir)
+            os.system(command)
+            
+        self.window().save_config()            
+        return
+        
+        
+    def reconstructCase(self):
+
+        if int(self.currtime)==0:
+            QtGui.QMessageBox.about(self, "ERROR", "Time step 0 already exists")            
+        else:
+            filename = '%s/reconstruct.log'%self.currentFolder
+            self.window().newLogTab('Reconstruct',filename)
+            command = 'reconstructPar -case %s -time %s > %s'%(self.currentFolder,self.currtime,filename)
+            os.system(command)
         return

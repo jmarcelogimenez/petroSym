@@ -70,7 +70,7 @@ class petroSym(petroSymUI):
         self.currentFolder = '.'
         self.solvername = 'pimpleFoam'
         self.acceptturb = ['pimpleFoam','interFoam','simpleFoam']
-        
+        self.nproc = 1
         #self.thread_watcher = QtCore.QThread(self)
         #self.thread_watcher.start()
         
@@ -225,7 +225,7 @@ class petroSym(petroSymUI):
             self.runW.setCurrentFolder(self.currentFolder,self.solvername)
             self.postproW.setCurrentFolder(self.currentFolder)
         
-        self.w.close()
+        w.close()
         return result
 
     def saveCase(self):
@@ -281,7 +281,7 @@ class petroSym(petroSymUI):
             filename = ''
             if result:
                 data = w.getData()
-                [bas1,bas2,currtime] = currentFields(self.currentFolder)
+                [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
                 addFigure = True
                 filename = '%s/postProcessing/%s/%s/residuals.dat'%(self.currentFolder,str(data['name']),currtime)
                 if(os.path.isfile(filename)):
@@ -302,7 +302,7 @@ class petroSym(petroSymUI):
             filename = ''
             
             if result:
-                [bas1,bas2,currtime] = currentFields(self.currentFolder)
+                [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
                 
                 data = w.getData()
                 addFigure = True
@@ -394,7 +394,7 @@ class petroSym(petroSymUI):
         
     def resetFigures(self,postpro=False,snapshots=False):
         #print 'Reset figures'
-        [bas1,bas2,currtime] = currentFields(self.currentFolder)
+        [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
         for i in range(self.nPlots):
             if isinstance(self.qfigWidgets[i],figureResidualsWidget) and postpro:
                 self.qfigWidgets[i].resetFigure()
@@ -617,6 +617,7 @@ class petroSym(petroSymUI):
         config['typeFile'] =  self.typeFile
         config['lastPos'] = str(self.lastPos)
         config['solver'] = str(self.solvername)
+        config['nproc'] = str(self.nproc)
 
         config['namePlots'] = []
         config['typePlots'] = []
@@ -654,6 +655,7 @@ class petroSym(petroSymUI):
             wrongFile = 1 if 'typePlots' not in config.keys() else wrongFile
             wrongFile = 1 if 'typeFile' not in config.keys() else wrongFile
             wrongFile = 1 if 'runningpid' not in config.keys() else wrongFile
+            wrongFile = 1 if 'nproc' not in config.keys() else wrongFile
                         
             if wrongFile:
                 QtGui.QMessageBox.about(self, "ERROR", "Corrupted File")
@@ -673,6 +675,7 @@ class petroSym(petroSymUI):
             self.typeFile = config['typeFile']
             self.solvername = config['solver']
             self.runningpid = config['runningpid']
+            self.nproc = int(config['nproc'])
             
             #Ver si hay algun proceso corriendo que ejecute con la gui 
             #cuando la abro nuevamente
@@ -682,7 +685,7 @@ class petroSym(petroSymUI):
                 self.window().newLogTab('Run',filename)
                 self.pending_files.append(filename)
             
-            [bas1,bas2,currtime] = currentFields(self.currentFolder)
+            [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
             for i in range(self.nPlots):
                 if typePlots[i]=='Residuals':
                     ww = figureResidualsWidget(self.scrollAreaWidgetContents,namePlots[i])
@@ -744,7 +747,7 @@ class petroSym(petroSymUI):
         self.meshW.loadMeshData()
         
     def removeFilesPostPro(self):
-        [bas1,bas2,currtime] = currentFields(self.currentFolder)
+        [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
         for i in range(self.nPlots):
             namePlot = str(self.qfigWidgets[i].objectName())
             if isinstance(self.qfigWidgets[i],figureResidualsWidget):  
@@ -773,7 +776,7 @@ class petroSym(petroSymUI):
     
     def updateLogFiles(self):
         #print 'Updating log Files'
-        [bas1,bas2,currtime] = currentFields(self.currentFolder)
+        [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
         #spf = set(self.pending_files)
         for i in range(self.nPlots):
             namePlot = str(self.qfigWidgets[i].objectName())
@@ -858,7 +861,7 @@ class petroSym(petroSymUI):
         self.save_config()
         
         #La elimino de pending files (Ver los dos que faltan)
-        [bas1,bas2,currtime] = currentFields(self.currentFolder)
+        [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
         filename = '%s/postProcessing/%s/%s/%s'%(self.currentFolder,figW.objectName(),currtime,figuretype)
         
         if filename in self.pending_files:
@@ -954,24 +957,24 @@ class petroSym(petroSymUI):
             widget = turbulence(self.currentFolder,self.solvername)
         elif menu=='Gravity':
             widget = gravity(self.currentFolder,self.solvername)
-            widget.setDisabled(True) #Gravity desactivada por el momento
+            #widget.setDisabled(True) #Gravity desactivada por el momento
         elif menu=='Run Time Controls':
             widget = runTimeControls(self.currentFolder)
         elif 'phase' in menu:
             #alguna de las fases (valido solo hasta 9 phases)        
             widget = materials(self.currentFolder,int(menu[-1])-1)
         elif menu=='Boundary Conditions':
-            widget = bcWidget(self.currentFolder)
+            widget = bcWidget(self.currentFolder,self.nproc)
         elif menu=='Initial Conditions':
-            widget = initialConditionsWidget(self.currentFolder)
+            widget = initialConditionsWidget(self.currentFolder,self.nproc)
         elif menu=='Numerical Schemes':
             widget = numericalSchemes(self.currentFolder)
         elif menu=='Solver Settings':
-            widget = solverSettings(self.currentFolder,self.solvername)
+            widget = solverSettings(self.currentFolder,self.solvername,self.nproc)
         elif menu=='Tracers':
-            widget = tracers(self.currentFolder)
+            widget = tracers(self.currentFolder,self.nproc)
         elif menu=='Particle Tracking':
-            widget = particleTracking(self.currentFolder)
+            widget = particleTracking(self.currentFolder,self.nproc)
             #result = w.exec_()
             #if result:
             #    w.saveCaseData(True)
@@ -979,7 +982,7 @@ class petroSym(petroSymUI):
         else:
             #do nothing
             return           
-        
+
         self.splitter_3.widget(1).deleteLater()
         self.splitter_3.insertWidget(1,widget)
         #scrollArea_case_setup.layout().addWidget(widget, 0, 1, 1, 1)

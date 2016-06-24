@@ -55,7 +55,8 @@ class postproWidget(postproUI):
     def setCurrentFolder(self, currentFolder):
         self.currentFolder = currentFolder
         #filling data
-        [timedir,self.fields,currtime] = currentFields(str(self.currentFolder))
+        self.nproc = self.window().nproc
+        [timedir,self.fields,currtime] = currentFields(str(self.currentFolder),nproc=self.nproc)
         self.field_3.clear()
         self.field_3.addItems(self.fields)
         self.boundaries = BoundaryDict(str(self.currentFolder))
@@ -66,6 +67,10 @@ class postproWidget(postproUI):
         os.system('paraFoam -builtin -case %s &'%self.currentFolder)
 
     def exportData(self):
+        if self.nproc>1:
+            w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "Data only can be exported in reconstructed cases")
+            w.exec_()
+            return
         opt = str(self.comboBox.currentText())
         filename = '%s/export.log'%self.currentFolder
         self.window().newLogTab('Export',filename)
@@ -94,7 +99,10 @@ class postproWidget(postproUI):
             tt = '-latestTime'
         filename = '%s/field_calculation.log'%self.currentFolder
         self.window().newLogTab('Postpro Field',filename)
-        action = '%s -case %s %s > %s'%(apps[str(self.field_1.currentText())],self.currentFolder, tt, filename)
+        if self.nproc<=1:
+            action = '%s -case %s %s > %s'%(apps[str(self.field_1.currentText())],self.currentFolder, tt, filename)
+        else:
+            action = 'mpirun -np %s %s -case %s %s -parallel > %s'%(str(self.nproc), apps[str(self.field_1.currentText())],self.currentFolder, tt, filename)
         os.system(action)
         return
 
@@ -112,7 +120,10 @@ class postproWidget(postproUI):
                 QtGui.QMessageBox(QtGui.QMessageBox.Information, "Caution", "Action can not be done!").exec_()
                 return
         self.window().newLogTab('Postpro Wall',filename)
-        action = '%s -case %s %s > %s'%(apps[str(self.field_2.currentText())],self.currentFolder, tt, filename)
+        if self.nproc<=1:
+            action = '%s -case %s %s > %s'%(apps[str(self.field_2.currentText())],self.currentFolder, tt, filename)
+        else:
+            action = 'mpirun -np %s %s -case %s %s -parallel > %s'%(str(self.nproc),apps[str(self.field_2.currentText())],self.currentFolder, tt, filename)
         os.system(action)
         return
         
@@ -124,7 +135,10 @@ class postproWidget(postproUI):
         self.window().newLogTab('Postpro Patch',filename)
         fieldName = str(self.field_3.currentText())
         patchName = str(self.bou_3.currentText())
-        action = '%s -case %s  %s %s %s > %s &' %(apps[str(self.type_3.currentText())],self.currentFolder,tt,fieldName,patchName,filename)
+        if self.nproc<=1:
+            action = '%s -case %s  %s %s %s > %s &' %(apps[str(self.type_3.currentText())],self.currentFolder,tt,fieldName,patchName,filename)
+        else:
+            action = 'mpirun -np %s %s -case %s  %s %s %s -parallel > %s &' %(str(self.nproc), apps[str(self.type_3.currentText())],self.currentFolder,tt,fieldName,patchName,filename)
         os.system(action)
         
         return

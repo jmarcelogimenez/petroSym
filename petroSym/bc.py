@@ -211,7 +211,7 @@ extras['nuTilda']['zeroGradient'] = []
 
 class bcWidget(bcUI):
 
-    def __init__(self,folder):
+    def __init__(self,folder,nproc):
         self.currentFolder = folder
         bcUI.__init__(self)
         
@@ -234,11 +234,14 @@ class bcWidget(bcUI):
         
         self.boundaries = BoundaryDict(str(self.currentFolder))
         
+        self.nproc = nproc
+
         #veo los campos que tengo en el directorio inicial
-        [self.timedir,self.fields,self.currtime] = currentFields(self.currentFolder)
+        [self.timedir,self.fields,self.currtime] = currentFields(self.currentFolder,nproc=self.nproc)
         #print self.fields
         self.loadData()
-
+        
+        
 
     def loadData(self):
         self.listWidget.clear()
@@ -281,8 +284,6 @@ class bcWidget(bcUI):
                     thisPatch = parsedData['boundaryField'][ipatch]
                 else:
                     thisPatch = dictDict['dictionaryReplacement'][ifield]['boundaryField'][ipatch]
-                    
-                print thisPatch
                 
                 newComboBox = QtGui.QComboBox()
                 newComboBox.addItems(types[self.boundaries[ipatch]['type']][ifield])
@@ -408,6 +409,9 @@ class bcWidget(bcUI):
 
             thisPatch = {}
             thisPatch['type'] = itype
+            
+            if itype == 'zeroGradient':
+                thisPatch['ZZvalue'] = '0'
                 
             #debo tomar los valores extras, si los tiene
             extraInfo = extras[ifield][itype]
@@ -445,8 +449,15 @@ class bcWidget(bcUI):
                         dictDictBak['dictionaryReplacement'][ikey] = {}
                         dictDictBak['dictionaryReplacement'][ikey]['boundaryField'] = dictDict['dictionaryReplacement'][ikey]['boundaryField']
                 dictDictBak.writeFileAs('%s/system/changeDictionaryPetroSym.bak'%self.currentFolder)
+                
+                command = 'sed -i "s/ZZ/~/g" %s/system/changeDictionaryPetroSym.bak'%(self.currentFolder)
+                os.system(command)
+                
                 #chequear que no bloquee
-                command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+                if self.nproc<=1:
+                    command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+                else:
+                    command = 'mpirun -np %s changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak -parallel > %s/changeDictionary.log &'%(str(self.nproc),self.currentFolder,self.currentFolder,self.currentFolder)
                 os.system(command)
         self.pushButton.setEnabled(False)
         return
@@ -495,11 +506,14 @@ class bcWidget(bcUI):
                 newDict = {}
                 if patchType == 'empty':
                     newDict['type'] = 'empty'
+                    newDict['ZZvalue'] = '0'
                 else:
                     if ifield in unknowns:
                         newDict['type'] = 'zeroGradient'
+                        newDict['ZZvalue'] = '0'
                     else:
                         newDict['type'] = 'calculated'
+                        newDict['ZZvalue'] = '0'
                 
                 fieldData['boundaryField'][texto] = newDict
 
@@ -510,17 +524,23 @@ class bcWidget(bcUI):
             
             if dictDict!=[]:
                 dictDict.writeFile()
-                dictDict.writeFile()
                 dictDictBak = ParsedParameterFile(fileDict,createZipped=False)
                 keysDict = dictDict['dictionaryReplacement'].keys()
                 dictDictBak['dictionaryReplacement'] = {}
                 for ikey in keysDict:
                     if ikey in self.fields:
                         dictDictBak['dictionaryReplacement'][ikey] = {}
-                        dictDictBak['dictionaryReplacement'][ikey] = dictDict['dictionaryReplacement'][ikey]['boundaryField']
+                        dictDictBak['dictionaryReplacement'][ikey]['boundaryField'] = dictDict['dictionaryReplacement'][ikey]['boundaryField']
                 dictDictBak.writeFileAs('%s/system/changeDictionaryPetroSym.bak'%self.currentFolder)
+                
+                command = 'sed -i "s/ZZ/~/g" %s/system/changeDictionaryPetroSym.bak'%(self.currentFolder)
+                os.system(command)
+                
                 #chequear que no bloquee
-                command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+                if self.nproc<=1:
+                    command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+                else:
+                    command = 'mpirun -np %s changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak -parallel > %s/changeDictionary.log &'%(str(self.nproc),self.currentFolder,self.currentFolder,self.currentFolder)
                 os.system(command)
             
             self.loadData()

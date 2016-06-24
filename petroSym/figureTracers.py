@@ -67,8 +67,6 @@ class figureTracers(figureTracersUI):
         self.currentFolder = currentFolder
         self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
         
-        [self.timedir,self.fields,bas] = currentFields(self.currentFolder)
-        
         filename = '%s/system/controlDict'%self.currentFolder
         self.parsedData = ParsedParameterFile(filename,createZipped=False)
         

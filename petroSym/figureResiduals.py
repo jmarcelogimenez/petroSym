@@ -59,7 +59,7 @@ class figureResiduals(figureResidualsUI):
         
         figureResidualsUI.__init__(self)
         self.currentFolder = currentFolder
-        [self.timedir,self.fields,curtime] = currentFields(self.currentFolder)
+        [self.timedir,self.fields,curtime] = currentFields(self.currentFolder,nproc=self.window().nproc)
         self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
 
         for field in self.fields:
