@@ -77,6 +77,8 @@ class turbulence(turbulenceUI):
         
         filename = '%s/constant/turbulenceProperties'%self.currentFolder
         tprop = ParsedParameterFile(filename,createZipped=False)
+        
+        fields = []
         if self.radioTurb2.isChecked():
             RASModelName = str(self.comboBoxTurb.currentText())
             filename = '%s/constant/RASProperties'%self.currentFolder
@@ -95,6 +97,7 @@ class turbulence(turbulenceUI):
                 if not exists:
                     command = 'cp %s/0/epsilon %s' % (self.currentFolder,self.timedir)
                     os.system(command)
+                fields = ['k','epsilon']
             else: #komega o komegasst
                 exists = os.path.isfile(self.timedir+'/'+'k')
                 if not exists:
@@ -104,6 +107,7 @@ class turbulence(turbulenceUI):
                 if not exists:
                     command = 'cp %s/0/omega %s' % (self.currentFolder,self.timedir)
                     os.system(command)
+                fields = ['k','omega']                    
                 
         elif self.radioTurb3.isChecked():
             LESModelName = str(self.comboBoxTurb.currentText())
@@ -117,11 +121,14 @@ class turbulence(turbulenceUI):
             if not exists:
                 command = 'cp %s/0/nuSgs %s' % (self.currentFolder,self.timedir)
                 os.system(command)
+            fields = ['nuSgs']
         else:
+            fields = ['p','U']
             tprop['simulationType'] = 'laminar'
             
         tprop.writeFile()
-        self.updateFieldFiles(self.timedir, self.fields, currtime) #Esto no es necesario o si?
+        self.updateFieldFiles(self.timedir, fields, currtime)
+        
         self.apply_button.setEnabled(False)
         return
         
@@ -130,6 +137,8 @@ class turbulence(turbulenceUI):
         #pisar los boundaries por los que aparece en constant/polyMesh/boundary
         #imponerles alguna CB por defecto dependiendo del tipo de patch
         boundaries = BoundaryDict(self.currentFolder)
+        filename2 = '%s/system/changeDictionaryPetroSym'%self.currentFolder
+        fieldData2 = ParsedParameterFile(filename2,createZipped=False)
         #veo los campos que tengo en el directorio inicial
         #[timedir,fields,currtime] = currentFields(self.currentFolder, False)
 
@@ -151,14 +160,18 @@ class turbulence(turbulenceUI):
                     else:
                         patchDict['type'] = 'calculated'
                     fieldData['boundaryField'][ipatch] = patchDict
+                    fieldData2['dictionaryReplacement'][ifield]['boundaryField'][ipatch] = patchDict
             
             # poner el campo interno uniforme en cero
             if types[ifield] == 'scalar':
                 fieldData['internalField'] = 'uniform 0'
+                fieldData2['dictionaryReplacement'][ifield]['internalField'] = 'uniform 0'
             elif types[ifield] == 'vector':
                 fieldData['internalField'] = 'uniform (0 0 0)'
+                fieldData2['dictionaryReplacement'][ifield]['internalField'] = 'uniform (0 0 0)'
 
             fieldData.writeFile()
+        fieldData2.writeFile()
 
         return
         
