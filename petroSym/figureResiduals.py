@@ -54,12 +54,13 @@ unknowns = ['U','p','p_rgh','alpha','k','epsilon','omega','nut','nuTilda']
 
 class figureResiduals(figureResidualsUI):
 
-    def __init__(self, currentFolder):
+    def __init__(self, currentFolder,nproc):
         print 'MATPLOTLIB FILE: %s'%matplotlib.matplotlib_fname()
         
         figureResidualsUI.__init__(self)
         self.currentFolder = currentFolder
-        [self.timedir,self.fields,curtime] = currentFields(self.currentFolder,nproc=self.window().nproc)
+        self.nproc = nproc
+        [self.timedir,self.fields,curtime] = currentFields(self.currentFolder,nproc=self.nproc)
         self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
 
         for field in self.fields:

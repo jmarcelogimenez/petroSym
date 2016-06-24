@@ -203,6 +203,18 @@ class petroSym(petroSymUI):
                 self.load_config()
             else:
                 self.loadingmbox("Creating","Creating selected case...")
+                self.nproc = 1
+                for iplot in range(self.nPlots):
+                    self.qscrollLayout.removeWidget(self.qfigWidgets[iplot])
+                    self.qfigWidgets[iplot].deleteLater()
+                QtGui.QApplication.processEvents()
+                self.nPlots = 0
+                self.qfigWidgets = self.qfigWidgets[-1:]
+                self.fs_watcher.removePaths(self.fs_watcher.files())
+                self.fs_watcher.removePaths(self.fs_watcher.directories())
+                self.pending_files = []
+                self.pending_dirs = []
+                
                 #Levantar dependiendo del caso predefinido elegido
                 #typeSim = data[2]
                 typeSim = 'Skimmer Tank'
@@ -225,7 +237,7 @@ class petroSym(petroSymUI):
             self.runW.setCurrentFolder(self.currentFolder,self.solvername)
             self.postproW.setCurrentFolder(self.currentFolder)
         
-        w.close()
+        self.w.close()
         return result
 
     def saveCase(self):
@@ -276,7 +288,7 @@ class petroSym(petroSymUI):
         
         print self.typeFigure[index]
         if self.typeFigure[index] == 'Residuals':
-            w = figureResiduals(self.currentFolder)
+            w = figureResiduals(self.currentFolder,self.nproc)
             result = w.exec_()
             filename = ''
             if result:
