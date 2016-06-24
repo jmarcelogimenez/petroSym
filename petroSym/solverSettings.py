@@ -149,9 +149,10 @@ class solverSettingsUI(QtGui.QScrollArea, Ui_solverSettingsUI):
 
 class solverSettings(solverSettingsUI):
 
-    def __init__(self, folder, solvername):
+    def __init__(self, folder, solvername, nproc):
         self.currentFolder = folder
         self.solvername = solvername
+        self.nproc = nproc
         solverSettingsUI.__init__(self)
         self.loadData()
         self.addTabs()
@@ -289,7 +290,7 @@ class solverSettings(solverSettingsUI):
 
         #self.fields = self.parsedData['solvers'].keys()#No hay que meter todos
         [self.timedir, self.fields, currtime] = \
-        currentFields(self.currentFolder)
+        currentFields(self.currentFolder,nproc=self.nproc)
         
         fieldsconglomerate = list()
         for ikey in self.parsedData['solvers'].keys():
