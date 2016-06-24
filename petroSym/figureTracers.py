@@ -205,7 +205,7 @@ class figureTracersWidget(QtGui.QWidget):
         canvas = self.findChild(FigureCanvas)
         axes = canvas.figure.gca()
         N = self.lastPos
-        print N
+        #print N
         data = pylab.loadtxt(path,skiprows=N)
                 
         with open(path, 'r') as archi:
@@ -223,12 +223,16 @@ class figureTracersWidget(QtGui.QWidget):
 
         
         if len(data)>0:
+            
+            #data = self.unique2d(data)
+            
             if self.dataPlot == []:
                 self.dataPlot = data
             else:
                 self.dataPlot = numpy.vstack((self.dataPlot,data))
                 
-            self.dataPlot = self.unique2d(self.dataPlot)
+            if len(self.dataPlot)>2:
+                self.dataPlot = self.unique2d(self.dataPlot)
 
             if data.ndim==1:
                 self.lastPos = N + 1

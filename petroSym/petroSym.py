@@ -155,6 +155,7 @@ class petroSym(petroSymUI):
                 #--Loading
                 self.currentFolder = posibleDir
                 QtGui.QApplication.processEvents()
+                
                 self.load_config()
                 self.OnOff(True)
             else:
@@ -625,6 +626,22 @@ class petroSym(petroSymUI):
                 self.save_config()
                 self.window().runW.pushButton_run.setEnabled(True)
                 self.window().runW.pushButton_reset.setEnabled(True)
+                
+        #Chequear si hubo algun error
+        filename = '%s/error.log'%self.currentFolder
+        if os.path.isfile(filename) and os.path.getsize(filename) > 0:
+            with open(filename, 'r') as log:
+                content = log.readlines()
+            #filter(lambda a: a != '\n', content)
+            while '\n' in content:
+                content.remove('\n')
+            content = ''.join(content)
+            w = QtGui.QMessageBox(QtGui.QMessageBox.Critical,"Error",content)
+            QtGui.QApplication.processEvents()
+            w.exec_()
+            log.close()
+            command = 'rm %s'%filename
+            os.system(command)
 
     def save_config(self):
         filename = '%s/petroSym.config'%self.currentFolder
@@ -674,7 +691,7 @@ class petroSym(petroSymUI):
             wrongFile = 1 if 'typePlots' not in config.keys() else wrongFile
             wrongFile = 1 if 'typeFile' not in config.keys() else wrongFile
             wrongFile = 1 if 'runningpid' not in config.keys() else wrongFile
-            wrongFile = 1 if 'nproc' not in config.keys() else wrongFile
+                
                         
             if wrongFile:
                 QtGui.QMessageBox.about(self, "ERROR", "Corrupted File")
@@ -694,7 +711,11 @@ class petroSym(petroSymUI):
             self.typeFile = config['typeFile']
             self.solvername = config['solver']
             self.runningpid = config['runningpid']
-            self.nproc = int(config['nproc'])
+            
+            if 'nproc' not in config.keys():
+                self.nproc=1
+            else:
+                self.nproc = int(config['nproc'])
             
             #Ver si hay algun proceso corriendo que ejecute con la gui 
             #cuando la abro nuevamente
@@ -811,11 +832,11 @@ class petroSym(petroSymUI):
                     command = 'rm %s'%filename
                     os.system(command)
                 
-                if len(self.qfigWidgets[i].dataPlot)>0:
-                    print 'lastpos: '+str(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0])
-                print 'currtime: '+str(currtime)
-                print 'len: '+str(len(self.qfigWidgets[i].dataPlot))
-                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0] > float(currtime)):
+                #if len(self.qfigWidgets[i].dataPlot)>0:
+                #    print 'lastpos: '+str(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0])
+                #print 'currtime: '+str(currtime)
+                #print 'len: '+str(len(self.qfigWidgets[i].dataPlot))
+                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot.ndim==2 and self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0] > float(currtime)):
                     self.qfigWidgets[i].resetFigure()
                 else:
                     self.qfigWidgets[i].lastPos = -1

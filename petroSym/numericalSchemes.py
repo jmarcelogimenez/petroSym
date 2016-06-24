@@ -326,7 +326,10 @@ class numericalSchemes(numericalSchemesUI):
                     widget= widget.widget()
                     name = widget.staticMetaObject.className()
                     if (name == 'QComboBox'):
-                        data[pos] = str(widget.currentText())
+                        if widget.currentText()=='none':
+                            data[pos] = ''
+                        else:
+                            data[pos] = str(widget.currentText())
                         if (widget.currentText() in dicAvanzadas[keys].keys()):
                             for i in range(dicAvanzadas[keys][str(widget.currentText())]['solver'][1]):
                                 layoutH = self.grid_avanzada.findChild(QtGui.QHBoxLayout,keys+'2') #3 columna, los opcionales
