@@ -84,12 +84,13 @@ class runWidget(runUI):
         command = 'touch -d "%s" %s'%(strftime("%Y-%m-%d %H:%M:%S", struct_time(tuple(tt))),filename)
         os.system(command)
         
-        filename = '%s/run.log'%self.currentFolder
-        self.window().newLogTab('Run',filename)
+        filename1 = '%s/run.log'%self.currentFolder
+        filename2 = '%s/error.log'%self.currentFolder
+        self.window().newLogTab('Run',filename1)
         if self.window().nproc<=1:
-            command = '%s -case %s > %s &'%(self.solvername,self.currentFolder,filename)
+            command = '%s -case %s 1> %s 2> %s &'%(self.solvername,self.currentFolder,filename1,filename2)
         else:
-            command = 'mpirun -np %s %s -case %s -parallel > %s & '%(str(self.window().nproc),self.solvername,self.currentFolder,filename)
+            command = 'mpirun -np %s %s -case %s -parallel > %s & '%(str(self.window().nproc),self.solvername,self.currentFolder,filename1)
         os.system(command)
         
         command = 'pidof %s'%self.solvername

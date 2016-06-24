@@ -98,13 +98,13 @@ class logTab(QtGui.QWidget):
         import psutil
         window = True
         self.w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Saving", "Saving the current data... Hold tight")
-        #self.w.setStandardButtons(QtGui.QMessageBox.NoButton)
         while psutil.pid_exists(self.window().runningpid):
             time.sleep(0.1)
-            if (window):                
+            if (window):
                 self.w.show()
-                QtGui.QApplication.processEvents()
+                time.sleep(0.1)
                 window = False
+            QtGui.QApplication.processEvents()
 
         if psutil.pid_exists(self.window().runningpid):
             command = 'kill %s'%self.window().runningpid
