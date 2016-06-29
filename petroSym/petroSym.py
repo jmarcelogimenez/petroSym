@@ -675,6 +675,7 @@ class petroSym(petroSymUI):
         output = open(filename, 'wb')
         pickle.dump(config, output)
         output.close()
+        return
 
 
     def load_config(self):
@@ -905,12 +906,13 @@ class petroSym(petroSymUI):
             if figW==self.qfigWidgets[i]:
                 removeItem = i
                 break
-            
+
+        figuretype=''
         if isinstance(self.qfigWidgets[i],figureResidualsWidget):  
                 figuretype = 'residuals.dat'
-        if isinstance(self.qfigWidgets[i],figureTracersWidget):  
+        elif isinstance(self.qfigWidgets[i],figureTracersWidget):
                 figuretype = 'faceSource.dat'
-
+                
         self.qscrollLayout.removeWidget(self.qfigWidgets[removeItem])
         self.qfigWidgets[removeItem].deleteLater()
         for i in xrange(removeItem+1,self.nPlots+1): #voy hasta +1 porque tengo el boton
@@ -923,18 +925,18 @@ class petroSym(petroSymUI):
         parsedData = ParsedParameterFile(filename,createZipped=False)
         if 'functions' in parsedData.getValueDict().keys():
             if figW.objectName() in parsedData['functions'].keys():
-                del parsedData['functions'][figW.objectName()]                
+                del parsedData['functions'][figW.objectName()]
         parsedData.writeFile()
         
         #La elimino del .config
         self.save_config()
         
-        #La elimino de pending files (Ver los dos que faltan)
-        [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
-        filename = '%s/postProcessing/%s/%s/%s'%(self.currentFolder,figW.objectName(),currtime,figuretype)
+        if figuretype!='':
+            [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
+            filename = '%s/postProcessing/%s/%s/%s'%(self.currentFolder,figW.objectName(),currtime,figuretype)
         
-        if filename in self.pending_files:
-            self.pending_files.remove(filename)
+            if filename in self.pending_files:
+                self.pending_files.remove(filename)
 
     def temporalFigure_update(self,figW,action):
         #print 'hacer %s en %s'%(action,figW.objectName())
@@ -974,6 +976,12 @@ class petroSym(petroSymUI):
             elif isinstance(figW,figureGeneralSnapshotWidget):
                 path = '%s/snapshots/%s'%(self.currentFolder,ii)
 
+            if not os.path.isdir(path):
+                w = QtGui.QMessageBox(QtGui.QMessageBox.Critical,"Error","Primero debe ejecutar la corrida")
+                QtGui.QApplication.processEvents()
+                w.exec_()
+                return
+                
             newdirs = list(set(os.listdir(path))-set(figW.dirList))
             newdirs.sort(key=lambda x: os.stat(os.path.join(path, x)).st_mtime)
             figW.dirList.extend(newdirs)

@@ -207,7 +207,14 @@ class figureSampledLineWidget(QtGui.QWidget):
         self.dirType = 'Sampled Line'
         self.lastPos = -1
         self.colors = ['r', 'b', 'k', 'g', 'y', 'c']
-        self.labels = ['_x','_y','_z']
+        self.labels = ['x','y','z']
+        
+        filename = '%s/system/controlDict'%(self.window().currentFolder)
+        parsedData = ParsedParameterFile(filename,createZipped=False)
+        self.ifield=parsedData['functions'][dataname]['fields'][0]
+        self.archifield = 'data_%s.xy'%self.ifield
+        #parsedData.closeFile()
+        
 
     def plot(self):
         if self.lastPos<0:
@@ -215,7 +222,7 @@ class figureSampledLineWidget(QtGui.QWidget):
         canvas = self.findChild(FigureCanvas)
         timeLegend = self.findChild(QtGui.QLineEdit)
         axes = canvas.figure.gca()
-        filename = '%s/postProcessing/%s/%s/data_U.xy'%(self.window().currentFolder,self.name,self.dirList[self.lastPos])
+        filename = '%s/postProcessing/%s/%s/%s'%(self.window().currentFolder,self.name,self.dirList[self.lastPos],self.archifield)
         data = pylab.loadtxt(filename)
         if len(data)>0:
             axes.clear()
@@ -223,7 +230,8 @@ class figureSampledLineWidget(QtGui.QWidget):
             #Fijarse que el sample guarda todos los datos de velocidad, y axis indica el eje de las abcisas
             if data.shape[1]>1:
                 for ii in range(data.shape[1]-1):
-                    axes.plot(data[:,0],data[:,ii+1],self.colors[ii]) #, label=self.labels[ii])
+                    label_ifield = self.ifield+self.labels[ii]
+                    axes.plot(data[:,0],data[:,ii+1], color=self.colors[ii], label=label_ifield)
             else:
                 axes.plot(data[:,0],data[:,1],'r',label='self.name')
                 
@@ -239,7 +247,7 @@ class figureSampledLineWidget(QtGui.QWidget):
         self.dirType = 'Sampled Line'
         self.lastPos = -1
         self.colors = ['r', 'b', 'k', 'g', 'y', 'c']
-        self.labels = ['_x','_y','_z']
+        self.labels = ['x','y','z']
         
         canvas = self.findChild(FigureCanvas)
         canvas.figure.gca().cla()

@@ -165,9 +165,9 @@ class initialConditionsWidget(initialConditionsUI):
         
         #--Creo un thread para potentialFoam
         if int(self.nproc)<=1:
-            command = 'potentialFoam -case %s > %s/potentialFoam.log'%(self.currentFolder,self.currentFolder)
+            command = 'potentialFoam -case %s 1> %s/potentialFoam.log 2> %s/error.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
         else:
-            command = 'mpirun -np %s potentialFoam -case %s -parallel > %s/potentialFoam.log'%(str(self.nproc), self.currentFolder,self.currentFolder)
+            command = 'mpirun -np %s potentialFoam -case %s -parallel 1> %s/potentialFoam.log 2> %s/error.log &'%(str(self.nproc), self.currentFolder,self.currentFolder,self.currentFolder)
 
         self.threadpotentialFoam = ExampleThread(command)
         self.connect(self.threadpotentialFoam, QtCore.SIGNAL("finished()"), self.enableButton) #Esto es una porqueria pero no encontre otra forma

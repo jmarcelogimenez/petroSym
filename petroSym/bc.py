@@ -461,9 +461,9 @@ class bcWidget(bcUI):
                 
                 #chequear que no bloquee
                 if self.nproc<=1:
-                    command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+                    command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak 1> %s/changeDictionary.log 2> %s/error.log &'%(self.currentFolder,self.currentFolder,self.currentFolder,self.currentFolder)
                 else:
-                    command = 'mpirun -np %s changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak -parallel > %s/changeDictionary.log &'%(str(self.nproc),self.currentFolder,self.currentFolder,self.currentFolder)
+                    command = 'mpirun -np %s changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak -parallel 1> %s/changeDictionary.log 2> %s/error.log &'%(str(self.nproc),self.currentFolder,self.currentFolder,self.currentFolder,self.currentFolder)
                 os.system(command)
         self.pushButton.setEnabled(False)
         return
@@ -544,9 +544,9 @@ class bcWidget(bcUI):
                 
                 #chequear que no bloquee
                 if self.nproc<=1:
-                    command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+                    command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak 1> %s/changeDictionary.log 2> %s/error.log &'%(self.currentFolder,self.currentFolder,self.currentFolder,self.currentFolder)
                 else:
-                    command = 'mpirun -np %s changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak -parallel > %s/changeDictionary.log &'%(str(self.nproc),self.currentFolder,self.currentFolder,self.currentFolder)
+                    command = 'mpirun -np %s changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak -parallel 1> %s/changeDictionary.log 2> %s/error.log &'%(str(self.nproc),self.currentFolder,self.currentFolder,self.currentFolder,self.currentFolder)
                 os.system(command)
             
             self.loadData()

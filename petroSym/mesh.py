@@ -66,7 +66,7 @@ class meshWidget(meshUI):
         self.window().newLogTab('Create Mesh','%s/createMesh.log'%self.currentFolder)
         
         #--Creo un thread para blockMesh y conecto su finalizacion con checkMesh
-        command = 'blockMesh -case %s > %s/createMesh.log'%(self.currentFolder,self.currentFolder)
+        command = 'blockMesh -case %s 1> %s/createMesh.log 2> %s/error.log'%(self.currentFolder,self.currentFolder,self.currentFolder)
         
         threadblockmesh = ExampleThread(command)
         self.connect(threadblockmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
@@ -95,7 +95,7 @@ class meshWidget(meshUI):
         self.window().newLogTab('Check Mesh','%s/checkMesh.log'%self.currentFolder)
         
         #--Creo un thread para checkMesh y lo inicio
-        command = 'checkMesh -case %s > %s/checkMesh.log'%(self.currentFolder,self.currentFolder)
+        command = 'checkMesh -case %s 1> %s/checkMesh.log 2> %s/error.log'%(self.currentFolder,self.currentFolder,self.currentFolder)
         self.threadcheckmesh = ExampleThread(command)
         self.connect(self.threadcheckmesh, QtCore.SIGNAL("finished()"), self.loadMeshData)
         self.connect(self.threadcheckmesh, QtCore.SIGNAL("finished()"), self.threadcheckmesh.terminate)
@@ -144,7 +144,7 @@ class meshWidget(meshUI):
             os.system(command)            
             self.window().newLogTab('Import Mesh','%s/importMesh.log'%self.currentFolder)
             
-            command = '%s -case %s %s > %s/importMesh.log' %(utility, self.currentFolder, filename, self.currentFolder)
+            command = '%s -case %s %s 1> %s/importMesh.log 2> %s/error.log' %(utility, self.currentFolder, filename, self.currentFolder, self.currentFolder)
             #os.system(command)
             self.threadimportmesh = ExampleThread(command)
             self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.updateFieldFiles)
@@ -297,9 +297,7 @@ class meshWidget(meshUI):
         w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Information", "Mesh successfully imported. Please check statistics.")
         w.exec_()
         return
-                
         
-
     def updateFieldFiles(self):
         #tengo que releer cada uno de los campos en el directorio actual,
         #pisar los boundaries por los que aparece en constant/polyMesh/boundary
@@ -366,9 +364,9 @@ class meshWidget(meshUI):
             
             #chequear que no bloquee
             if self.window().nproc<=1:
-                command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak > %s/changeDictionary.log &'%(self.currentFolder,self.currentFolder,self.currentFolder)
+                command = 'changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak 1> %s/changeDictionary.log 2> %s/error.log &'%(self.currentFolder,self.currentFolder,self.currentFolder,self.currentFolder)
             else:
-                command = 'mpirun -np %s changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak -parallel > %s/changeDictionary.log &'%(str(self.nproc),self.currentFolder,self.currentFolder,self.currentFolder)
+                command = 'mpirun -np %s changeDictionary -case %s -dict %s/system/changeDictionaryPetroSym.bak -parallel 1> %s/changeDictionary.log 2> %s/error.log &'%(str(self.nproc),self.currentFolder,self.currentFolder,self.currentFolder,self.currentFolder)
             os.system(command)
             
         return

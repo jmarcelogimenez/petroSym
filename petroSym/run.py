@@ -142,6 +142,7 @@ class runWidget(runUI):
         w = reset()
         result = w.exec_()
         if result:
+            self.window().nproc = 1
             command = 'pyFoamClearCase.py %s %s'%(w.getParams(), self.currentFolder)
             os.system(command)
             if w.deleteSnapshots():
@@ -161,7 +162,7 @@ class runWidget(runUI):
             
             self.type_serial.setChecked(True)
             self.type_parallel.setChecked(False)
-            self.window().nproc = 1
+            
             self.changeType()
                         
             self.window().save_config()
@@ -204,9 +205,10 @@ class runWidget(runUI):
                     command = 'cp %s.bak/%s %s/.'%(self.timedir,ifield,self.timedir)
                     os.system(command)
                 
-                filename = '%s/decompose.log'%self.currentFolder
-                self.window().newLogTab('Decompose',filename)
-                command = 'decomposePar -force -case %s -time %s > %s'%(self.currentFolder,self.currtime,filename)
+                filename1 = '%s/decompose.log'%self.currentFolder
+                filename2 = '%s/error.log'%self.currentFolder
+                self.window().newLogTab('Decompose',filename1)
+                command = 'decomposePar -force -case %s -time %s 1> %s 2> %s'%(self.currentFolder,self.currtime,filename1,filename2)
                 os.system(command)
         
                 command = 'rm -r %s'%(self.timedir)
@@ -223,9 +225,10 @@ class runWidget(runUI):
                 parsedData['numberOfSubdomains'] = self.window().nproc
                 parsedData.writeFile()        
             
-                filename = '%s/decompose.log'%self.currentFolder
-                self.window().newLogTab('Decompose',filename)
-                command = 'decomposePar -force -case %s -time %s > %s'%(self.currentFolder,self.currtime,filename)
+                filename1 = '%s/decompose.log'%self.currentFolder
+                filename2 = '%s/error.log'%self.currentFolder
+                self.window().newLogTab('Decompose',filename1)
+                command = 'decomposePar -force -case %s -time %s 1> %s 2> %s'%(self.currentFolder,self.currtime,filename1,filename2)
                 os.system(command)
                 
         self.window().save_config()            
@@ -239,9 +242,10 @@ class runWidget(runUI):
         if int(self.currtime)==0:
             QtGui.QMessageBox.about(self, "ERROR", "Time step 0 already exists")            
         else:
-            filename = '%s/reconstruct.log'%self.currentFolder
-            self.window().newLogTab('Reconstruct',filename)
-            command = 'reconstructPar -case %s -time %s > %s'%(self.currentFolder,self.currtime,filename)
+            filename1 = '%s/reconstruct.log'%self.currentFolder
+            filename2 = '%s/error.log'%self.currentFolder
+            self.window().newLogTab('Reconstruct',filename1)
+            command = 'reconstructPar -case %s -time %s 1> %s 2> %s'%(self.currentFolder,self.currtime,filename1,filename2)
             #print command
             os.system(command)
         return

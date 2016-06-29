@@ -22,7 +22,7 @@ types['nut'] = 'scalar'
 types['nuTilda'] = 'scalar'
 types['nuSgs'] = 'scalar'
 
-unknowns = ['U','p','p_rgh','alpha','k','nuSgs','epsilon','omega','nut','nuTilda']
+unknowns = ['U','p','p_rgh','alpha','k','nuSgs','epsilon','omega','nuTilda','nut']
 
 
 def drange(start, stop, step):
@@ -173,12 +173,13 @@ def currentFields(currentFolder,filterTurb=True,nproc=1):
     #veo los campos que tengo en el directorio inicial
         timedir = 0
         currtime = 0
-        logname = '%s/dirFeatures.log' % currentFolder
+        logname = '%s/dirFeatures.log'%currentFolder
+        logerrorname = '%s/error.log'%currentFolder
         #print 'nproc: %s'%nproc
         if nproc<=1:
-            command = 'dirFeaturesFoam -case %s > %s' % (currentFolder,logname)
+            command = 'dirFeaturesFoam -case %s 1> %s 2> %s' % (currentFolder,logname,logerrorname)
         else:
-            command = 'mpirun -np %s dirFeaturesFoam -case %s -parallel > %s' % (nproc,currentFolder,logname)
+            command = 'mpirun -np %s dirFeaturesFoam -case %s -parallel 1> %s 2> %s' % (nproc,currentFolder,logname,logerrorname)
         #print 'command: %s'%command
         #p = subprocess.Popen([command],shell=True)
         #p.wait()
