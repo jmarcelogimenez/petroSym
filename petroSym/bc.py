@@ -246,6 +246,7 @@ class bcWidget(bcUI):
         #print self.fields
         self.loadData()
         
+        self.comboBox.setEnabled(False)        
         
 
     def loadData(self):

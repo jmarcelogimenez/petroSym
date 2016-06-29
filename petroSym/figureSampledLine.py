@@ -64,12 +64,13 @@ except AttributeError:
 
 class figureSampledLine(figureSampledLineUI):
 
-    def __init__(self, currentFolder):
+    def __init__(self, currentFolder,nproc):
         figureSampledLineUI.__init__(self)
         self.currentFolder = currentFolder        
         self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+        self.nproc = nproc
         
-        [self.timedir,self.fields,bas] = currentFields(self.currentFolder,nproc=self.window().nproc)
+        [self.timedir,self.fields,bas] = currentFields(self.currentFolder,nproc=self.nproc)
         
         self.comboBox.clear()
         for field in self.fields:

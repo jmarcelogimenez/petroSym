@@ -45,7 +45,7 @@ class runWidget(runUI):
         self.currentFolder = currentFolder
         self.solvername = solvername
         [self.timedir,self.fields,self.currtime] = currentFields(self.currentFolder,nproc=self.window().nproc)
-        
+            
         #Si abro la gui y hay un caso corriendo, desabilito estos botones
         if (self.window().runningpid!= -1):
             self.pushButton_run.setEnabled(False)
@@ -64,6 +64,8 @@ class runWidget(runUI):
 
     def runCase(self):
     
+        [self.timedir,self.fields,self.currtime] = currentFields(self.currentFolder,nproc=self.window().nproc)
+        
 #        if self.window().nproc>1:        
 #            w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Is the case decomposed?", "Simulation will be done only if case decompositione was done previously. Continue?", QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
 #            ret = w.exec_()
@@ -90,10 +92,14 @@ class runWidget(runUI):
         if self.window().nproc<=1:
             command = '%s -case %s 1> %s 2> %s &'%(self.solvername,self.currentFolder,filename1,filename2)
         else:
-            command = 'mpirun -np %s %s -case %s -parallel > %s & '%(str(self.window().nproc),self.solvername,self.currentFolder,filename1)
+            command = 'mpirun -np %s %s -case %s -parallel 1> %s 2> %s & '%(str(self.window().nproc),self.solvername,self.currentFolder,filename1, filename2)
         os.system(command)
         
-        command = 'pidof %s'%self.solvername
+        if self.window().nproc<=1:
+            command = 'pidof %s'%self.solvername
+        else:
+            command = 'pidof mpirun'
+
         import subprocess
         self.window().runningpid = subprocess.check_output(command, shell=True)
         self.window().runningpid.replace('\n','') #Me lo devuelve con un espacio al final
@@ -118,7 +124,8 @@ class runWidget(runUI):
                 icon = QtGui.QIcon()
                 icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/fromHelyx/reconstruct16.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.pushButton_decompose.setIcon(icon)
-            self.pushButton_reconstruct.setEnabled(False)
+            self.pushButton_reconstruct.setEnabled(True)
+            self.pushButton_reconstruct.setText("Reconstuct Case (use under your responsability)")
             self.pushButton_decompose.setEnabled(True)
         else:
             self.num_proc.setEnabled(True)
@@ -126,10 +133,12 @@ class runWidget(runUI):
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/fromHelyx/decompose16.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.pushButton_decompose.setIcon(icon)
-            self.pushButton_reconstruct.setEnabled(False)
+            self.pushButton_reconstruct.setEnabled(True)
+            self.pushButton_reconstruct.setText("Reconstuct Case (use under your responsability)")
             self.pushButton_decompose.setEnabled(True)
 
     def resetCase(self):
+        [self.timedir,self.fields,self.currtime] = currentFields(self.currentFolder,nproc=self.window().nproc)
         w = reset()
         result = w.exec_()
         if result:
@@ -159,6 +168,8 @@ class runWidget(runUI):
 
 
     def decomposeCase(self):
+        [self.timedir,self.fields,self.currtime] = currentFields(self.currentFolder,nproc=self.window().nproc)
+        
         nprocOld = self.window().nproc
         if self.type_serial.isChecked():
             if nprocOld>1:
@@ -173,45 +184,64 @@ class runWidget(runUI):
                 return
             self.window().nproc = self.num_proc.value()
             
-            #modifico el diccionario
-            filename = '%s/system/decomposeParDict'%(self.currentFolder)
-            parsedData = ParsedParameterFile(filename,createZipped=False)
-            parsedData['numberOfSubdomains'] = self.window().nproc
-            parsedData.writeFile()        
-        
-            #voy a descomponer solo los campos que estoy utilizando en el solver, el resto los dejo intactos
-            command = 'mv %s %s.bak'%(self.timedir,self.timedir)
-            os.system(command)
+            #Si el tiempo es cero debo filtrar algunos campos
+            if self.currtime=='0':
+                
+                #modifico el diccionario
+                filename = '%s/system/decomposeParDict'%(self.currentFolder)
+                parsedData = ParsedParameterFile(filename,createZipped=False)
+                parsedData['numberOfSubdomains'] = self.window().nproc
+                parsedData.writeFile()        
             
-            command = 'mkdir %s'%(self.timedir)
-            os.system(command)
-            
-            for ifield in self.fields:
-                command = 'cp %s.bak/%s %s/.'%(self.timedir,ifield,self.timedir)
+                #voy a descomponer solo los campos que estoy utilizando en el solver, el resto los dejo intactos
+                command = 'mv %s %s.bak'%(self.timedir,self.timedir)
                 os.system(command)
+                
+                command = 'mkdir %s'%(self.timedir)
+                os.system(command)
+                
+                for ifield in self.fields:
+                    command = 'cp %s.bak/%s %s/.'%(self.timedir,ifield,self.timedir)
+                    os.system(command)
+                
+                filename = '%s/decompose.log'%self.currentFolder
+                self.window().newLogTab('Decompose',filename)
+                command = 'decomposePar -force -case %s -time %s > %s'%(self.currentFolder,self.currtime,filename)
+                os.system(command)
+        
+                command = 'rm -r %s'%(self.timedir)
+                os.system(command)
+                
+                command = 'mv %s.bak %s'%(self.timedir,self.timedir)
+                os.system(command)
+                
+            else:
+
+                #Si la corrida ya ha avanzado, hay que descomponer todo
+                filename = '%s/system/decomposeParDict'%(self.currentFolder)
+                parsedData = ParsedParameterFile(filename,createZipped=False)
+                parsedData['numberOfSubdomains'] = self.window().nproc
+                parsedData.writeFile()        
             
-            filename = '%s/decompose.log'%self.currentFolder
-            self.window().newLogTab('Decompose',filename)
-            command = 'decomposePar -force -case %s -time %s > %s'%(self.currentFolder,self.currtime,filename)
-            os.system(command)
-    
-            command = 'rm -r %s'%(self.timedir)
-            os.system(command)
-            
-            command = 'mv %s.bak %s'%(self.timedir,self.timedir)
-            os.system(command)
-            
+                filename = '%s/decompose.log'%self.currentFolder
+                self.window().newLogTab('Decompose',filename)
+                command = 'decomposePar -force -case %s -time %s > %s'%(self.currentFolder,self.currtime,filename)
+                os.system(command)
+                
         self.window().save_config()            
         return
         
         
     def reconstructCase(self):
 
+        [self.timedir,self.fields,self.currtime] = currentFields(self.currentFolder,nproc=self.window().nproc)
+            
         if int(self.currtime)==0:
             QtGui.QMessageBox.about(self, "ERROR", "Time step 0 already exists")            
         else:
             filename = '%s/reconstruct.log'%self.currentFolder
             self.window().newLogTab('Reconstruct',filename)
             command = 'reconstructPar -case %s -time %s > %s'%(self.currentFolder,self.currtime,filename)
+            #print command
             os.system(command)
         return

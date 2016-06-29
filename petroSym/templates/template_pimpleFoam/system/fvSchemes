@@ -29,7 +29,16 @@ divSchemes
 {
     default         Gauss upwind;
     div(phi,U)      bounded Gauss upwind; //linearUpwind grad(U); //Gauss upwind;
-    div(phi,T)      bounded Gauss linearUpwind grad(T); //Gauss upwind;
+    div(phi,T)      bounded Gauss vanLeer; //Gauss upwind;
+    div(phi,T0)     bounded Gauss vanLeer;
+    div(phi,T1)     bounded Gauss vanLeer;
+    div(phi,T2)     bounded Gauss vanLeer;
+    div(phi,T3)     bounded Gauss vanLeer;
+    div(phi,T4)     bounded Gauss vanLeer;
+    div(phi,T5)     bounded Gauss vanLeer;
+    div(phi,T6)     bounded Gauss vanLeer;
+    div(phi,T7)     bounded Gauss vanLeer;
+    div(phi,T8)     bounded Gauss vanLeer;
     div(phi,k)      bounded Gauss upwind;
     div(phi,epsilon) bounded Gauss upwind;
     div(phi,R)      bounded Gauss upwind;

@@ -287,7 +287,7 @@ class petroSym(petroSymUI):
         index = index - 2
         addFigure = False
         
-        print self.typeFigure[index]
+        #print self.typeFigure[index]
         if self.typeFigure[index] == 'Residuals':
             w = figureResiduals(self.currentFolder,self.nproc)
             result = w.exec_()
@@ -333,7 +333,7 @@ class petroSym(petroSymUI):
                 self.pending_files.append(filename)
 
         if self.typeFigure[index] == 'Sampled Line':
-            w = figureSampledLine(self.currentFolder)
+            w = figureSampledLine(self.currentFolder,self.nproc)
             result = w.exec_()
             if result:
                 data = w.getData()
@@ -661,7 +661,7 @@ class petroSym(petroSymUI):
             config['namePlots'].append(str(self.qfigWidgets[i].objectName()))
             if isinstance(self.qfigWidgets[i],figureResidualsWidget):  
                 config['typePlots'].append('Residuals')
-            if isinstance(self.qfigWidgets[i],figureTracersWidget):  
+            elif isinstance(self.qfigWidgets[i],figureTracersWidget):  
                 config['typePlots'].append('Tracers')
             elif isinstance(self.qfigWidgets[i],figureSampledLineWidget):  
                 config['typePlots'].append('Sampled Line')
@@ -692,7 +692,7 @@ class petroSym(petroSymUI):
             wrongFile = 1 if 'typeFile' not in config.keys() else wrongFile
             wrongFile = 1 if 'runningpid' not in config.keys() else wrongFile
                 
-                        
+            #print config
             if wrongFile:
                 QtGui.QMessageBox.about(self, "ERROR", "Corrupted File")
                 return
@@ -727,6 +727,7 @@ class petroSym(petroSymUI):
             
             [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
             for i in range(self.nPlots):
+                #print '%i: %s'%(i,typePlots[i])
                 if typePlots[i]=='Residuals':
                     ww = figureResidualsWidget(self.scrollAreaWidgetContents,namePlots[i])
                     filename = '%s/postProcessing/%s/%s/residuals.dat'%(self.currentFolder,namePlots[i],currtime)
@@ -936,7 +937,7 @@ class petroSym(petroSymUI):
             self.pending_files.remove(filename)
 
     def temporalFigure_update(self,figW,action):
-        print 'hacer %s en %s'%(action,figW.objectName())
+        #print 'hacer %s en %s'%(action,figW.objectName())
         if figW.lastPos==-1 and action != 'refresh':
             return
         if action == 'first':
@@ -983,7 +984,7 @@ class petroSym(petroSymUI):
 
     def doPlot(self,figW):
         ii = figW.objectName()
-        print 'por hace plot de %s type: %s'%(ii,self.dirType[ii])
+        #print 'por hace plot de %s type: %s'%(ii,self.dirType[ii])
        
         if isinstance(figW,figureSampledLineWidget):
                        
@@ -991,7 +992,7 @@ class petroSym(petroSymUI):
 
         if  self.dirType[ii]=='General Snapshot':
             desired = '%s/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[ii][self.lastPos[ii]],ii)
-            print desired
+            #print desired
             if os.path.isfile(desired)==False:
                 command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="snapshot" --no-casename --no-timename %s'%(self.dirList[ii][self.lastPos[ii]],self.currentFolder,ii,self.currentFolder)
                 os.system(command)

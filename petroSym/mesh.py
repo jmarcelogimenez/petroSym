@@ -148,6 +148,7 @@ class meshWidget(meshUI):
             #os.system(command)
             self.threadimportmesh = ExampleThread(command)
             self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.updateFieldFiles)
+            self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.showOk)
             self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
             self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.threadimportmesh.terminate)
             self.threadimportmesh.start()
@@ -291,6 +292,13 @@ class meshWidget(meshUI):
         os.system(command)
 
         return
+        
+    def showOk(self):
+        w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Information", "Mesh successfully imported. Please check statistics.")
+        w.exec_()
+        return
+                
+        
 
     def updateFieldFiles(self):
         #tengo que releer cada uno de los campos en el directorio actual,

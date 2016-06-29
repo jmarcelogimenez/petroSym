@@ -30,6 +30,16 @@ divSchemes
 {
     default         none;
     div(phi,U)      Gauss linear;
+    div(phi,T)      Gauss vanLeer;
+    div(phi,T0)      Gauss vanLeer;
+    div(phi,T1)      Gauss vanLeer;
+    div(phi,T2)      Gauss vanLeer;
+    div(phi,T3)      Gauss vanLeer;
+    div(phi,T4)      Gauss vanLeer;
+    div(phi,T5)      Gauss vanLeer;
+    div(phi,T6)      Gauss vanLeer;
+    div(phi,T7)      Gauss vanLeer;
+    div(phi,T8)      Gauss vanLeer;
 }
 
 laplacianSchemes

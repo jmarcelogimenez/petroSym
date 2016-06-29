@@ -37,7 +37,8 @@ dicc['type'] = 'scalarTransport';
 dicc['functionObjectLibs'] =  ['"libutilityFunctionObjects.so"']
 dicc['DT'] = '1e-10'
 dicc['resetOnStartUp'] = 'false';
-dicc['autoSchemes'] = 'true';
+dicc['autoSchemes'] = 'false';
+dicc['schemesField'] = 'T'; #solo valido para OF >= 3.0
 dicc['patchName'] = 'inlet'
 dicc['fvOptions'] = {}
 dicc['fvOptions']['S'] = {}
