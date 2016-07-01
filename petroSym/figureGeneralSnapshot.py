@@ -31,7 +31,7 @@ except AttributeError:
            
 class figureGeneralSnapshotWidget(QtGui.QWidget):
 
-    def __init__(self, scrollAreaWidgetContents):         
+    def __init__(self, scrollAreaWidgetContents, currentFolder):         
         QtGui.QWidget.__init__(self)
         self.setParent(scrollAreaWidgetContents)
         
@@ -52,5 +52,43 @@ class figureGeneralSnapshotWidget(QtGui.QWidget):
         plotLayout.addWidget(toolbar)
         
         self.setLayout(plotLayout)
+        self.lastPos = -1
+        self.dirList = []
+        self.currentFolder = currentFolder
 
         canvas.setMinimumSize(canvas.size())
+        
+    def plot(self):
+        ii = self.objectName()
+        desired = '%s/snapshots/%s/%s/%s_%s.png'%(self.currentFolder,ii,self.lastPos,ii,self.lastPos)
+        #print desired
+        print self.lastPos
+        newdirsnapshot = '%s/snapshots/%s/%s'%(self.currentFolder,ii,self.lastPos)
+        if not os.path.isfile(desired):
+            command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="snapshot" --no-casename --no-timename --no-offscreen-rendering %s'%(self.lastPos,self.currentFolder,ii,self.currentFolder)
+            os.system(command)
+            dirsnapshot=os.path.dirname(os.path.realpath(__file__))
+            filename = '%s/snapshot_00000.png'%dirsnapshot
+            while not os.path.isfile(filename):
+                None            
+            command = 'mkdir -p %s'%newdirsnapshot
+            os.system(command)
+            command = 'mv %s %s/snapshots/%s/%s/%s_%s.png'%(filename,self.currentFolder,ii,self.lastPos,ii,self.lastPos)
+            os.system(command)
+        mainImage = self.findChild(QtGui.QLabel,'mainImage')
+        mainImage.setPixmap(QtGui.QPixmap(_fromUtf8(desired)))
+
+        timeLegend = self.findChild(QtGui.QLineEdit)
+        timeLegend.setText(str(self.lastPos))
+        self.dirList.extend(newdirsnapshot)
+        print newdirsnapshot
+        
+    def resetFigure(self):
+        self.lastPos = -1
+        self.dirList = []
+       
+        mainImage = self.findChild(QtGui.QLabel,'mainImage')
+        mainImage.setText(_fromUtf8(""))
+        mainImage.setPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/fromHelyx/emptyFigure.png")))
+        mainImage.setObjectName(_fromUtf8("mainImage"))
+        

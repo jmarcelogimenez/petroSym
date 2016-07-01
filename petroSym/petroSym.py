@@ -347,7 +347,7 @@ class petroSym(petroSymUI):
                         command = 'rm -r %s/%s'%(self.currentFolder,dirname)
                         os.system(command)
                     else:
-                        addFigure = False                
+                        addFigure = False
                 if data['autorefreshing']=='Yes' and addFigure:
                     self.pending_dirs.append(dirname)
             
@@ -363,7 +363,7 @@ class petroSym(petroSymUI):
                 data_name = data_name[:-5]
                 newdir = '%s/snapshots/%s'%(self.currentFolder,data_name)
                 addFigure = True
-                if os.path.isdir('%s'%newdir):
+                if os.path.isdir(newdir):
                     w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Caution", "The output directory '%s' already exists, do yo want to remove it?"%(newdir), QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
                     ret = w.exec_()
                     if(QtGui.QMessageBox.Yes == ret):
@@ -372,7 +372,7 @@ class petroSym(petroSymUI):
                     else:
                         addFigure = False
             if addFigure:
-                ww = figureGeneralSnapshotWidget(self.scrollAreaWidgetContents)     
+                ww = figureGeneralSnapshotWidget(self.scrollAreaWidgetContents,self.currentFolder)
                 command = 'mkdir -p %s'%(newdir)
                 os.system(command)
                 #hago una copia del pvsm para tenerlo siempre accesible
@@ -390,7 +390,11 @@ class petroSym(petroSymUI):
             #vuelvo a ubicar el boton
             self.qscrollLayout.addWidget(self.qfigWidgets[i+1],(i+1)/2,(i+1)%2)
             self.nPlots = self.nPlots+1
-            self.qfigWidgets[i].setObjectName(data['name'])
+            
+            if self.typeFigure[index] != 'General Snapshot':
+                self.qfigWidgets[i].setObjectName(data['name'])
+            else:
+                self.qfigWidgets[i].setObjectName(data_name)
             
             #Guardo la configuracion si agrego una figura, acordarse de sacarla
             #si la elimino
@@ -766,7 +770,7 @@ class petroSym(petroSymUI):
                     #Solo agregar si se eligio autorefreshing
                     self.pending_dirs.append(dirname)
                 elif typePlots[i]=='General Snapshot':
-                    ww = figureGeneralSnapshotWidget(self.scrollAreaWidgetContents)
+                    ww = figureGeneralSnapshotWidget(self.scrollAreaWidgetContents,self.currentFolder)
                 elif typePlots[i]=='Tracers':
                     ww = figureTracersWidget(self.scrollAreaWidgetContents,namePlots[i])
                     filename = '%s/postProcessing/%s/%s/faceSource.dat'%(self.currentFolder,namePlots[i],currtime)
@@ -975,6 +979,9 @@ class petroSym(petroSymUI):
                 path = '%s/postProcessing/%s'%(self.currentFolder,ii)
             elif isinstance(figW,figureGeneralSnapshotWidget):
                 path = '%s/snapshots/%s'%(self.currentFolder,ii)
+                figW.lastPos = 0
+                figW.plot()
+                return
 
             if not os.path.isdir(path):
                 w = QtGui.QMessageBox(QtGui.QMessageBox.Critical,"Error","Primero debe ejecutar la corrida")
@@ -989,30 +996,31 @@ class petroSym(petroSymUI):
 
             if figW.lastPos>0:
                 figW.plot()
+                
 
     def doPlot(self,figW):
         ii = figW.objectName()
         #print 'por hace plot de %s type: %s'%(ii,self.dirType[ii])
        
-        if isinstance(figW,figureSampledLineWidget):
+       # if isinstance(figW,figureSampledLineWidget):
                        
-            figW.plot()
+       #     figW.plot()
 
-        if  self.dirType[ii]=='General Snapshot':
-            desired = '%s/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[ii][self.lastPos[ii]],ii)
-            #print desired
-            if os.path.isfile(desired)==False:
-                command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="snapshot" --no-casename --no-timename %s'%(self.dirList[ii][self.lastPos[ii]],self.currentFolder,ii,self.currentFolder)
-                os.system(command)
-                while os.path.isfile('snapshot_00000.png')==False:
-                    None
-                command = 'mv snapshot_00000.png %s/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[ii][self.lastPos[ii]],ii)
-                os.system(command)
-            mainImage = figW.findChild(QtGui.QLabel,'mainImage')
-            mainImage.setPixmap(QtGui.QPixmap(_fromUtf8(desired)))
+        #if  self.dirType[ii]=='General Snapshot':
+        desired = '%s/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[ii][self.lastPos[ii]],ii)
+        #print desired
+        if os.path.isfile(desired)==False:
+            command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="snapshot" --no-casename --no-timename %s'%(self.dirList[ii][self.lastPos[ii]],self.currentFolder,ii,self.currentFolder)
+            os.system(command)
+            while os.path.isfile('snapshot_00000.png')==False:
+                None
+            command = 'mv snapshot_00000.png %s/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[ii][self.lastPos[ii]],ii)
+            os.system(command)
+        mainImage = figW.findChild(QtGui.QLabel,'mainImage')
+        mainImage.setPixmap(QtGui.QPixmap(_fromUtf8(desired)))
 
-            timeLegend = figW.findChild(QtGui.QLineEdit)
-            timeLegend.setText(self.dirList[ii][self.lastPos[ii]])
+        timeLegend = figW.findChild(QtGui.QLineEdit)
+        timeLegend.setText(self.dirList[ii][self.lastPos[ii]])
 
 
     def updateCaseSetup(self,QTreeWidgetItem):
