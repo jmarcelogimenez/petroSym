@@ -1,0 +1,5 @@
+snapshots.C
+snapshotsFunctionObject.C
+
+
+LIB = $(FOAM_USER_LIBBIN)/libsnapshotsFunctionObjects

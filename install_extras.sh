@@ -17,6 +17,8 @@ cd ../myParticle
 wmake
 cd ../particleTracking
 wmake
+cd ../snapshots
+wmake
 popd
 echo "Finished"
 
