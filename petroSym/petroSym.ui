@@ -49,16 +49,7 @@
         </size>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
@@ -221,7 +212,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>346</width>
+                   <width>284</width>
                    <height>387</height>
                   </rect>
                  </property>
@@ -281,19 +272,14 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QScrollArea" name="scrollArea">
-          <property name="widgetResizable">
-           <bool>true</bool>
+         <widget class="QTabWidget" name="figures_tabWidget">
+          <property name="currentIndex">
+           <number>0</number>
           </property>
-          <widget class="QWidget" name="scrollAreaWidgetContents">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>178</width>
-             <height>464</height>
-            </rect>
-           </property>
+          <widget class="QWidget" name="initial_tab">
+           <attribute name="title">
+            <string>New</string>
+           </attribute>
           </widget>
          </widget>
         </item>

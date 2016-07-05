@@ -14,6 +14,8 @@ from temporalNavigationToolbar import *
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
+from PyFoam.RunDictionary.ParsedParameterFile import ParsedParameterFile
+
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -60,28 +62,29 @@ class figureGeneralSnapshotWidget(QtGui.QWidget):
         
     def plot(self):
         ii = self.objectName()
-        desired = '%s/snapshots/%s/%s/%s_%s.png'%(self.currentFolder,ii,self.lastPos,ii,self.lastPos)
-        #print desired
-        print self.lastPos
-        newdirsnapshot = '%s/snapshots/%s/%s'%(self.currentFolder,ii,self.lastPos)
+        #desired = '%s/postProcessing/snapshots/%s/%s/%s_%s.png'%(self.currentFolder,ii,self.lastPos,ii,self.lastPos)
+        desired = '%s/postProcessing/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[self.lastPos],ii)
+        
+        #newdirsnapshot = '%s/postProcessing/snapshots/%s/%s'%(self.currentFolder,ii,self.lastPos)
         if not os.path.isfile(desired):
-            command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="snapshot" --no-casename --no-timename --no-offscreen-rendering %s'%(self.lastPos,self.currentFolder,ii,self.currentFolder)
+            command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="%s/snapshot" --no-casename --no-timename --no-offscreen-rendering %s'%(self.lastPos,self.currentFolder,ii,self.currentFolder,self.currentFolder)
             os.system(command)
-            dirsnapshot=os.path.dirname(os.path.realpath(__file__))
-            filename = '%s/snapshot_00000.png'%dirsnapshot
+            #dirsnapshot=os.path.dirname(os.path.realpath(__file__))
+            filename = '%s/snapshot_00000.png'%self.currentFolder
             while not os.path.isfile(filename):
                 None            
-            command = 'mkdir -p %s'%newdirsnapshot
-            os.system(command)
-            command = 'mv %s %s/snapshots/%s/%s/%s_%s.png'%(filename,self.currentFolder,ii,self.lastPos,ii,self.lastPos)
+            #command = 'mkdir -p %s'%newdirsnapshot
+            #os.system(command)
+            #command = 'mv %s %s/postProcessing/snapshots/%s/%s/%s_%s.png'%(filename,self.currentFolder,ii,self.lastPos,ii,self.lastPos)
+            command = 'mv %s %s/postProcessing/snapshots/%s/%s/%s.png'%(filename,self.currentFolder,ii,self.dirList[self.lastPos],ii)
             os.system(command)
         mainImage = self.findChild(QtGui.QLabel,'mainImage')
         mainImage.setPixmap(QtGui.QPixmap(_fromUtf8(desired)))
 
         timeLegend = self.findChild(QtGui.QLineEdit)
-        timeLegend.setText(str(self.lastPos))
-        self.dirList.extend(newdirsnapshot)
-        print newdirsnapshot
+        timeLegend.setText(self.dirList[self.lastPos])
+        #self.dirList.extend(newdirsnapshot)
+        #print newdirsnapshot
         
     def resetFigure(self):
         self.lastPos = -1
@@ -92,3 +95,17 @@ class figureGeneralSnapshotWidget(QtGui.QWidget):
         mainImage.setPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/fromHelyx/emptyFigure.png")))
         mainImage.setObjectName(_fromUtf8("mainImage"))
         
+        
+    def accept(self):
+        filename = '%s/system/controlDict'%(self.currentFolder)
+        parsedData = ParsedParameterFile(filename,createZipped=False)
+        if 'functions' not in parsedData.getValueDict().keys():
+            parsedData['functions'] = {}
+        if str(self.objectName()) not in parsedData['functions'].keys():
+            parsedData['functions'][str(self.objectName())] = {}
+        
+        parsedData['functions'][str(self.objectName())]['type'] = 'snapshots'
+        parsedData['functions'][str(self.objectName())]['outputControl'] = 'outputTime'
+        parsedData['functions'][str(self.objectName())]['functionObjectLibs'] =  ['"libsnapshotsFunctionObjects.so"']
+        
+        parsedData.writeFile()

@@ -126,7 +126,7 @@ class figureSampledLine(figureSampledLineUI):
                 dicc = parsedData['functions'][data['name']]
                 if dicc['type']=='sets':
                     self.name.setText(data['name'])
-                    self.spinBox.setValue(dicc['outputInterval'])                    
+                    self.spinBox.setValue(dicc['outputInterval'])
         
         return data
         
@@ -180,7 +180,7 @@ class figureSampledLine(figureSampledLineUI):
             
 class figureSampledLineWidget(QtGui.QWidget):
 
-    def __init__(self, scrollAreaWidgetContents, dataname):         
+    def __init__(self, scrollAreaWidgetContents, dataname, currentFolder):         
         QtGui.QWidget.__init__(self)
         self.setParent(scrollAreaWidgetContents)
         fig = Figure((3.0, 2.0), dpi=100)
@@ -208,8 +208,8 @@ class figureSampledLineWidget(QtGui.QWidget):
         self.lastPos = -1
         self.colors = ['r', 'b', 'k', 'g', 'y', 'c']
         self.labels = ['x','y','z']
-        
-        filename = '%s/system/controlDict'%(self.window().currentFolder)
+        self.currentFolder = currentFolder
+        filename = '%s/system/controlDict'%(self.currentFolder)
         parsedData = ParsedParameterFile(filename,createZipped=False)
         self.ifield=parsedData['functions'][dataname]['fields'][0]
         self.archifield = 'data_%s.xy'%self.ifield

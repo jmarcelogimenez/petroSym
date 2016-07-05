@@ -91,18 +91,17 @@ class petroSym(petroSymUI):
         self.typeFile = {}
         self.lastPos = {}
 
-        self.qscrollLayout = QtGui.QGridLayout(self.scrollAreaWidgetContents)
-        self.qscrollLayout.setGeometry(QtCore.QRect(0, 0, 500, 300))
-        self.qfigWidgets = [];
+        self.qscrollLayout = {}
+        self.qfigWidgets = []
         self.nPlots = 0
         self.typeFigure = ['Residuals', 'Tracers', 'Probes', 'Sampled Line', 'General Snapshot']
         self.colors = ['r', 'b', 'k', 'g', 'y', 'c']
 
-        self.addNewFigureButton()
+        self.addNewFigureTab(0)
         
-        QtCore.QObject.connect(self.qfigWidgets[self.nPlots], QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.addNewFigure)
+        #QtCore.QObject.connect(self.qfigWidgets[self.nPlots], QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.addNewFigure)
 
-        self.scrollAreaWidgetContents.setLayout(self.qscrollLayout)
+        #self.scrollAreaWidgetContents.setLayout(self.qscrollLayout)
 
         QtCore.QObject.connect(self.tabWidget_2, QtCore.SIGNAL("tabCloseRequested(int)"), self.closeLogTab)
 
@@ -206,8 +205,11 @@ class petroSym(petroSymUI):
                 self.loadingmbox("Creating","Creating selected case...")
                 self.nproc = 1
                 for iplot in range(self.nPlots):
-                    self.qscrollLayout.removeWidget(self.qfigWidgets[iplot])
+                    self.qscrollLayout[iplot].removeWidget(self.qfigWidgets[iplot])
                     self.qfigWidgets[iplot].deleteLater()
+                    self.figures_tabWidget.removeTab(iplot)
+                self.figures_tabWidget.removeTab(iplot+1)
+                #self.addNewFigureTab(0)
                 QtGui.QApplication.processEvents()
                 self.nPlots = 0
                 self.qfigWidgets = self.qfigWidgets[-1:]
@@ -286,8 +288,8 @@ class petroSym(petroSymUI):
             return
         index = index - 2
         addFigure = False
+        tab = self.figures_tabWidget.widget(self.nPlots)
         
-        #print self.typeFigure[index]
         if self.typeFigure[index] == 'Residuals':
             w = figureResiduals(self.currentFolder,self.nproc)
             result = w.exec_()
@@ -306,7 +308,7 @@ class petroSym(petroSymUI):
                     else:
                         addFigure = False
             if addFigure:
-                ww = figureResidualsWidget(self.scrollAreaWidgetContents, data['name'])
+                ww = figureResidualsWidget(tab, data['name'])
                 self.pending_files.append(filename)
 
         if self.typeFigure[index] == 'Tracers':
@@ -329,7 +331,7 @@ class petroSym(petroSymUI):
                     else:
                         addFigure = False
             if addFigure:
-                ww = figureTracersWidget(self.scrollAreaWidgetContents, data['name'])
+                ww = figureTracersWidget(tab, data['name'])
                 self.pending_files.append(filename)
 
         if self.typeFigure[index] == 'Sampled Line':
@@ -352,7 +354,7 @@ class petroSym(petroSymUI):
                     self.pending_dirs.append(dirname)
             
             if addFigure:
-                ww = figureSampledLineWidget(self.scrollAreaWidgetContents, data['name'])
+                ww = figureSampledLineWidget(tab, data['name'], self.currentFolder)
                         
         if self.typeFigure[index] == 'General Snapshot':
             fileName = QtGui.QFileDialog.getOpenFileName(self, 'Select Paraview State', self.currentFolder, 'Paraview state (*.pvsm)');
@@ -361,7 +363,7 @@ class petroSym(petroSymUI):
             if fileName:
                 data_name = os.path.basename(fileName)
                 data_name = data_name[:-5]
-                newdir = '%s/snapshots/%s'%(self.currentFolder,data_name)
+                newdir = '%s/postProcessing/snapshots/%s'%(self.currentFolder,data_name)
                 addFigure = True
                 if os.path.isdir(newdir):
                     w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Caution", "The output directory '%s' already exists, do yo want to remove it?"%(newdir), QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
@@ -372,7 +374,7 @@ class petroSym(petroSymUI):
                     else:
                         addFigure = False
             if addFigure:
-                ww = figureGeneralSnapshotWidget(self.scrollAreaWidgetContents,self.currentFolder)
+                ww = figureGeneralSnapshotWidget(tab,self.currentFolder)
                 command = 'mkdir -p %s'%(newdir)
                 os.system(command)
                 #hago una copia del pvsm para tenerlo siempre accesible
@@ -383,24 +385,44 @@ class petroSym(petroSymUI):
 
         if addFigure:
             i = self.nPlots
+            
+            #elimino el boton (es siempre el item 0 de la tab)
+            if i!=0:
+                item=self.qscrollLayout[i].itemAt(0)
+                item.widget().close()
+                item.widget().deleteLater()
+            
             self.qfigWidgets.insert(i, ww)
 
             #agrego el nuevo plot
-            self.qscrollLayout.addWidget(self.qfigWidgets[i],i/2,i%2)
+            self.qscrollLayout[i].addWidget(self.qfigWidgets[i],i/2,i%2)
             #vuelvo a ubicar el boton
-            self.qscrollLayout.addWidget(self.qfigWidgets[i+1],(i+1)/2,(i+1)%2)
+            #self.qscrollLayout.addWidget(self.qfigWidgets[i+1],(i+1)/2,(i+1)%2)
+            
+            print self.qfigWidgets
+            print self.qscrollLayout
+            
             self.nPlots = self.nPlots+1
             
             if self.typeFigure[index] != 'General Snapshot':
                 self.qfigWidgets[i].setObjectName(data['name'])
             else:
                 self.qfigWidgets[i].setObjectName(data_name)
+                ww.accept()
+                
+            tab = self.figures_tabWidget.widget(self.nPlots-1)
+            tab.setObjectName(ww.objectName())
+            self.figures_tabWidget.setTabText(self.nPlots-1,ww.objectName())
             
             #Guardo la configuracion si agrego una figura, acordarse de sacarla
             #si la elimino
             self.save_config()
+            
+            self.addNewFigureTab(self.nPlots)
+            
 
-        self.qfigWidgets[self.nPlots].setCurrentIndex(0)
+        #self.qfigWidgets[self.nPlots].setCurrentIndex(0)
+        #self.figComboBox.setCurrentIndex(0)
         return
         
     
@@ -528,7 +550,7 @@ class petroSym(petroSymUI):
             key = ''
             for qfw in self.qfigWidgets:
                 ikey = qfw.objectName()
-                if 'postProcessing/%s'%ikey in path:
+                if 'postProcessing/%s/'%ikey in path:
                     key = ikey
                     break
 
@@ -562,7 +584,7 @@ class petroSym(petroSymUI):
         else:
             for qfw in self.qfigWidgets:
                 key = qfw.objectName()
-                if 'snapshots/%s'%key in path:
+                if 'postProcessing/snapshots/%s'%key in path:
                     keys.append(key)
                     break
 
@@ -592,7 +614,7 @@ class petroSym(petroSymUI):
             #print 'file: '+filename
             
             if os.path.isfile(filename):
-                #print 'Se agrega %s'%filename
+                print 'Se agrega %s'%filename
                     
                 #self.fs_watcher.addPath(filename)
                 self.pending_files.pop(i)
@@ -702,8 +724,12 @@ class petroSym(petroSymUI):
                 QtGui.QMessageBox.about(self, "ERROR", "Corrupted File")
                 return
             
-            for i in range(self.nPlots):
-                self.removeFigure(self.qfigWidgets[self.nPlots-i])
+            #for i in range(self.nPlots):
+            #    self.removeFigure(self.qfigWidgets[self.nPlots-i])
+            for iplot in range(self.nPlots):
+                self.qscrollLayout[iplot].removeWidget(self.qfigWidgets[iplot])
+                self.qfigWidgets[iplot].deleteLater()
+                self.figures_tabWidget.removeTab(iplot)
             
             self.fs_watcher.removePaths(self.fs_watcher.files())
             self.fs_watcher.removePaths(self.fs_watcher.directories())
@@ -732,9 +758,11 @@ class petroSym(petroSymUI):
             
             [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
             for i in range(self.nPlots):
-                #print '%i: %s'%(i,typePlots[i])
+                
+                tab = self.figures_tabWidget.widget(i)
+
                 if typePlots[i]=='Residuals':
-                    ww = figureResidualsWidget(self.scrollAreaWidgetContents,namePlots[i])
+                    ww = figureResidualsWidget(tab,namePlots[i])
                     filename = '%s/postProcessing/%s/%s/residuals.dat'%(self.currentFolder,namePlots[i],currtime)
                     ww.lastPos = -1
                     self.pending_files.append(filename)
@@ -762,17 +790,18 @@ class petroSym(petroSymUI):
                         else:
                             latest = listdirsfloat[len(listdirsfloat)-1]
                         filename2 = '%s/postProcessing/%s/%s/residuals.dat'%(self.currentFolder,namePlots[i],str(latest))
-                        self.pending_files.append(filename2)
+                        if filename2 not in self.pending_files:
+                            self.pending_files.append(filename2)
                     
                 elif typePlots[i]=='Sampled Line':
-                    ww = figureSampledLineWidget(self.scrollAreaWidgetContents,namePlots[i])      
+                    ww = figureSampledLineWidget(tab,namePlots[i],self.currentFolder)      
                     dirname = 'postProcessing/%s'%namePlots[i]
                     #Solo agregar si se eligio autorefreshing
                     self.pending_dirs.append(dirname)
                 elif typePlots[i]=='General Snapshot':
-                    ww = figureGeneralSnapshotWidget(self.scrollAreaWidgetContents,self.currentFolder)
+                    ww = figureGeneralSnapshotWidget(tab,self.currentFolder)
                 elif typePlots[i]=='Tracers':
-                    ww = figureTracersWidget(self.scrollAreaWidgetContents,namePlots[i])
+                    ww = figureTracersWidget(tab,namePlots[i])
                     filename = '%s/postProcessing/%s/%s/faceSource.dat'%(self.currentFolder,namePlots[i],currtime)
                     self.pending_files.append(filename)
                     
@@ -803,10 +832,22 @@ class petroSym(petroSymUI):
                         self.pending_files.append(filename2)
                 
                 ww.setObjectName(namePlots[i])
+                self.addNewFigureTab(i)
+                tab = self.figures_tabWidget.widget(i)
+                tab.setObjectName(namePlots[i])
+                self.figures_tabWidget.setTabText(i,namePlots[i])
                 self.qfigWidgets.insert(i,ww)
-                self.qfigWidgets[i].setObjectName(namePlots[i])
-                self.qscrollLayout.addWidget(self.qfigWidgets[i],i/2,i%2)
-            self.qscrollLayout.addWidget(self.qfigWidgets[self.nPlots],self.nPlots/2,self.nPlots%2)
+                self.qfigWidgets[i].setObjectName(namePlots[i])                
+                item=self.qscrollLayout[i].itemAt(0)
+                if item:
+                    item.widget().close()
+                    item.widget().deleteLater()
+                self.qscrollLayout[i].addWidget(self.qfigWidgets[i],i/2,i%2)
+            
+            self.addNewFigureTab(self.nPlots)
+                
+                
+            
                 
         self.meshW.setCurrentFolder(self.currentFolder)
         self.runW.setCurrentFolder(self.currentFolder,self.solvername)
@@ -912,17 +953,33 @@ class petroSym(petroSymUI):
                 break
 
         figuretype=''
-        if isinstance(self.qfigWidgets[i],figureResidualsWidget):  
+        if isinstance(self.qfigWidgets[i],figureResidualsWidget):
                 figuretype = 'residuals.dat'
         elif isinstance(self.qfigWidgets[i],figureTracersWidget):
                 figuretype = 'faceSource.dat'
-                
-        self.qscrollLayout.removeWidget(self.qfigWidgets[removeItem])
+        
+        print self.qfigWidgets
+        print self.qscrollLayout        
+        
+        #Elimino el layout y la figura
+        self.qscrollLayout[removeItem].removeWidget(self.qfigWidgets[removeItem])
         self.qfigWidgets[removeItem].deleteLater()
-        for i in xrange(removeItem+1,self.nPlots+1): #voy hasta +1 porque tengo el boton
-            self.qfigWidgets[i-1] = self.qfigWidgets[i]
-            self.qscrollLayout.addWidget(self.qfigWidgets[i-1],(i-1)/2,(i-1)%2)
+        #del self.qfigWidgets[removeItem]
+        #del self.qscrollLayout[removeItem]
+        
+        #Siempre tiene que haber minimo 1
+        #if (self.nPlots>=1):
+        self.figures_tabWidget.removeTab(removeItem)
+
+        for i in range(removeItem,self.nPlots-1):
+            self.qfigWidgets[i] = self.qfigWidgets[i+1]
+        for i in range(removeItem,self.nPlots):
+            self.qscrollLayout[i] = self.qscrollLayout[i+1]
+
         self.nPlots = self.nPlots-1
+        
+        print self.qfigWidgets
+        print self.qscrollLayout
         
         #Elimino la figura del controlDict
         filename = '%s/system/controlDict'%(self.currentFolder)
@@ -938,12 +995,19 @@ class petroSym(petroSymUI):
         if figuretype!='':
             [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
             filename = '%s/postProcessing/%s/%s/%s'%(self.currentFolder,figW.objectName(),currtime,figuretype)
-        
+
             if filename in self.pending_files:
                 self.pending_files.remove(filename)
 
     def temporalFigure_update(self,figW,action):
         #print 'hacer %s en %s'%(action,figW.objectName())
+        
+        #TODO: darle el tstep correspondiente a c/u
+        if isinstance(figW,figureSampledLineWidget):
+                step = 1
+        elif isinstance(figW,figureGeneralSnapshotWidget):
+                step = 1
+    
         if figW.lastPos==-1 and action != 'refresh':
             return
         if action == 'first':
@@ -951,37 +1015,34 @@ class petroSym(petroSymUI):
             figW.plot()
         elif action == 'previous':
             if figW.lastPos>0:
-                figW.lastPos = figW.lastPos - 1
+                figW.lastPos = figW.lastPos - step
                 figW.plot()
         elif action == 'next':
             if figW.lastPos<len(figW.dirList)-1:
-                figW.lastPos = figW.lastPos + 1
+                figW.lastPos = figW.lastPos + step
                 figW.plot()
         elif action == 'last':
-            figW.lastPos = len(figW.dirList) - 1
+            figW.lastPos = len(figW.dirList) - step
             figW.plot()
         elif action == 'play':
             figW.lastPos = 0
             button = figW.findChild(temporalNavigationToolbar)._actions['play']
             while figW.lastPos<=len(figW.dirList)-1 and button.isChecked():
                 figW.plot()
-                figW.lastPos = figW.lastPos + 1
+                figW.lastPos = figW.lastPos + step
                 QtGui.QApplication.processEvents()
                 if isinstance(figW,figureGeneralSnapshotWidget):
                     time.sleep(0.1)
 
             if figW.lastPos==len(figW.dirList):
-                figW.lastPos = figW.lastPos - 1
+                figW.lastPos = figW.lastPos - step
                 button.setChecked(False)
         elif action == 'refresh':
             ii = figW.objectName()
             if isinstance(figW,figureSampledLineWidget):
                 path = '%s/postProcessing/%s'%(self.currentFolder,ii)
             elif isinstance(figW,figureGeneralSnapshotWidget):
-                path = '%s/snapshots/%s'%(self.currentFolder,ii)
-                figW.lastPos = 0
-                figW.plot()
-                return
+                path = '%s/postProcessing/snapshots/%s'%(self.currentFolder,ii)
 
             if not os.path.isdir(path):
                 w = QtGui.QMessageBox(QtGui.QMessageBox.Critical,"Error","Primero debe ejecutar la corrida")
@@ -993,34 +1054,34 @@ class petroSym(petroSymUI):
             newdirs.sort(key=lambda x: os.stat(os.path.join(path, x)).st_mtime)
             figW.dirList.extend(newdirs)
             figW.lastPos = len(figW.dirList) - 1
-
+                
             if figW.lastPos>0:
                 figW.plot()
                 
 
-    def doPlot(self,figW):
-        ii = figW.objectName()
-        #print 'por hace plot de %s type: %s'%(ii,self.dirType[ii])
-       
-       # if isinstance(figW,figureSampledLineWidget):
-                       
-       #     figW.plot()
-
-        #if  self.dirType[ii]=='General Snapshot':
-        desired = '%s/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[ii][self.lastPos[ii]],ii)
-        #print desired
-        if os.path.isfile(desired)==False:
-            command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="snapshot" --no-casename --no-timename %s'%(self.dirList[ii][self.lastPos[ii]],self.currentFolder,ii,self.currentFolder)
-            os.system(command)
-            while os.path.isfile('snapshot_00000.png')==False:
-                None
-            command = 'mv snapshot_00000.png %s/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[ii][self.lastPos[ii]],ii)
-            os.system(command)
-        mainImage = figW.findChild(QtGui.QLabel,'mainImage')
-        mainImage.setPixmap(QtGui.QPixmap(_fromUtf8(desired)))
-
-        timeLegend = figW.findChild(QtGui.QLineEdit)
-        timeLegend.setText(self.dirList[ii][self.lastPos[ii]])
+#    def doPlot(self,figW):
+#        ii = figW.objectName()
+#        #print 'por hace plot de %s type: %s'%(ii,self.dirType[ii])
+#       
+#       # if isinstance(figW,figureSampledLineWidget):
+#                       
+#       #     figW.plot()
+#
+#        #if  self.dirType[ii]=='General Snapshot':
+#        desired = '%s/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[ii][self.lastPos[ii]],ii)
+#        #print desired
+#        if os.path.isfile(desired)==False:
+#            command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="snapshot" --no-casename --no-timename %s'%(self.dirList[ii][self.lastPos[ii]],self.currentFolder,ii,self.currentFolder)
+#            os.system(command)
+#            while os.path.isfile('snapshot_00000.png')==False:
+#                None
+#            command = 'mv snapshot_00000.png %s/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[ii][self.lastPos[ii]],ii)
+#            os.system(command)
+#        mainImage = figW.findChild(QtGui.QLabel,'mainImage')
+#        mainImage.setPixmap(QtGui.QPixmap(_fromUtf8(desired)))
+#
+#        timeLegend = figW.findChild(QtGui.QLineEdit)
+#        timeLegend.setText(self.dirList[ii][self.lastPos[ii]])
 
 
     def updateCaseSetup(self,QTreeWidgetItem):
@@ -1082,10 +1143,28 @@ class petroSym(petroSymUI):
         self.actionRun.setEnabled(V)
         self.actionParaview.setEnabled(V)
 
-    def addNewFigureButton(self):
-        self.qfigWidgets.append(QtGui.QComboBox(self.scrollAreaWidgetContents))
-        self.qfigWidgets[self.nPlots].setObjectName(_fromUtf8("newFigureComboBox"))
-        self.qfigWidgets[self.nPlots].addItem(_fromUtf8("Select New Figure"))
-        self.qfigWidgets[self.nPlots].insertSeparator(1)
-        self.qfigWidgets[self.nPlots].addItems(self.typeFigure)
-        self.qscrollLayout.addWidget(self.qfigWidgets[self.nPlots],self.nPlots/2,self.nPlots%2)
+    def addNewFigureTab(self,indx):
+        if indx==0:
+            tab = self.figures_tabWidget.widget(indx)
+        else:
+            tab = QtGui.QWidget()
+            tab.setObjectName("New")
+            self.figures_tabWidget.addTab(tab,"New")
+        
+        if not tab.layout():
+            self.qscrollLayout[indx] = QtGui.QGridLayout(tab)
+            tab.setLayout(self.qscrollLayout[indx])
+            
+            figComboBox = QtGui.QComboBox(tab)
+            figComboBox.setObjectName(_fromUtf8("newFigureComboBox"))
+            figComboBox.addItem(_fromUtf8("Select New Figure"))
+            figComboBox.insertSeparator(1)
+            figComboBox.addItems(self.typeFigure)
+            figComboBox.setCurrentIndex(0)
+        
+            self.qscrollLayout[indx].setGeometry(QtCore.QRect(0, 0, 500, 300))
+            self.qscrollLayout[indx].addWidget(figComboBox,self.nPlots/2,self.nPlots%2)        
+            QtCore.QObject.connect(figComboBox, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.addNewFigure)
+        else:
+            return
+        
