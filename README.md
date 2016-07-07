@@ -28,6 +28,10 @@ Package petroSym requires python 2.7, matplotlib>=1.5.0, PyQt and pyFoam 0.6.4:
 
     pip install -r requirements.txt
 
+To avoid an intrusive rendering during simulations, please comment (add a # at the beginning of) the line 300 of the file 
+    
+    PATH_TO_INSTALLATION/PyFoam/Applications/PVSnapshot.py
+
 To check if PyFoam was succesfully installed, try:
 
     python check_PyFoam.py
