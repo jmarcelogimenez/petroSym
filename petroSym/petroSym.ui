@@ -65,7 +65,7 @@
             </sizepolicy>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="tab_mesh">
             <attribute name="title">
@@ -274,13 +274,8 @@
         <item>
          <widget class="QTabWidget" name="figures_tabWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>-1</number>
           </property>
-          <widget class="QWidget" name="initial_tab">
-           <attribute name="title">
-            <string>New</string>
-           </attribute>
-          </widget>
          </widget>
         </item>
        </layout>

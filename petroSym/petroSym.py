@@ -97,7 +97,7 @@ class petroSym(petroSymUI):
         self.typeFigure = ['Residuals', 'Tracers', 'Probes', 'Sampled Line', 'General Snapshot']
         self.colors = ['r', 'b', 'k', 'g', 'y', 'c']
 
-        self.addNewFigureTab(0)
+        #self.addNewFigureTab(0)
         
         #QtCore.QObject.connect(self.qfigWidgets[self.nPlots], QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.addNewFigure)
 
@@ -204,12 +204,20 @@ class petroSym(petroSymUI):
             else:
                 self.loadingmbox("Creating","Creating selected case...")
                 self.nproc = 1
+                
+                #Borro todas las tabs y figuras
                 for iplot in range(self.nPlots):
                     self.qscrollLayout[iplot].removeWidget(self.qfigWidgets[iplot])
                     self.qfigWidgets[iplot].deleteLater()
-                    self.figures_tabWidget.removeTab(iplot)
-                self.figures_tabWidget.removeTab(iplot+1)
-                #self.addNewFigureTab(0)
+                    #self.figures_tabWidget.removeTab(iplot)
+                
+                #Si queda la ultima, la borro y la vuelvo a crear 
+                #(Para los casos en que se crea un caso con otro ya abierto)
+                count=self.figures_tabWidget.count()
+                for i in range(count):
+                    self.figures_tabWidget.removeTab(0)
+                self.addNewFigureTab(0)
+                
                 QtGui.QApplication.processEvents()
                 self.nPlots = 0
                 self.qfigWidgets = self.qfigWidgets[-1:]
@@ -387,20 +395,15 @@ class petroSym(petroSymUI):
             i = self.nPlots
             
             #elimino el boton (es siempre el item 0 de la tab)
-            if i!=0:
-                item=self.qscrollLayout[i].itemAt(0)
-                item.widget().close()
-                item.widget().deleteLater()
+            #if i!=0:
+            item=self.qscrollLayout[i].itemAt(0)
+            item.widget().close()
+            item.widget().deleteLater()
             
             self.qfigWidgets.insert(i, ww)
 
             #agrego el nuevo plot
             self.qscrollLayout[i].addWidget(self.qfigWidgets[i],i/2,i%2)
-            #vuelvo a ubicar el boton
-            #self.qscrollLayout.addWidget(self.qfigWidgets[i+1],(i+1)/2,(i+1)%2)
-            
-            print self.qfigWidgets
-            print self.qscrollLayout
             
             self.nPlots = self.nPlots+1
             
@@ -592,7 +595,6 @@ class petroSym(petroSymUI):
             self.fs_watcher.addPath(path)
             return
 
-
         for ii in keys:
             figW = self.findChild(QtGui.QWidget,ii)
             newdirs = list(set(os.listdir(path))-set(figW.dirList))
@@ -612,10 +614,8 @@ class petroSym(petroSymUI):
         while i<len(self.pending_files):
             filename = self.pending_files[i]
             #print 'file: '+filename
-            
             if os.path.isfile(filename):
-                print 'Se agrega %s'%filename
-                    
+                #print 'Se agrega %s'%filename
                 #self.fs_watcher.addPath(filename)
                 self.pending_files.pop(i)
                 #una vez que se cual es la grafica
@@ -718,23 +718,30 @@ class petroSym(petroSymUI):
             wrongFile = 1 if 'typePlots' not in config.keys() else wrongFile
             wrongFile = 1 if 'typeFile' not in config.keys() else wrongFile
             wrongFile = 1 if 'runningpid' not in config.keys() else wrongFile
-                
-            #print config
+
             if wrongFile:
                 QtGui.QMessageBox.about(self, "ERROR", "Corrupted File")
                 return
-            
-            #for i in range(self.nPlots):
-            #    self.removeFigure(self.qfigWidgets[self.nPlots-i])
+
+            print self.nPlots
+            #Borro todas las tabs y figuras
             for iplot in range(self.nPlots):
                 self.qscrollLayout[iplot].removeWidget(self.qfigWidgets[iplot])
                 self.qfigWidgets[iplot].deleteLater()
-                self.figures_tabWidget.removeTab(iplot)
+                #self.figures_tabWidget.removeTab(iplot)
+    
+            #Si queda la ultima, la borro y la vuelvo a crear
+            #(Para los casos en que se crea un caso con otro ya abierto)
+            count=self.figures_tabWidget.count()
+            for i in range(count):
+                self.figures_tabWidget.removeTab(0)
             
             self.fs_watcher.removePaths(self.fs_watcher.files())
             self.fs_watcher.removePaths(self.fs_watcher.directories())
             self.pending_files = []
             self.pending_dirs = []
+            self.qscrollLayout = {}
+            self.qfigWidgets = []
             
             self.nPlots = config['nPlots']
             namePlots = config['namePlots']
@@ -958,9 +965,6 @@ class petroSym(petroSymUI):
         elif isinstance(self.qfigWidgets[i],figureTracersWidget):
                 figuretype = 'faceSource.dat'
         
-        print self.qfigWidgets
-        print self.qscrollLayout        
-        
         #Elimino el layout y la figura
         self.qscrollLayout[removeItem].removeWidget(self.qfigWidgets[removeItem])
         self.qfigWidgets[removeItem].deleteLater()
@@ -977,9 +981,6 @@ class petroSym(petroSymUI):
             self.qscrollLayout[i] = self.qscrollLayout[i+1]
 
         self.nPlots = self.nPlots-1
-        
-        print self.qfigWidgets
-        print self.qscrollLayout
         
         #Elimino la figura del controlDict
         filename = '%s/system/controlDict'%(self.currentFolder)
@@ -1000,14 +1001,8 @@ class petroSym(petroSymUI):
                 self.pending_files.remove(filename)
 
     def temporalFigure_update(self,figW,action):
-        #print 'hacer %s en %s'%(action,figW.objectName())
-        
-        #TODO: darle el tstep correspondiente a c/u
-        if isinstance(figW,figureSampledLineWidget):
-                step = 1
-        elif isinstance(figW,figureGeneralSnapshotWidget):
-                step = 1
-    
+        step = 1
+
         if figW.lastPos==-1 and action != 'refresh':
             return
         if action == 'first':
@@ -1049,15 +1044,19 @@ class petroSym(petroSymUI):
                 QtGui.QApplication.processEvents()
                 w.exec_()
                 return
-                
+
             newdirs = list(set(os.listdir(path))-set(figW.dirList))
-            newdirs.sort(key=lambda x: os.stat(os.path.join(path, x)).st_mtime)
+            
+            # Los convierto a flotantes para ordenarlos, antes se hacia con
+            # os.stat(os.path.join(path, x)).st_mtime pero daba errores en los
+            # resultados
+            newdirs.sort(key=lambda x: float(x))
             figW.dirList.extend(newdirs)
             figW.lastPos = len(figW.dirList) - 1
-                
+
             if figW.lastPos>0:
                 figW.plot()
-                
+
 
 #    def doPlot(self,figW):
 #        ii = figW.objectName()
@@ -1144,27 +1143,22 @@ class petroSym(petroSymUI):
         self.actionParaview.setEnabled(V)
 
     def addNewFigureTab(self,indx):
-        if indx==0:
-            tab = self.figures_tabWidget.widget(indx)
-        else:
-            tab = QtGui.QWidget()
-            tab.setObjectName("New")
-            self.figures_tabWidget.addTab(tab,"New")
+        tab = QtGui.QWidget()
+        tab.setObjectName("New")
+        self.figures_tabWidget.addTab(tab,"New")
+        self.qscrollLayout[indx] = QtGui.QGridLayout(tab)
+        tab.setLayout(self.qscrollLayout[indx])
         
-        if not tab.layout():
-            self.qscrollLayout[indx] = QtGui.QGridLayout(tab)
-            tab.setLayout(self.qscrollLayout[indx])
-            
-            figComboBox = QtGui.QComboBox(tab)
-            figComboBox.setObjectName(_fromUtf8("newFigureComboBox"))
-            figComboBox.addItem(_fromUtf8("Select New Figure"))
-            figComboBox.insertSeparator(1)
-            figComboBox.addItems(self.typeFigure)
-            figComboBox.setCurrentIndex(0)
+        figComboBox = QtGui.QComboBox(tab)
+        figComboBox.setObjectName(_fromUtf8("newFigureComboBox"))
+        figComboBox.addItem(_fromUtf8("Select New Figure"))
+        figComboBox.insertSeparator(1)
+        figComboBox.addItems(self.typeFigure)
+        figComboBox.setCurrentIndex(0)
+    
+        self.qscrollLayout[indx].setGeometry(QtCore.QRect(0, 0, 500, 300))
+        self.qscrollLayout[indx].addWidget(figComboBox,self.nPlots/2,self.nPlots%2)        
+        QtCore.QObject.connect(figComboBox, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.addNewFigure)
         
-            self.qscrollLayout[indx].setGeometry(QtCore.QRect(0, 0, 500, 300))
-            self.qscrollLayout[indx].addWidget(figComboBox,self.nPlots/2,self.nPlots%2)        
-            QtCore.QObject.connect(figComboBox, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.addNewFigure)
-        else:
-            return
+        return
         
