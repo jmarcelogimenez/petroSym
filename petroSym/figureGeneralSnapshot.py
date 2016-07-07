@@ -47,11 +47,14 @@ class figureGeneralSnapshotWidget(QtGui.QWidget):
         mainImage.setText(_fromUtf8(""))
         mainImage.setPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/fromHelyx/emptyFigure.png")))
         mainImage.setObjectName(_fromUtf8("mainImage"))
+        mainImage.setScaledContents(True)
+        mainImage.setSizePolicy(QtGui.QSizePolicy.Ignored,QtGui.QSizePolicy.Ignored)
+
 
         plotLayout = QtGui.QVBoxLayout()
         plotLayout.addWidget(temporal_toolbar)
-        plotLayout.addWidget(mainImage)
-        plotLayout.addWidget(toolbar)
+        plotLayout.addWidget(mainImage,1)
+        plotLayout.addWidget(toolbar,0,QtCore.Qt.AlignCenter)
         
         self.setLayout(plotLayout)
         self.lastPos = -1
@@ -62,20 +65,13 @@ class figureGeneralSnapshotWidget(QtGui.QWidget):
         
     def plot(self):
         ii = self.objectName()
-        #desired = '%s/postProcessing/snapshots/%s/%s/%s_%s.png'%(self.currentFolder,ii,self.lastPos,ii,self.lastPos)
         desired = '%s/postProcessing/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[self.lastPos],ii)
-        
-        #newdirsnapshot = '%s/postProcessing/snapshots/%s/%s'%(self.currentFolder,ii,self.lastPos)
         if not os.path.isfile(desired):
             command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="%s/snapshot" --no-casename --no-timename --no-offscreen-rendering %s'%(self.lastPos,self.currentFolder,ii,self.currentFolder,self.currentFolder)
             os.system(command)
-            #dirsnapshot=os.path.dirname(os.path.realpath(__file__))
             filename = '%s/snapshot_00000.png'%self.currentFolder
             while not os.path.isfile(filename):
-                None            
-            #command = 'mkdir -p %s'%newdirsnapshot
-            #os.system(command)
-            #command = 'mv %s %s/postProcessing/snapshots/%s/%s/%s_%s.png'%(filename,self.currentFolder,ii,self.lastPos,ii,self.lastPos)
+                None
             command = 'mv %s %s/postProcessing/snapshots/%s/%s/%s.png'%(filename,self.currentFolder,ii,self.dirList[self.lastPos],ii)
             os.system(command)
         mainImage = self.findChild(QtGui.QLabel,'mainImage')
@@ -83,9 +79,7 @@ class figureGeneralSnapshotWidget(QtGui.QWidget):
 
         timeLegend = self.findChild(QtGui.QLineEdit)
         timeLegend.setText(self.dirList[self.lastPos])
-        #self.dirList.extend(newdirsnapshot)
-        #print newdirsnapshot
-        
+
     def resetFigure(self):
         self.lastPos = -1
         self.dirList = []

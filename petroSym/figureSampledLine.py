@@ -196,8 +196,8 @@ class figureSampledLineWidget(QtGui.QWidget):
          # place plot components in a layout
         plotLayout = QtGui.QVBoxLayout()
         plotLayout.addWidget(temporal_toolbar)
-        plotLayout.addWidget(canvas)
-        plotLayout.addWidget(toolbar)
+        plotLayout.addWidget(canvas,1)
+        plotLayout.addWidget(toolbar,0,QtCore.Qt.AlignCenter)
         self.setLayout(plotLayout)
 
         canvas.setMinimumSize(canvas.size())
