@@ -250,6 +250,11 @@
            <string>Clock Time</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Adjustable Run Time</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="5" column="1">

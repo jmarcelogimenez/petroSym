@@ -1,5 +1,8 @@
 from PyQt4 import QtGui, QtCore
 
+#@@TODO: Cuando abro un caso (tutorial) que no tiene el .config de arranqe
+#no me deja agregar figuras
+
 #cambiar a:
 #from petroSym.petroSym_ui import petroSymUI
 #from petroSym.popUpNew import *
@@ -95,12 +98,6 @@ class petroSym(petroSymUI):
         self.typeFigure = ['Residuals', 'Tracers', 'Probes', 'Sampled Line', 'General Snapshot']
         self.colors = ['r', 'b', 'k', 'g', 'y', 'c']
 
-        #self.addNewFigureTab(0)
-        
-        #QtCore.QObject.connect(self.qfigWidgets[self.nPlots], QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.addNewFigure)
-
-        #self.scrollAreaWidgetContents.setLayout(self.qscrollLayout)
-
         QtCore.QObject.connect(self.tabWidget_2, QtCore.SIGNAL("tabCloseRequested(int)"), self.closeLogTab)
 
         self.meshW = meshWidget()
@@ -125,10 +122,17 @@ class petroSym(petroSymUI):
         self.OnOff(False)
         
         self.activeTimer = QtCore.QTimer(self)
-        self.activeTimer.setInterval(0.2*1000);
-        #activeTimer->setSingleShot(true);
-        self.connect(self.activeTimer, QtCore.SIGNAL("timeout()"), self.update_watcher);
+        self.activeTimer.setInterval(0.2*1000)
+        self.connect(self.activeTimer, QtCore.SIGNAL("timeout()"), self.update_watcher)
         self.activeTimer.start()
+        
+        #self.activeFigureTimer = QtCore.QTimer(self)
+        #self.activeFigureTimer.setInterval(1000)
+        #self.connect(self.activeFigureTimer, QtCore.SIGNAL("timeout()"), self.update_figure)
+        #self.activeFigureTimer.start()
+        
+        self.activeFigureTimer = []
+
 
     def updateMeshPanel(self):
         QtGui.QMessageBox.about(self, "ERROR", "Primero se debe calcular!")
@@ -222,6 +226,7 @@ class petroSym(petroSymUI):
                 self.fs_watcher.removePaths(self.fs_watcher.directories())
                 self.pending_files = []
                 self.pending_dirs = []
+                self.activeFigureTimer = []
                 
                 #Levantar dependiendo del caso predefinido elegido
                 #typeSim = data[2]
@@ -407,6 +412,14 @@ class petroSym(petroSymUI):
             else:
                 self.qfigWidgets[i].setObjectName(data_name)
                 ww.accept()
+                
+            #Creo el nuevo timer para la figura (Solo si es tracer o res)
+            if self.typeFigure[index] == 'Residuals' or self.typeFigure[index] == 'Tracers':
+                newtimer = QtCore.QTimer(self)
+                self.activeFigureTimer.insert(i,newtimer)
+                ww = self.qfigWidgets[i]
+                canvas = ww.findChild(FigureCanvas)
+                self.connect(newtimer, QtCore.SIGNAL("timeout()"), canvas.draw)
 
             # Seteo el nombre del tab
             tab = self.figures_tabWidget.widget(self.nPlots-1)
@@ -418,6 +431,9 @@ class petroSym(petroSymUI):
             self.save_config()
             
             self.addNewFigureTab(self.nPlots)
+            
+            #Seteo los tiempos de nuevo
+            self.update_figuretimerefresh()
 
         return
 
@@ -661,6 +677,26 @@ class petroSym(petroSymUI):
                 command = 'rm %s'%filename
                 os.system(command)
 
+    def update_figuretime(self,num):
+        w = QtGui.QMessageBox(QtGui.QMessageBox.Information,"Loading","Updating the plot refresh time...")
+        w.show()
+        QtGui.QApplication.processEvents()
+        for i in range(len(self.activeFigureTimer)):
+            timer = self.activeFigureTimer[i]
+            timer.stop()
+        for i in range(len(self.activeFigureTimer)):
+            timer = self.activeFigureTimer[i]
+            timer.setInterval(len(self.activeFigureTimer)*num*1000)
+            timer.start()
+            time.sleep(num)
+        
+        return
+            
+    def update_figuretimerefresh(self):
+        num=self.graphrefresh_spinBox.value()
+        self.update_figuretime(num)
+
+
     def save_config(self):
         filename = '%s/petroSym.config'%self.currentFolder
         config = {}
@@ -730,6 +766,7 @@ class petroSym(petroSymUI):
             self.fs_watcher.removePaths(self.fs_watcher.directories())
             self.pending_files = []
             self.pending_dirs = []
+            self.activeFigureTimer = []
             self.qscrollLayout = {}
             self.qfigWidgets = []
             
@@ -842,6 +879,13 @@ class petroSym(petroSymUI):
                     item.widget().close()
                     item.widget().deleteLater()
                 self.qscrollLayout[i].addWidget(self.qfigWidgets[i],i/2,i%2)
+                
+                if typePlots[i] == 'Residuals' or typePlots[i] == 'Tracers':
+                    newtimer = QtCore.QTimer(self)
+                    self.activeFigureTimer.insert(i,newtimer)
+                    ww = self.qfigWidgets[i]
+                    canvas = ww.findChild(FigureCanvas)
+                    self.connect(newtimer, QtCore.SIGNAL("timeout()"), canvas.draw)
             
             self.addNewFigureTab(self.nPlots)
                 
@@ -852,6 +896,7 @@ class petroSym(petroSymUI):
             self.meshW.createMesh()
         self.postproW.setCurrentFolder(self.currentFolder)
         self.meshW.loadMeshData()
+        self.update_figuretimerefresh()
         
     def removeFilesPostPro(self):
         [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
@@ -863,6 +908,8 @@ class petroSym(petroSymUI):
                     command = 'rm %s'%filename
                     os.system(command)
 
+                print 'curr '+currtime
+                print 'graph '+str(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0])
                 if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0] > float(currtime)):
                     self.qfigWidgets[i].resetFigure()
                 else:
