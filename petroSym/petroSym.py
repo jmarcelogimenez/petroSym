@@ -908,9 +908,18 @@ class petroSym(petroSymUI):
                     command = 'rm %s'%filename
                     os.system(command)
 
-                print 'curr '+currtime
-                print 'graph '+str(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0])
-                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0] > float(currtime)):
+                #print 'curr '+currtime
+                #if len(self.qfigWidgets[i].dataPlot)>0:
+                #    print 'graph '+str(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0])
+                
+                #Fijarse que a veces el ultimo numero del plot viene con varias cifras decimales,
+                #en cambio el currtime viene con menos, lo que hace que de mal la comparacion.
+                #Por ello en lugar de comparalos derecho, los redondeo a 6 cifras sig. a c/u
+                # 0.1108333
+                # 0.110833
+                lastplot_rounded = round(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0],6)
+                currtime_rounded = round(float(currtime),6)
+                if (len(self.qfigWidgets[i].dataPlot)>0 and lastplot_rounded > currtime_rounded):
                     self.qfigWidgets[i].resetFigure()
                 else:
                     self.qfigWidgets[i].lastPos = -1
@@ -922,7 +931,9 @@ class petroSym(petroSymUI):
                     command = 'rm %s'%filename
                     os.system(command)
 
-                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot.ndim==2 and self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0] > float(currtime)):
+                lastplot_rounded = round(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0],6)
+                currtime_rounded = round(float(currtime),6)
+                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot.ndim==2 and lastplot_rounded > currtime_rounded):
                     self.qfigWidgets[i].resetFigure()
                 else:
                     self.qfigWidgets[i].lastPos = -1
