@@ -243,3 +243,8 @@ def backupFile(f):
         newfilepath = filename+'.backup'
         command = 'cp %s %s'%(filename,newfilepath)
         os.system(command)
+
+def get_screen_resolutions():
+    output = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0]
+    resolution = output.split()[0].split(b'x')
+    return resolution
