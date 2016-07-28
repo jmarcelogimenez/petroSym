@@ -176,6 +176,12 @@ class petroSym(petroSymUI):
         oldFolder = self.currentFolder
         self.currentFolder = str(QtGui.QFileDialog.getExistingDirectory(self, 'Save As...', './'))
         
+        self.runW.currentFolder = self.currentFolder
+        self.meshW.currentFolder = self.currentFolder
+        self.postproW.currentFolder = self.currentFolder
+        for i in range(self.nPlots):
+            self.qfigWidgets[i].currentFolder = self.currentFolder
+        
         w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Save As", "Do you want to keep the running folders? (If not, only the folders 0, system and constant will copy)", QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
         ret = w.exec_()
         import subprocess
@@ -191,6 +197,9 @@ class petroSym(petroSymUI):
             subprocess.check_call(command,shell=True)
             command = 'rm -r %s/%s' % (self.currentFolder,oldCase)
             subprocess.check_call(command,shell=True)
+            #-- Limpio los graficos
+            for i in range(self.nPlots):
+                self.qfigWidgets[i].resetFigure()
         
         self.save_config()
 
@@ -991,7 +1000,6 @@ class petroSym(petroSymUI):
         self.pending_dirs = []
         self.fs_watcher.removePaths(self.fs_watcher.files())
         self.fs_watcher.removePaths(self.fs_watcher.directories())
-        
         if solvername == 'pimpleFoam':
             command = 'rm -rf %s/*' % self.currentFolder
             os.system(command)
@@ -1166,7 +1174,7 @@ class petroSym(petroSymUI):
             widget = turbulence(self.currentFolder,self.solvername)
         elif menu=='Gravity':
             widget = gravity(self.currentFolder,self.solvername)
-            widget.setDisabled(True) #Gravity desactivada por el momento
+            #widget.setDisabled(True) #Gravity desactivada por el momento
         elif menu=='Run Time Controls':
             widget = runTimeControls(self.currentFolder)
         elif 'phase' in menu:
