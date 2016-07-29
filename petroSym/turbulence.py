@@ -82,6 +82,11 @@ class turbulence(turbulenceUI):
         if self.radioTurb2.isChecked():
             RASModelName = str(self.comboBoxTurb.currentText())
             filename = '%s/constant/RASProperties'%self.currentFolder
+            print self.currentFolder
+            if not os.path.isfile(filename):
+                command = 'cp %s/templates/template_pimpleFoam/constant/RASProperties %s/constant/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
+                os.system(command)
+                
             Rprop = ParsedParameterFile(filename,createZipped=False)
             Rprop['RASModel'] = RASModelName
             Rprop.writeFile()
@@ -91,27 +96,37 @@ class turbulence(turbulenceUI):
             if (typ == 'kEpsilon'):
                 exists = os.path.isfile(self.timedir+'/'+'k')
                 if not exists:
-                    command = 'cp %s/0/k %s' % (self.currentFolder,self.timedir)
+                    #command = 'cp %s/0/k %s' % (self.currentFolder,self.timedir)
+                    command = 'cp %s/templates/template_pimpleFoam/0/k %s' % (os.path.dirname(os.path.realpath(__file__)),self.timedir)
                     os.system(command)
                 exists = os.path.isfile(self.timedir+'/'+'epsilon')
                 if not exists:
-                    command = 'cp %s/0/epsilon %s' % (self.currentFolder,self.timedir)
+                    #command = 'cp %s/0/epsilon %s' % (self.currentFolder,self.timedir)
+                    command = 'cp %s/templates/template_pimpleFoam/0/epsilon %s' % (os.path.dirname(os.path.realpath(__file__)),self.timedir)
                     os.system(command)
                 fields = ['k','epsilon']
             else: #komega o komegasst
                 exists = os.path.isfile(self.timedir+'/'+'k')
                 if not exists:
-                    command = 'cp %s/0/k %s' % (self.currentFolder,self.timedir)
+                    #command = 'cp %s/0/k %s' % (self.currentFolder,self.timedir)
+                    command = 'cp %s/templates/template_pimpleFoam/0/k %s' % (os.path.dirname(os.path.realpath(__file__)),self.timedir)
                     os.system(command)
                 exists = os.path.isfile(self.timedir+'/'+'omega')
                 if not exists:
-                    command = 'cp %s/0/omega %s' % (self.currentFolder,self.timedir)
+                    #command = 'cp %s/0/omega %s' % (self.currentFolder,self.timedir)
+                    command = 'cp %s/templates/template_pimpleFoam/0/omega %s' % (os.path.dirname(os.path.realpath(__file__)),self.timedir)
                     os.system(command)
                 fields = ['k','omega']                    
                 
         elif self.radioTurb3.isChecked():
             LESModelName = str(self.comboBoxTurb.currentText())
             filename = '%s/constant/LESProperties'%self.currentFolder
+            
+            print self.currentFolder
+            if not os.path.isfile(filename):
+                command = 'cp %s/templates/template_pimpleFoam/constant/LESProperties %s/constant/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
+                os.system(command)            
+            
             Lprop = ParsedParameterFile(filename,createZipped=False)
             Lprop['LESModel'] = LESModelName
             Lprop.writeFile()
@@ -119,7 +134,8 @@ class turbulence(turbulenceUI):
             
             exists = os.path.isfile(self.timedir+'/'+'nuSgs')
             if not exists:
-                command = 'cp %s/0/nuSgs %s' % (self.currentFolder,self.timedir)
+                #command = 'cp %s/0/nuSgs %s' % (self.currentFolder,self.timedir)
+                command = 'cp %s/templates/template_pimpleFoam/0/nuSgs %s' % (os.path.dirname(os.path.realpath(__file__)),self.timedir)
                 os.system(command)
             fields = ['nuSgs']
         else:
@@ -138,9 +154,9 @@ class turbulence(turbulenceUI):
         #imponerles alguna CB por defecto dependiendo del tipo de patch
         boundaries = BoundaryDict(self.currentFolder)
         filename2 = '%s/system/changeDictionaryPetroSym'%self.currentFolder
-        fieldData2 = ParsedParameterFile(filename2,createZipped=False)
-        #veo los campos que tengo en el directorio inicial
-        #[timedir,fields,currtime] = currentFields(self.currentFolder, False)
+        fieldData2 = []
+        if os.path.isfile(filename2):
+            fieldData2 = ParsedParameterFile(filename2,createZipped=False)
 
         for ifield in fields:
             filename = '%s/%s'%(timedir,ifield)
@@ -159,19 +175,28 @@ class turbulence(turbulenceUI):
                             patchDict['type'] = 'zeroGradient'
                     else:
                         patchDict['type'] = 'calculated'
-                    fieldData['boundaryField'][ipatch] = patchDict
-                    fieldData2['dictionaryReplacement'][ifield]['boundaryField'][ipatch] = patchDict
+                    
+                    if fieldData2==[]:
+                        fieldData['boundaryField'][ipatch] = patchDict
+                    else:
+                        fieldData2['dictionaryReplacement'][ifield]['boundaryField'][ipatch] = patchDict
             
             # poner el campo interno uniforme en cero
             if types[ifield] == 'scalar':
-                fieldData['internalField'] = 'uniform 0'
-                fieldData2['dictionaryReplacement'][ifield]['internalField'] = 'uniform 0'
+                if fieldData2==[]:
+                    fieldData['internalField'] = 'uniform 0'
+                else:
+                    fieldData2['dictionaryReplacement'][ifield]['internalField'] = 'uniform 0'
             elif types[ifield] == 'vector':
-                fieldData['internalField'] = 'uniform (0 0 0)'
-                fieldData2['dictionaryReplacement'][ifield]['internalField'] = 'uniform (0 0 0)'
+                if fieldData2==[]:
+                    fieldData['internalField'] = 'uniform (0 0 0)'
+                else:
+                    fieldData2['dictionaryReplacement'][ifield]['internalField'] = 'uniform (0 0 0)'
 
             fieldData.writeFile()
-        fieldData2.writeFile()
+        
+        if fieldData2!=[]:
+            fieldData2.writeFile()
 
         return
         

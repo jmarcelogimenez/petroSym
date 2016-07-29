@@ -1014,7 +1014,7 @@ class petroSym(petroSymUI):
             command = 'rm -rf %s/*' % self.currentFolder
             os.system(command)
             command = 'cp -r %s/templates/template_pimpleFoam/* %s/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
-            os.system(command)            
+            os.system(command)
         elif solvername =='icoFoam':
             command = 'rm -rf %s/*' % self.currentFolder
             os.system(command)

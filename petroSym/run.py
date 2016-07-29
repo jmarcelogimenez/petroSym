@@ -155,7 +155,7 @@ class runWidget(runUI):
             #    command = 'rm -rf %s/postProcessing/snapshots'%self.currentFolder
             #    os.system(command)
             if w.resetFigures():
-                self.window().resetFigures(w.deletePostpro())
+                self.window().resetFigures(w.deletePostpro(),True)
             filename = '%s/system/controlDict'%self.currentFolder
             parsedData = ParsedParameterFile(filename,createZipped=False)
             parsedData['startFrom'] = 'startTime'            
