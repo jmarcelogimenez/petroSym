@@ -194,7 +194,7 @@ class meshWidget(meshUI):
                     self.label_npoly.setText(linea[:-1].strip()) if 'polyhedra:' in linea else None
                 log.close()
         else:
-            QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "CheckMesh must be executed before").exec_()
+            QtGui.QMessageBox(QtGui.QMessageBox.Information, "Caution!", "Statistics must be executed in order to see mesh data").exec_()
                     
         self.pushButton_check.setEnabled(True)          
         self.pushButton_import.setEnabled(True)   

@@ -197,9 +197,19 @@ class petroSym(petroSymUI):
             subprocess.check_call(command,shell=True)
             command = 'rm -r %s/%s' % (self.currentFolder,oldCase)
             subprocess.check_call(command,shell=True)
-            #-- Limpio los graficos
-            for i in range(self.nPlots):
-                self.qfigWidgets[i].resetFigure()
+            
+            #-- Limpio todo
+            count=self.figures_tabWidget.count()
+            for i in range(count):
+                self.figures_tabWidget.removeTab(0)
+            self.addNewFigureTab(0)
+            self.nPlots = 0
+            self.qfigWidgets = self.qfigWidgets[-1:]
+            self.fs_watcher.removePaths(self.fs_watcher.files())
+            self.fs_watcher.removePaths(self.fs_watcher.directories())
+            self.pending_files = []
+            self.pending_dirs = []
+            self.activeFigureTimer = []
         
         self.save_config()
 
@@ -1075,6 +1085,9 @@ class petroSym(petroSymUI):
 
             if filename in self.pending_files:
                 self.pending_files.remove(filename)
+            
+            #Elimino un timer, no importa cual
+            self.activeFigureTimer.pop()
 
     """
     Funcion temporalFigure_update()

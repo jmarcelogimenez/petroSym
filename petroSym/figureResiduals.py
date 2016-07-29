@@ -197,7 +197,6 @@ class figureResidualsWidget(QtGui.QWidget):
         canvas = self.findChild(FigureCanvas)
         axes = canvas.figure.gca()
         N = self.lastPos
-
         data = pylab.loadtxt(path,skiprows=N)
                 
         with open(path, 'r') as archi:
