@@ -47,8 +47,8 @@ class reset(resetUI):
     def resetFigures(self):
         return True
         
-    def deleteSnapshots(self):
-        return not self.__getattribute__('cb6').isChecked()
+    #def deleteSnapshots(self):
+    #    return not self.__getattribute__('cb6').isChecked()
         
     def deletePostpro(self):
         return not self.__getattribute__('cb5').isChecked()

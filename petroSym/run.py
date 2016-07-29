@@ -151,11 +151,11 @@ class runWidget(runUI):
             self.window().nproc = 1
             command = 'pyFoamClearCase.py %s %s'%(w.getParams(), self.currentFolder)
             os.system(command)
-            if w.deleteSnapshots():
-                command = 'rm -rf %s/snapshots'%self.currentFolder                
-                os.system(command)
+            #if w.deleteSnapshots():
+            #    command = 'rm -rf %s/postProcessing/snapshots'%self.currentFolder
+            #    os.system(command)
             if w.resetFigures():
-                self.window().resetFigures(w.deletePostpro(),w.deleteSnapshots())
+                self.window().resetFigures(w.deletePostpro())
             filename = '%s/system/controlDict'%self.currentFolder
             parsedData = ParsedParameterFile(filename,createZipped=False)
             parsedData['startFrom'] = 'startTime'            
