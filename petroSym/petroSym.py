@@ -126,12 +126,14 @@ class petroSym(petroSymUI):
         self.connect(self.activeTimer, QtCore.SIGNAL("timeout()"), self.update_watcher)
         self.activeTimer.start()
         
-        #self.activeFigureTimer = QtCore.QTimer(self)
-        #self.activeFigureTimer.setInterval(1000)
-        #self.connect(self.activeFigureTimer, QtCore.SIGNAL("timeout()"), self.update_figure)
-        #self.activeFigureTimer.start()
-        
         self.activeFigureTimer = []
+        
+#        self.runningCommand = ''
+#        #0 checkmesh
+#        #1 importmesh
+#        self.errorFlags = []
+#        self.errorFlags.insert(False,0)
+#        self.errorFlags.insert(False,1)
 
 
     def updateMeshPanel(self):
@@ -708,7 +710,16 @@ class petroSym(petroSymUI):
                 while '\n' in content:
                     content.remove('\n')
                 content = ''.join(content)
-                w = QtGui.QMessageBox(QtGui.QMessageBox.Critical,"Error",content)
+
+                title=''
+#                if self.runningCommand==0:
+#                    self.errorFlags[0]=True
+#                    title='CheckMesh '
+#                elif self.runningCommand==1:
+#                    self.errorFlags[1]=True
+#                    title='ImportMesh 's
+                
+                w = QtGui.QMessageBox(QtGui.QMessageBox.Critical,title+"Error",content)
                 QtGui.QApplication.processEvents()
                 w.exec_()
                 log.close()

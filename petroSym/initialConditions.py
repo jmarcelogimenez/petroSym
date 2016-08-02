@@ -30,7 +30,7 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-unknowns = ['U','p','p_rgh','alpha','k','epsilon','omega','nut','nuTilda']
+unknowns = ['U','p','p_rgh','alpha','k','epsilon','omega','nuSgs','nuTilda']
 
 class initialConditionsUI(QtGui.QScrollArea, Ui_initialConditionsUI):
     def __init__(self, parent=None, f=QtCore.Qt.WindowFlags()):

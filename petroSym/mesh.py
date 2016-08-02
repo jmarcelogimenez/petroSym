@@ -68,10 +68,10 @@ class meshWidget(meshUI):
         #--Creo un thread para blockMesh y conecto su finalizacion con checkMesh
         command = 'blockMesh -case %s 1> %s/createMesh.log 2> %s/error.log'%(self.currentFolder,self.currentFolder,self.currentFolder)
         
-        threadblockmesh = ExampleThread(command)
-        self.connect(threadblockmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
-        self.connect(threadblockmesh, QtCore.SIGNAL("finished()"), threadblockmesh.terminate)
-        threadblockmesh.start()
+        self.threadblockmesh = ExampleThread(command)
+        self.connect(self.threadblockmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
+        self.connect(self.threadblockmesh, QtCore.SIGNAL("finished()"), self.threadblockmesh.terminate)
+        self.threadblockmesh.start()
         
     def blockMesh(self):
         about = QtGui.QDialog()
@@ -95,15 +95,30 @@ class meshWidget(meshUI):
         self.window().newLogTab('Check Mesh','%s/checkMesh.log'%self.currentFolder)
         
         #--Creo un thread para checkMesh y lo inicio
-        command = 'checkMesh -case %s 1> %s/checkMesh.log 2> %s/error.log'%(self.currentFolder,self.currentFolder,self.currentFolder)
+        command = 'checkMesh -case %s 1> %s/checkMesh.log 2> %s/errorcheck.log'%(self.currentFolder,self.currentFolder,self.currentFolder)
         self.threadcheckmesh = ExampleThread(command)
-        self.connect(self.threadcheckmesh, QtCore.SIGNAL("finished()"), self.loadMeshData)
+        self.connect(self.threadcheckmesh, QtCore.SIGNAL("finished()"), self.showCheckResult)
         self.connect(self.threadcheckmesh, QtCore.SIGNAL("finished()"), self.threadcheckmesh.terminate)
         self.threadcheckmesh.start()
         
         #--Comando meshQuality
         command = 'meshQuality -case %s -time 0 > %s/meshQuality.log'%(self.currentFolder,self.currentFolder)
         subprocess.Popen([command],shell=True)
+        
+        return
+        
+    def showCheckResult(self):
+        filename = '%s/errorcheck.log'%self.currentFolder
+        if (self.showError(filename,'CheckMesh')):
+            self.pushButton_check.setEnabled(True)       
+            self.pushButton_import.setEnabled(True)
+            self.pushButton_create.setEnabled(True)
+            self.pushButton_view.setEnabled(True)
+            self.comboBox_histo.setEnabled(True)
+        else:
+            self.loadMeshData()
+        return
+        
 
     def importMesh(self):
         dialog = QtGui.QFileDialog(self)
@@ -127,36 +142,68 @@ class meshWidget(meshUI):
             elif 'GMSH' in tipo:
                 utility = 'gmshToFoam'
             
-            with open(filename,'r') as fil:
-                l1=fil.readline()   
+#            with open(filename,'r') as fil:
+#                l1=fil.readline()
                 
-            if '$MeshFormat' in l1 and utility!='gmshToFoam': #Agregar la logica para las dos restantes
-                w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "Bad Mesh Format")
-                w.exec_()
-                self.pushButton_check.setEnabled(True)                
-                self.pushButton_import.setEnabled(True)        
-                self.pushButton_create.setEnabled(True)
-                self.pushButton_view.setEnabled(True)
-                self.comboBox_histo.setEnabled(True)                
-                return
+#            if ('$MeshFormat' in l1 and utility!='gmshToFoam') or ('$MeshFormat' not in l1 and utility=='gmshToFoam'): #Agregar la logica para las dos restantes
+#                w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "Bad Mesh Format")
+#                w.exec_()
+#                self.pushButton_check.setEnabled(True)       
+#                self.pushButton_import.setEnabled(True)
+#                self.pushButton_create.setEnabled(True)
+#                self.pushButton_view.setEnabled(True)
+#                self.comboBox_histo.setEnabled(True)
+#                return
             
             command = 'touch %s/importMesh.log'%self.currentFolder
-            os.system(command)            
+            os.system(command)
+            command = 'touch %s/error.log'%self.currentFolder
+            os.system(command)
             self.window().newLogTab('Import Mesh','%s/importMesh.log'%self.currentFolder)
             
-            command = '%s -case %s %s 1> %s/importMesh.log 2> %s/error.log' %(utility, self.currentFolder, filename, self.currentFolder, self.currentFolder)
-            #os.system(command)
+            command = '%s -case %s %s 1> %s/importMesh.log 2> %s/errorimport.log' %(utility, self.currentFolder, filename, self.currentFolder, self.currentFolder)
+            
             self.threadimportmesh = ExampleThread(command)
-            self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.updateFieldFiles)
-            self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.showOk)
-            self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
+            self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.showImportResult)
             self.connect(self.threadimportmesh, QtCore.SIGNAL("finished()"), self.threadimportmesh.terminate)
+            self.window().runningCommand = 1
             self.threadimportmesh.start()
             
-            #self.updateFieldFiles()
             
-        #self.checkMesh()
+    def showError(self,filename,title):
+        if os.path.isfile(filename) and os.path.getsize(filename) > 0:
+            with open(filename, 'r') as log:
+                content = log.readlines()
+                while '\n' in content:
+                    content.remove('\n')
+                content = ''.join(content)
+                w = QtGui.QMessageBox(QtGui.QMessageBox.Critical,title+" Error",content)
+                QtGui.QApplication.processEvents()
+                w.exec_()
+                log.close()
+                command = 'rm %s'%filename
+                os.system(command)
+                return True
+        
+        return False
+        
 
+    def showImportResult(self):
+        filename = '%s/errorimport.log'%self.currentFolder
+        if (self.showError(filename,'ImportMesh')):
+            self.pushButton_check.setEnabled(True)       
+            self.pushButton_import.setEnabled(True)
+            self.pushButton_create.setEnabled(True)
+            self.pushButton_view.setEnabled(True)
+            self.comboBox_histo.setEnabled(True)
+        else:
+            #Agregar una barra o algo que diga que termino
+            self.checkMesh()
+            self.updateFieldFiles()
+        
+        return
+        
+        
     def drawGeo(self):
         command = 'pyFoamDisplayBlockMesh.py %s/constant/polyMesh/blockMeshDict &'%self.currentFolder
         os.system(command)
@@ -291,11 +338,6 @@ class meshWidget(meshUI):
         command = 'pvpython /usr/local/bin/pyFoamPVLoadState.py --state=meshNonOrthWhite.pvsm %s &'%self.currentFolder
         os.system(command)
 
-        return
-        
-    def showOk(self):
-        w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Information", "Mesh successfully imported. Please check statistics.")
-        w.exec_()
         return
         
     def updateFieldFiles(self):
