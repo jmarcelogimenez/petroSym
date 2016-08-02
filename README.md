@@ -1,5 +1,5 @@
 # petroSym
-Graphical User Interface for OpenFOAM oriented to petroleum simulations
+Graphical User Interface for OpenFOAM oriented to petroleum simulations.
 
 Repository
 ----------
