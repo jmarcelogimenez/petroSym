@@ -310,7 +310,7 @@ class bcWidget(bcUI):
                     if layout2:
                         if layout2.itemAt(1).widget().currentText() != 'table':
                             data = str(thisPatch[extraInfo[iExtra*4]])
-                            data = data.replace('(','').replace(')','').split()
+                            data = data.replace('(','').replace(')','').replace('[','').replace(']','').replace(',','').replace('\'','').split()
                             if layout2.count()==3:
                                 layout2.itemAt(1).widget().setCurrentIndex(layout2.itemAt(1).widget().findText(data[0]))
                                 layout2.itemAt(2).widget().setText(data[1])

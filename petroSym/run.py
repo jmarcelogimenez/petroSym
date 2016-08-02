@@ -108,6 +108,12 @@ class runWidget(runUI):
         
         self.pushButton_run.setEnabled(False)
         self.pushButton_reset.setEnabled(False)
+        self.window().tab_mesh.setEnabled(False)
+        self.window().refresh_pushButton.setEnabled(False)
+        leave = [1,5]
+        for i in range(self.window().treeWidget.topLevelItemCount()):
+            if i not in leave:
+                self.window().treeWidget.topLevelItem(i).setDisabled(True)
         self.window().findChild(logTab,'%s/run.log'%self.currentFolder).findChild(QtGui.QPushButton,'pushButton_3').setEnabled(True)
         self.window().updateLogFiles()
         
@@ -145,11 +151,11 @@ class runWidget(runUI):
             self.window().nproc = 1
             command = 'pyFoamClearCase.py %s %s'%(w.getParams(), self.currentFolder)
             os.system(command)
-            if w.deleteSnapshots():
-                command = 'rm -rf %s/snapshots'%self.currentFolder                
-                os.system(command)
+            #if w.deleteSnapshots():
+            #    command = 'rm -rf %s/postProcessing/snapshots'%self.currentFolder
+            #    os.system(command)
             if w.resetFigures():
-                self.window().resetFigures(w.deletePostpro(),w.deleteSnapshots())
+                self.window().resetFigures(w.deletePostpro(),True)
             filename = '%s/system/controlDict'%self.currentFolder
             parsedData = ParsedParameterFile(filename,createZipped=False)
             parsedData['startFrom'] = 'startTime'            

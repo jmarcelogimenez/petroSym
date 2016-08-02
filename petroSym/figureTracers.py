@@ -4,12 +4,13 @@ Created on Tue Aug 25 13:08:19 2015
 
 @author: jgimenez
 """
-
 from PyQt4 import QtGui, QtCore
 from figureTracers_ui import figureTracersUI
 from myNavigationToolbar import *
+
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+
 
 from PyFoam.RunDictionary.ParsedParameterFile import ParsedParameterFile
 
@@ -17,8 +18,9 @@ from utils import *
 
 import numpy
 from collections import OrderedDict
-
 import pylab
+import warnings
+warnings.filterwarnings("ignore")
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -64,6 +66,8 @@ dicc['fields'] = []
 class figureTracers(figureTracersUI):
 
     def __init__(self, currentFolder):
+        import matplotlib
+        matplotlib.use('GTKAgg')
         figureTracersUI.__init__(self)
         self.currentFolder = currentFolder
         self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
@@ -220,11 +224,7 @@ class figureTracersWidget(QtGui.QWidget):
                 headers[i].replace(' ','')
             archi.close()
 
-
-        
         if len(data)>0:
-            
-            #data = self.unique2d(data)
             
             if self.dataPlot == []:
                 self.dataPlot = data
@@ -263,7 +263,7 @@ class figureTracersWidget(QtGui.QWidget):
                 axes.set_xlabel('Time [s]')
                 axes.set_ylabel('T')
 
-                canvas.draw()
+#                canvas.draw()
                 
     def resetFigure(self):
         self.dataPlot = []

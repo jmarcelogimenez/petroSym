@@ -83,6 +83,7 @@ class logTab(QtGui.QWidget):
         parsedData = ParsedParameterFile(filename,createZipped=False)
         parsedData['stopAt'] = 'writeNow'
         parsedData.writeFile()
+        time.sleep(0.1)
         
         self.findChild(QtGui.QPushButton,'pushButton_3').setEnabled(False)
 
@@ -96,25 +97,42 @@ class logTab(QtGui.QWidget):
 #            time.sleep(0.1)
         
         import psutil
-        window = True
-        self.w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Saving", "Saving the current data... Hold tight")
-        while psutil.pid_exists(self.window().runningpid):
-            time.sleep(0.1)
-            if (window):
-                self.w.show()
-                time.sleep(0.1)
-                window = False
-            QtGui.QApplication.processEvents()
+        import utils
+        self.progress = QtGui.QProgressBar()
+        self.progress.setWindowTitle("Saving the current data... Hold tight")        
+        resolution = utils.get_screen_resolutions()
+        self.progress.setGeometry(int(resolution[0])/2 - 175,int(resolution[1])/2,350,30)
+        self.progress.show()
 
+        i=0
+        while psutil.pid_exists(self.window().runningpid):
+            #retraso un minuto la edicion del control dict
+            tt = list(localtime())
+            tt[4] = (tt[4]+1)%60 #Agrego el modulo porque cuando el min es 0, 0-1 = -1
+            command = 'touch -d "%s" %s'%(strftime("%Y-%m-%d %H:%M:%S", struct_time(tuple(tt))),filename)
+            os.system(command)
+            
+            self.progress.setValue(i)
+            QtGui.QApplication.processEvents()
+            i=i+0.1
+            time.sleep(0.1)
+
+        self.progress.setValue(100)
+        self.progress.close()
         if psutil.pid_exists(self.window().runningpid):
             command = 'kill %s'%self.window().runningpid
             os.system(command)
-        
-        self.w.close()
+
         self.window().runningpid = -1
         self.window().save_config()
         self.window().runW.pushButton_run.setEnabled(True)
         self.window().runW.pushButton_reset.setEnabled(True)
+        self.window().tab_mesh.setEnabled(True)
+        self.window().refresh_pushButton.setEnabled(True)
+        leave = [1,5]
+        for i in range(self.window().treeWidget.topLevelItemCount()):
+            if i not in leave:
+                self.window().treeWidget.topLevelItem(i).setDisabled(False)
         #self.window().updateLogFiles()
         
     def saveLog(self):

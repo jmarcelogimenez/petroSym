@@ -53,10 +53,12 @@ class runTimeControls(runTimeControlsUI):
         self.cb_start_from_ii['latestTime'] = 2
         
         self.cb_write_control_ii = {}
-        self.cb_write_control_iinv = ['timeStep', 'runTime', 'clockTime']
-        self.cb_write_control_ii['timeStep'] = 0        
+        self.cb_write_control_iinv = ['timeStep', 'runTime', 'clockTime', 'adjustableRunTime']
+        #@TODO: Ver adjustableRunTime
+        self.cb_write_control_ii['timeStep'] = 0
         self.cb_write_control_ii['runTime'] = 1
         self.cb_write_control_ii['clockTime'] = 2
+        self.cb_write_control_ii['adjustableRunTime'] = 3
         
         self.format_ii = {}
         self.format_iinv = ['ascii', 'binary']

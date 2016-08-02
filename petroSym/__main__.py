@@ -29,7 +29,6 @@ def main():
     splash = QtGui.QSplashScreen(pixmap,QtCore.Qt.WindowStaysOnTopHint)
     splash.show()
     app.processEvents()
-    #time.sleep(5)
     window = petroSym()
     splash.finish(window);
     w = window.newCase()

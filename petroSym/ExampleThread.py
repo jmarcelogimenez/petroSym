@@ -15,9 +15,10 @@ class ExampleThread(QThread):
         QThread.__init__(self)
         self.cmd = cmd
         
-    def __del__(self):        
+    def __del__(self):
+        return
         self.wait()
-    #    self.terminate()
+        #self.terminate()
 
     def run(self):
         #os.system(self.cmd)

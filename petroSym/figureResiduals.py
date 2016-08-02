@@ -8,6 +8,7 @@ Created on Tue Aug 25 13:08:19 2015
 from PyQt4 import QtGui, QtCore
 from figureResiduals_ui import figureResidualsUI
 from myNavigationToolbar import *
+
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
@@ -16,9 +17,9 @@ from PyFoam.RunDictionary.ParsedParameterFile import ParsedParameterFile
 from utils import *
 
 import numpy
-
-
 import pylab
+import warnings
+warnings.filterwarnings("ignore")
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -55,6 +56,8 @@ unknowns = ['U','p','p_rgh','alpha','k','epsilon','omega','nut','nuTilda']
 class figureResiduals(figureResidualsUI):
 
     def __init__(self, currentFolder,nproc):
+        import matplotlib
+        matplotlib.use('GTKAgg')
         print 'MATPLOTLIB FILE: %s'%matplotlib.matplotlib_fname()
         
         figureResidualsUI.__init__(self)
@@ -194,7 +197,6 @@ class figureResidualsWidget(QtGui.QWidget):
         canvas = self.findChild(FigureCanvas)
         axes = canvas.figure.gca()
         N = self.lastPos
-
         data = pylab.loadtxt(path,skiprows=N)
                 
         with open(path, 'r') as archi:
@@ -221,7 +223,6 @@ class figureResidualsWidget(QtGui.QWidget):
             else:
                 self.lastPos = N + data.shape[0]
 
-            #print self.dataPlot
             if(self.dataPlot.ndim>1):
                 #self.dataPlot = self.dataPlot[-100:,:]
                 axes.clear()
@@ -239,7 +240,8 @@ class figureResidualsWidget(QtGui.QWidget):
                 axes.set_ylabel('|R|')
                 axes.legend(loc=1, fontsize = 'small')
 
-                canvas.draw()
+#                canvas.draw()
+                
                 
     def resetFigure(self):
         self.dataPlot = []

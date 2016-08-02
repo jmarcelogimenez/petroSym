@@ -284,8 +284,6 @@ class solverSettings(solverSettingsUI):
         self.filename = '%s/system/fvSolution'%self.currentFolder
         self.filename2 = path.join(path.dirname(__file__),
         "templates/fvSolutionTemplate")
-        #self.filename2 = "%s/templates/fvSolutionTemplate"
-        #% os.path.dirname(__file__)
         
         backupFile(self.filename)
 
@@ -294,16 +292,15 @@ class solverSettings(solverSettingsUI):
         self.templateparsedDataI = ParsedParameterFile(self.filename2,
                                                        createZipped=False)
 
-        #self.fields = self.parsedData['solvers'].keys()#No hay que meter todos
         [self.timedir, self.fields, currtime] = \
         currentFields(self.currentFolder,nproc=self.nproc)
         
-        fieldsconglomerate = list()
+        #fieldsconglomerate = list()
         for ikey in self.parsedData['solvers'].keys():
             #Este if analiza si es un aglomerado de fields
+            final = False
+            ikeys = []
             if ikey[0]=='"':
-                final = False
-                #ikeyo = ikey
                 #Saco comillas y parentesis
                 ikey = ikey.replace('"','')
                 ikey = ikey.replace(')','')
@@ -314,12 +311,26 @@ class solverSettings(solverSettingsUI):
                     ikey = ikey.replace('Final','')
                 #Las guardo todas en una lista
                 ikeys = ikey.split("|")
-                #Ahora analizo que tenian dentro
-                for i in ikeys:
-                    if final:
-                        i=i+"Final"
-                    fieldsconglomerate.append(i)
-                    
+            else:
+                ikeys.append(ikey)
+
+            #Me fijo si alguno tiene el $ y copio todo tal cual
+            for i in ikeys:
+                #if i in self.fields:
+                i = i+"Final" if final else i
+                for jkey in self.parsedData['solvers'][i].keys():
+                    if jkey[0]=='$':
+                        jkey = jkey.replace('$','')
+                        for kkeys in self.parsedData['solvers'][jkey].keys():
+                            if kkeys in self.parsedData['solvers'][i]:
+                                continue
+                            else:
+                                self.parsedData['solvers'][i][kkeys] = {}
+                                self.parsedData['solvers'][i][kkeys] = self.parsedData['solvers'][jkey][kkeys]
+                        del self.parsedData['solvers'][i]['$'+jkey]
+                        
+            self.parsedData.writeFile()
+
         #print fieldsconglomerate
                 
 

@@ -1,5 +1,8 @@
 from PyQt4 import QtGui, QtCore
 
+#@@TODO: Cuando abro un caso (tutorial) que no tiene el .config de arranqe
+#no me deja agregar figuras
+
 #cambiar a:
 #from petroSym.petroSym_ui import petroSymUI
 #from petroSym.popUpNew import *
@@ -95,12 +98,6 @@ class petroSym(petroSymUI):
         self.typeFigure = ['Residuals', 'Tracers', 'Probes', 'Sampled Line', 'General Snapshot']
         self.colors = ['r', 'b', 'k', 'g', 'y', 'c']
 
-        #self.addNewFigureTab(0)
-        
-        #QtCore.QObject.connect(self.qfigWidgets[self.nPlots], QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.addNewFigure)
-
-        #self.scrollAreaWidgetContents.setLayout(self.qscrollLayout)
-
         QtCore.QObject.connect(self.tabWidget_2, QtCore.SIGNAL("tabCloseRequested(int)"), self.closeLogTab)
 
         self.meshW = meshWidget()
@@ -125,10 +122,19 @@ class petroSym(petroSymUI):
         self.OnOff(False)
         
         self.activeTimer = QtCore.QTimer(self)
-        self.activeTimer.setInterval(0.2*1000);
-        #activeTimer->setSingleShot(true);
-        self.connect(self.activeTimer, QtCore.SIGNAL("timeout()"), self.update_watcher);
+        self.activeTimer.setInterval(0.2*1000)
+        self.connect(self.activeTimer, QtCore.SIGNAL("timeout()"), self.update_watcher)
         self.activeTimer.start()
+        
+        self.activeFigureTimer = []
+        
+#        self.runningCommand = ''
+#        #0 checkmesh
+#        #1 importmesh
+#        self.errorFlags = []
+#        self.errorFlags.insert(False,0)
+#        self.errorFlags.insert(False,1)
+
 
     def updateMeshPanel(self):
         QtGui.QMessageBox.about(self, "ERROR", "Primero se debe calcular!")
@@ -148,23 +154,35 @@ class petroSym(petroSymUI):
         if posibleDir:
             if os.path.isdir('%s/system'%posibleDir) and os.path.isdir('%s/constant'%posibleDir):
                 #--Ventana de loading
-                self.loadingmbox("Opening","Loading the selected case...")
+                self.progressloading = QtGui.QProgressBar()
+                self.progressloading.setWindowTitle("Loading the selected case...")        
+                resolution = utils.get_screen_resolutions()
+                self.progressloading.setGeometry(int(resolution[0])/2 - 175,int(resolution[1])/2,350,30)
+                self.progressloading.show()
                 #--Loading
                 self.currentFolder = posibleDir
-                QtGui.QApplication.processEvents()
+                self.progressloading.setValue(50)
                 
                 self.load_config()
                 self.OnOff(True)
+                self.progressloading.setValue(100)
             else:
                 w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "The selected directory is not an OpenFOAM case")
                 w.exec_()
             
-            self.w.close()
+            #self.w.close()
+            self.progressloading.close()
 
 
     def saveAsCase(self):
         oldFolder = self.currentFolder
         self.currentFolder = str(QtGui.QFileDialog.getExistingDirectory(self, 'Save As...', './'))
+        
+        self.runW.currentFolder = self.currentFolder
+        self.meshW.currentFolder = self.currentFolder
+        self.postproW.currentFolder = self.currentFolder
+        for i in range(self.nPlots):
+            self.qfigWidgets[i].currentFolder = self.currentFolder
         
         w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Save As", "Do you want to keep the running folders? (If not, only the folders 0, system and constant will copy)", QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
         ret = w.exec_()
@@ -181,6 +199,19 @@ class petroSym(petroSymUI):
             subprocess.check_call(command,shell=True)
             command = 'rm -r %s/%s' % (self.currentFolder,oldCase)
             subprocess.check_call(command,shell=True)
+            
+            #-- Limpio todo
+            count=self.figures_tabWidget.count()
+            for i in range(count):
+                self.figures_tabWidget.removeTab(0)
+            self.addNewFigureTab(0)
+            self.nPlots = 0
+            self.qfigWidgets = self.qfigWidgets[-1:]
+            self.fs_watcher.removePaths(self.fs_watcher.files())
+            self.fs_watcher.removePaths(self.fs_watcher.directories())
+            self.pending_files = []
+            self.pending_dirs = []
+            self.activeFigureTimer = []
         
         self.save_config()
 
@@ -196,11 +227,23 @@ class petroSym(petroSymUI):
             data = w.getData()
             self.currentFolder = os.path.join(data[1],data[0])
             if os.path.isdir('%s/system'%self.currentFolder) and os.path.isdir('%s/constant'%self.currentFolder):
-                self.loadingmbox("Opening","Opening selected case...")
-                QtGui.QApplication.processEvents()
+                self.progressopening = QtGui.QProgressBar()
+                self.progressopening.setWindowTitle("Opening selected case...")        
+                resolution = utils.get_screen_resolutions()
+                self.progressopening.setGeometry(int(resolution[0])/2 - 175,int(resolution[1])/2,350,30)
+                self.progressopening.show()
+                self.progressopening.setValue(50)
                 self.load_config()
+                self.progressopening.setValue(100)
+                time.sleep(0.2)
+                self.progressopening.close()
             else:
-                self.loadingmbox("Creating","Creating selected case...")
+                self.progresscreate = QtGui.QProgressBar()
+                self.progresscreate.setWindowTitle("Creating selected case...")
+                resolution = utils.get_screen_resolutions()
+                self.progresscreate.setGeometry(int(resolution[0])/2 - 175,int(resolution[1])/2,350,30)
+                self.progresscreate.show()
+                
                 self.nproc = 1
                 
                 #Borro todas las tabs y figuras
@@ -214,15 +257,15 @@ class petroSym(petroSymUI):
                 for i in range(count):
                     self.figures_tabWidget.removeTab(0)
                 self.addNewFigureTab(0)
-                
-                QtGui.QApplication.processEvents()
                 self.nPlots = 0
                 self.qfigWidgets = self.qfigWidgets[-1:]
                 self.fs_watcher.removePaths(self.fs_watcher.files())
                 self.fs_watcher.removePaths(self.fs_watcher.directories())
                 self.pending_files = []
                 self.pending_dirs = []
+                self.activeFigureTimer = []
                 
+                self.progresscreate.setValue(50)
                 #Levantar dependiendo del caso predefinido elegido
                 #typeSim = data[2]
                 typeSim = 'Skimmer Tank'
@@ -238,13 +281,15 @@ class petroSym(petroSymUI):
                 self.meshW.setCurrentFolder(self.currentFolder)
                 QtGui.QApplication.processEvents()
                 self.meshW.createMesh()
+                self.progresscreate.setValue(100)
+                self.progresscreate.close()
 
             self.OnOff(True)
             self.meshW.setCurrentFolder(self.currentFolder)
             self.runW.setCurrentFolder(self.currentFolder,self.solvername)
             self.postproW.setCurrentFolder(self.currentFolder)
         
-        self.w.close()
+        #self.w.close()
         return result
 
     def saveCase(self):
@@ -407,6 +452,14 @@ class petroSym(petroSymUI):
             else:
                 self.qfigWidgets[i].setObjectName(data_name)
                 ww.accept()
+                
+            #Creo el nuevo timer para la figura (Solo si es tracer o res)
+            if self.typeFigure[index] == 'Residuals' or self.typeFigure[index] == 'Tracers':
+                newtimer = QtCore.QTimer(self)
+                self.activeFigureTimer.insert(i,newtimer)
+                ww = self.qfigWidgets[i]
+                canvas = ww.findChild(FigureCanvas)
+                self.connect(newtimer, QtCore.SIGNAL("timeout()"), canvas.draw)
 
             # Seteo el nombre del tab
             tab = self.figures_tabWidget.widget(self.nPlots-1)
@@ -418,6 +471,9 @@ class petroSym(petroSymUI):
             self.save_config()
             
             self.addNewFigureTab(self.nPlots)
+            
+            #Seteo los tiempos de nuevo
+            self.update_figuretimerefresh()
 
         return
 
@@ -654,12 +710,47 @@ class petroSym(petroSymUI):
                 while '\n' in content:
                     content.remove('\n')
                 content = ''.join(content)
-                w = QtGui.QMessageBox(QtGui.QMessageBox.Critical,"Error",content)
+
+                title=''
+#                if self.runningCommand==0:
+#                    self.errorFlags[0]=True
+#                    title='CheckMesh '
+#                elif self.runningCommand==1:
+#                    self.errorFlags[1]=True
+#                    title='ImportMesh 's
+                
+                w = QtGui.QMessageBox(QtGui.QMessageBox.Critical,title+"Error",content)
                 QtGui.QApplication.processEvents()
                 w.exec_()
                 log.close()
                 command = 'rm %s'%filename
                 os.system(command)
+
+    def update_figuretime(self,num):
+        self.progress = QtGui.QProgressBar()
+        self.progress.setWindowTitle("Updating the plot refresh time...")
+        resolution = utils.get_screen_resolutions()
+        self.progress.setGeometry(int(resolution[0])/2 - 175,int(resolution[1])/2,350,30)
+        self.progress.show()
+        
+        for i in range(len(self.activeFigureTimer)):
+            timer = self.activeFigureTimer[i]
+            timer.stop()
+        for i in range(len(self.activeFigureTimer)):
+            timer = self.activeFigureTimer[i]
+            timer.setInterval(len(self.activeFigureTimer)*num*1000)
+            timer.start()
+            time.sleep(num)
+            self.progress.setValue(float(i+1)/float(len(self.activeFigureTimer)) * 100)
+            QtGui.QApplication.processEvents()
+            
+        self.progress.close()
+        return
+            
+    def update_figuretimerefresh(self):
+        num=self.graphrefresh_spinBox.value()
+        self.update_figuretime(num)
+
 
     def save_config(self):
         filename = '%s/petroSym.config'%self.currentFolder
@@ -730,6 +821,7 @@ class petroSym(petroSymUI):
             self.fs_watcher.removePaths(self.fs_watcher.directories())
             self.pending_files = []
             self.pending_dirs = []
+            self.activeFigureTimer = []
             self.qscrollLayout = {}
             self.qfigWidgets = []
             
@@ -842,6 +934,13 @@ class petroSym(petroSymUI):
                     item.widget().close()
                     item.widget().deleteLater()
                 self.qscrollLayout[i].addWidget(self.qfigWidgets[i],i/2,i%2)
+                
+                if typePlots[i] == 'Residuals' or typePlots[i] == 'Tracers':
+                    newtimer = QtCore.QTimer(self)
+                    self.activeFigureTimer.insert(i,newtimer)
+                    ww = self.qfigWidgets[i]
+                    canvas = ww.findChild(FigureCanvas)
+                    self.connect(newtimer, QtCore.SIGNAL("timeout()"), canvas.draw)
             
             self.addNewFigureTab(self.nPlots)
                 
@@ -852,21 +951,34 @@ class petroSym(petroSymUI):
             self.meshW.createMesh()
         self.postproW.setCurrentFolder(self.currentFolder)
         self.meshW.loadMeshData()
+        self.update_figuretimerefresh()
         
     def removeFilesPostPro(self):
         [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)
         for i in range(self.nPlots):
             namePlot = str(self.qfigWidgets[i].objectName())
-            if isinstance(self.qfigWidgets[i],figureResidualsWidget):  
+            if isinstance(self.qfigWidgets[i],figureResidualsWidget):
                 filename = '%s/postProcessing/%s/%s/residuals.dat'%(self.currentFolder,namePlot,currtime)
                 if os.path.isfile(filename):
                     command = 'rm %s'%filename
                     os.system(command)
 
-                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0] > float(currtime)):
-                    self.qfigWidgets[i].resetFigure()
-                else:
-                    self.qfigWidgets[i].lastPos = -1
+                #print 'curr '+currtime
+                #if len(self.qfigWidgets[i].dataPlot)>0:
+                #    print 'graph '+str(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0])
+                
+                #Fijarse que a veces el ultimo numero del plot viene con varias cifras decimales,
+                #en cambio el currtime viene con menos, lo que hace que de mal la comparacion.
+                #Por ello en lugar de comparalos derecho, los redondeo a 6 cifras sig. a c/u
+                # 0.1108333
+                # 0.110833
+                if len(self.qfigWidgets[i].dataPlot)>0:
+                    lastplot_rounded = round(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0],6)
+                    currtime_rounded = round(float(currtime),6)
+                    if lastplot_rounded > currtime_rounded:
+                        self.qfigWidgets[i].resetFigure()
+                    else:
+                        self.qfigWidgets[i].lastPos = -1
 
             if isinstance(self.qfigWidgets[i],figureTracersWidget):  
                 filename = '%s/postProcessing/%s/%s/faceSource.dat'%(self.currentFolder,namePlot,currtime)
@@ -874,11 +986,14 @@ class petroSym(petroSymUI):
                 if os.path.isfile(filename):                
                     command = 'rm %s'%filename
                     os.system(command)
-
-                if (len(self.qfigWidgets[i].dataPlot)>0 and self.qfigWidgets[i].dataPlot.ndim==2 and self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0] > float(currtime)):
-                    self.qfigWidgets[i].resetFigure()
-                else:
-                    self.qfigWidgets[i].lastPos = -1
+                
+                if len(self.qfigWidgets[i].dataPlot)>0:
+                    lastplot_rounded = round(self.qfigWidgets[i].dataPlot[len(self.qfigWidgets[i].dataPlot)-1][0],6)
+                    currtime_rounded = round(float(currtime),6)
+                    if (self.qfigWidgets[i].dataPlot.ndim==2 and lastplot_rounded > currtime_rounded):
+                        self.qfigWidgets[i].resetFigure()
+                    else:
+                        self.qfigWidgets[i].lastPos = -1
 
         return
     
@@ -906,12 +1021,11 @@ class petroSym(petroSymUI):
         self.pending_dirs = []
         self.fs_watcher.removePaths(self.fs_watcher.files())
         self.fs_watcher.removePaths(self.fs_watcher.directories())
-        
         if solvername == 'pimpleFoam':
             command = 'rm -rf %s/*' % self.currentFolder
             os.system(command)
             command = 'cp -r %s/templates/template_pimpleFoam/* %s/.' % (os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
-            os.system(command)            
+            os.system(command)
         elif solvername =='icoFoam':
             command = 'rm -rf %s/*' % self.currentFolder
             os.system(command)
@@ -982,6 +1096,9 @@ class petroSym(petroSymUI):
 
             if filename in self.pending_files:
                 self.pending_files.remove(filename)
+            
+            #Elimino un timer, no importa cual
+            self.activeFigureTimer.pop()
 
     """
     Funcion temporalFigure_update()
@@ -1072,6 +1189,7 @@ class petroSym(petroSymUI):
             self.treeWidget.topLevelItem(0).child(0).setDisabled(True)
             
         menu = QTreeWidgetItem.text(0)
+        
         #print menu
         if menu=='Solution Modeling':
             #para el solution modeling no tengo un diccionario
@@ -1080,7 +1198,7 @@ class petroSym(petroSymUI):
             widget = turbulence(self.currentFolder,self.solvername)
         elif menu=='Gravity':
             widget = gravity(self.currentFolder,self.solvername)
-            widget.setDisabled(True) #Gravity desactivada por el momento
+            #widget.setDisabled(True) #Gravity desactivada por el momento
         elif menu=='Run Time Controls':
             widget = runTimeControls(self.currentFolder)
         elif 'phase' in menu:

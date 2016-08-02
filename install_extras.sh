@@ -52,9 +52,6 @@ pyuic4 -w petroSym/gravity.ui -o petroSym/gravity_ui.py
 pyuic4 -w petroSym/particleTracking.ui -o petroSym/particleTracking_ui.py
 
 #Esto lo puse para que no se queje travis, pero supuestamente estos directorios a esta altura ya esta creados
-#if [ ! -d ~/.config/ ]; then
-#   mkdir ~/.config/ 
-#fi
 if [ ! -d ~/.config/matplotlib/ ]; then
    mkdir -p ~/.config/matplotlib/
 fi
