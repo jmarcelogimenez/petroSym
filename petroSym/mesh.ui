@@ -65,7 +65,7 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>BlockMesh</string>
+         <string>BlockMesh1</string>
         </property>
         <property name="icon">
          <iconset resource="resources.qrc">
