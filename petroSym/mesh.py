@@ -157,8 +157,8 @@ class meshWidget(meshUI):
             
             command = 'touch %s/importMesh.log'%self.currentFolder
             os.system(command)
-            command = 'touch %s/error.log'%self.currentFolder
-            os.system(command)
+            #command = 'touch %s/error.log'%self.currentFolder
+            #os.system(command)
             self.window().newLogTab('Import Mesh','%s/importMesh.log'%self.currentFolder)
             
             command = '%s -case %s %s 1> %s/importMesh.log 2> %s/errorimport.log' %(utility, self.currentFolder, filename, self.currentFolder, self.currentFolder)
@@ -223,22 +223,22 @@ class meshWidget(meshUI):
                 for i in range(len(content)):
                     linea = content[i]
 
-                    self.label_npoints.setText(linea.replace('\n','').strip()) if 'points:' in linea else None
-                    self.label_ncells.setText(linea.replace('\n','').strip()) if 'cells:' in linea else None
+                    self.label_npoints.setText(linea.replace('\n','').strip()) if '    points:' in linea else None
+                    self.label_ncells.setText(linea.replace('\n','').strip()) if '    cells:' in linea else None
                     self.label_nfaces.setText(linea.replace('\n','').strip()) if '   faces: ' in linea else None
-                    self.label_nifaces.setText(linea[:-1].strip()) if 'internal faces: ' in linea else None
+                    self.label_nifaces.setText(linea[:-1].strip()) if '    internal faces: ' in linea else None
                     if 'bounding box' in linea:
                         limits = linea.replace('(','').replace(')','').strip().split()
                         self.label_xrange.setText('x Range: [%s, %s]'%(limits[4],limits[7]))
                         self.label_yrange.setText('y Range: [%s, %s]'%(limits[5],limits[8]))
                         self.label_zrange.setText('z Range: [%s, %s]'%(limits[6],limits[9]))
-                    self.label_nhexa.setText(linea.replace('\n','').strip()) if 'hexa' in linea else None
-                    self.label_nprisms.setText(linea.replace('\n','').strip()) if 'prism' in linea else None
-                    self.label_nwedges.setText(linea.replace('\n','').strip()) if 'wedges:' in linea and 'tet' not in linea else None
-                    self.label_npyramids.setText(linea.replace('\n','').strip()) if 'pyramids:' in linea else None
-                    self.label_ntet.setText(linea.replace('\n','').strip()) if 'tet wedges:' in linea else None
-                    self.label_ntetra.setText(linea.replace('\n','').strip()) if 'tetra' in linea else None
-                    self.label_npoly.setText(linea[:-1].strip()) if 'polyhedra:' in linea else None
+                    self.label_nhexa.setText(linea.replace('\n','').strip()) if '    hexa' in linea else None
+                    self.label_nprisms.setText(linea.replace('\n','').strip()) if '    prism' in linea else None
+                    self.label_nwedges.setText(linea.replace('\n','').strip()) if '    wedges:' in linea and 'tet' not in linea else None
+                    self.label_npyramids.setText(linea.replace('\n','').strip()) if '    pyramids:' in linea else None
+                    self.label_ntet.setText(linea.replace('\n','').strip()) if '    tet wedges:' in linea else None
+                    self.label_ntetra.setText(linea.replace('\n','').strip()) if '    tetra' in linea else None
+                    self.label_npoly.setText(linea[:-1].strip()) if '    polyhedra:' in linea else None
                 log.close()
         else:
             QtGui.QMessageBox(QtGui.QMessageBox.Information, "Caution!", "Statistics must be executed in order to see mesh data").exec_()
