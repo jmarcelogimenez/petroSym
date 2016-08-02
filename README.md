@@ -81,6 +81,13 @@ Try:
 
     petroSym
 
+Updating
+--------
+
+In order to update petroSym, run the following script:
+
+    ./update_petroSym.sh
+
 Cleaning
 -------
 
