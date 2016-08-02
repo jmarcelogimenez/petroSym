@@ -17,6 +17,15 @@ rm -rf build
 cd ../meshQualitySubSet
 wclean
 rm -rf build
+cd ../myParticle
+wclean
+rm -rf build
+cd ../particleTracking
+wclean
+rm -rf build
+cd ../snapshots
+wclean
+rm -rf build
 popd
 
 #---Borrar cosas varias 

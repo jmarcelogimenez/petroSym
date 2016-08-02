@@ -180,6 +180,8 @@ void Foam::particleTracking::execute()
     {
         Info<< "In "<< type() <<". Moving cloud: "<<this->name_<< endl;
 
+        //Info<<mesh_.names()<<endl;
+
         if (mesh_.time().timeOutputValue() >= tInjStart_  && mesh_.time().timeOutputValue()<= tInjEnd_)
             inject();
 
@@ -212,7 +214,7 @@ void Foam::particleTracking::inject()
         vector vel = tmpv*velprime_+vel_;
         label cellI = mesh_.findCell(pos);
         if(cellI>=0){
-            Info<<"injected in - >"<<pos<<" - cellI:"<<cellI<<" with vel: "<<vel<<endl;
+            Info<<"injected in "<<pos<<" - cellI:"<<cellI<<endl;
             myParticle* ptr = new myParticle(mesh_,pos,cellI,0,0,d_,vel);
             ptr->initCellFacePt();
             particles_.addParticle(ptr);
@@ -231,8 +233,9 @@ void Foam::particleTracking::timeSet()
 
 void Foam::particleTracking::write()
 {
-    //Solo ingresa dependiendo del output control
+    //Info<<"In Foam::particleTracking::write()"<<endl;
     particles_.writeFields();
+    // Do nothing
 }
 
 

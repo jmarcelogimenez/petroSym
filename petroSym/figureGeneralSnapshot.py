@@ -67,7 +67,13 @@ class figureGeneralSnapshotWidget(QtGui.QWidget):
         ii = self.objectName()
         desired = '%s/postProcessing/snapshots/%s/%s/%s.png'%(self.currentFolder,ii,self.dirList[self.lastPos],ii)
         if not os.path.isfile(desired):
-            command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="%s/snapshot" --no-casename --no-timename --no-offscreen-rendering %s'%(self.lastPos,self.currentFolder,ii,self.currentFolder,self.currentFolder)
+            if self.window().nproc == 1:
+                command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --time=%s --state-file=%s/%s.pvsm  --file-prefix="%s/snapshot" --no-casename --no-timename --no-offscreen-rendering %s'%(self.dirList[self.lastPos],self.currentFolder,ii,self.currentFolder,self.currentFolder)
+            else:
+                command = 'pvpython /usr/local/bin/pyFoamPVSnapshot.py --parallel-times --time=%s --state-file=%s/%s.pvsm  --file-prefix="%s/snapshot" --no-casename --no-timename --no-offscreen-rendering %s'%(self.dirList[self.lastPos],self.currentFolder,ii,self.currentFolder,self.currentFolder)
+
+            print command
+            
             os.system(command)
             filename = '%s/snapshot_00000.png'%self.currentFolder
             while not os.path.isfile(filename):

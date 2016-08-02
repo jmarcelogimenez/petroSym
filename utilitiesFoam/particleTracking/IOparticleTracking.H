@@ -29,17 +29,17 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef IOparticleTracking_H
-#define IOparticleTracking_H
+#ifndef IOscalarTransport_H
+#define IOscalarTransport_H
 
-#include "particleTracking.H"
+#include "scalarTransport.H"
 #include "IOOutputFilter.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
-    typedef IOOutputFilter<particleTracking> particleTracking;
+    typedef IOOutputFilter<scalarTransport> IOscalarTransport;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
