@@ -409,7 +409,7 @@ class petroSym(petroSymUI):
             newdir = ''
             data_name = ''
             if fileName:
-                data_name = os.path.basename(fileName)
+                data_name = os.path.basename(str(fileName))
                 data_name = data_name[:-5]
                 newdir = '%s/postProcessing/snapshots/%s'%(self.currentFolder,data_name)
                 addFigure = True
