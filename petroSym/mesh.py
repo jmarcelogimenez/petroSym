@@ -116,6 +116,10 @@ class meshWidget(meshUI):
             self.pushButton_view.setEnabled(True)
             self.comboBox_histo.setEnabled(True)
         else:
+            w = QtGui.QMessageBox(QtGui.QMessageBox.Information,"Check Mesh","Mesh succesfully checked! Click OK to load the mesh data")
+            w.exec_()
+            w.repaint()
+            QtGui.QApplication.processEvents()
             self.loadMeshData()
         return
         
@@ -197,7 +201,10 @@ class meshWidget(meshUI):
             self.pushButton_view.setEnabled(True)
             self.comboBox_histo.setEnabled(True)
         else:
-            #Agregar una barra o algo que diga que termino
+            w = QtGui.QMessageBox(QtGui.QMessageBox.Information,"Import Mesh","Mesh succesfully imported. Click OK to do the checkMesh")
+            w.exec_()
+            w.repaint()
+            QtGui.QApplication.processEvents()
             self.checkMesh()
             self.updateFieldFiles()
         

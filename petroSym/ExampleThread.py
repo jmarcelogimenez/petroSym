@@ -16,7 +16,7 @@ class ExampleThread(QThread):
         self.cmd = cmd
         
     def __del__(self):
-        return
+        #return
         self.wait()
         #self.terminate()
 
