@@ -342,7 +342,8 @@ class meshWidget(meshUI):
             command = 'meshQuality -case %s -time 0 > %s/meshQuality.log &'%(self.currentFolder,self.currentFolder)
             os.system(command)
         #command = 'pvpython /usr/local/bin/pyFoamPVLoadState.py --state=meshNonOrth.pvsm %s &'%self.currentFolder
-        command = 'pvpython /usr/local/bin/pyFoamPVLoadState.py --state=meshNonOrthWhite.pvsm %s &'%self.currentFolder
+        #TODO: Estaria bueno ver una manera de silenciar los warnings molestos que tira paraview
+        command = 'pvpython /usr/local/bin/pyFoamPVLoadState.py --state=%s/pvsms/meshNonOrthWhite.pvsm %s &'%(os.path.dirname(os.path.realpath(__file__)),self.currentFolder)
         os.system(command)
 
         return
