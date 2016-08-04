@@ -237,7 +237,12 @@ class runWidget(runUI):
                 command = 'decomposePar -force -case %s -time %s 1> %s 2> %s'%(self.currentFolder,self.currtime,filename1,filename2)
                 os.system(command)
                 
-        self.window().save_config()            
+        self.window().save_config()
+        
+        w = QtGui.QMessageBox(QtGui.QMessageBox.Information,"Decompose Case","The case has been succesfully decomposed!")
+        w.exec_()
+        w.repaint()
+        QtGui.QApplication.processEvents()
         return
         
         
@@ -246,12 +251,17 @@ class runWidget(runUI):
         [self.timedir,self.fields,self.currtime] = currentFields(self.currentFolder,nproc=self.window().nproc)
             
         if int(self.currtime)==0:
-            QtGui.QMessageBox.about(self, "ERROR", "Time step 0 already exists")            
+            QtGui.QMessageBox.about(self, "ERROR", "Time step 0 already exists")
+            return
         else:
             filename1 = '%s/reconstruct.log'%self.currentFolder
             filename2 = '%s/error.log'%self.currentFolder
             self.window().newLogTab('Reconstruct',filename1)
             command = 'reconstructPar -case %s -time %s 1> %s 2> %s'%(self.currentFolder,self.currtime,filename1,filename2)
-            #print command
             os.system(command)
+            
+        w = QtGui.QMessageBox(QtGui.QMessageBox.Information,"Reconstruct Case","The case has been succesfully reconstructed!")
+        w.exec_()
+        w.repaint()
+        QtGui.QApplication.processEvents()            
         return
