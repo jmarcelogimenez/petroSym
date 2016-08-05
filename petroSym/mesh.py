@@ -75,7 +75,7 @@ class meshWidget(meshUI):
         
     def blockMesh(self):
         about = QtGui.QDialog()
-        blockmesh = Ui_blockmeshDialog()        
+        blockmesh = Ui_blockmeshDialog()
         about.setFixedSize(454,186)
         blockmesh.setupUi(about)
         about.exec_()

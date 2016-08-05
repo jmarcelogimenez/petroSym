@@ -127,6 +127,7 @@ class petroSym(petroSymUI):
         self.activeTimer.start()
         
         self.activeFigureTimer = []
+        self.intervalTimer = 2
         
 #        self.runningCommand = ''
 #        #0 checkmesh
@@ -473,7 +474,7 @@ class petroSym(petroSymUI):
             self.addNewFigureTab(self.nPlots)
             
             #Seteo los tiempos de nuevo
-            self.update_figuretimerefresh()
+            self.update_figuretime(self.intervalTimer)
 
         return
 
@@ -727,12 +728,16 @@ class petroSym(petroSymUI):
                 os.system(command)
 
     def update_figuretime(self,num):
+        
+        self.intervalTimer = num
+        QtGui.QApplication.processEvents()
         self.progress = QtGui.QProgressBar()
         self.progress.setWindowTitle("Updating the plot refresh time...")
         resolution = utils.get_screen_resolutions()
         self.progress.setGeometry(int(resolution[0])/2 - 175,int(resolution[1])/2,350,30)
         self.progress.show()
-        
+        QtGui.QApplication.processEvents()
+
         for i in range(len(self.activeFigureTimer)):
             timer = self.activeFigureTimer[i]
             timer.stop()
@@ -743,14 +748,50 @@ class petroSym(petroSymUI):
             time.sleep(num)
             self.progress.setValue(float(i+1)/float(len(self.activeFigureTimer)) * 100)
             QtGui.QApplication.processEvents()
-            
+        
+        self.label_time_refresh.setText(str(self.intervalTimer*len(self.activeFigureTimer)))
         self.progress.close()
         return
-            
-    def update_figuretimerefresh(self):
-        num=self.graphrefresh_spinBox.value()
-        self.update_figuretime(num)
 
+    def update_figuretimerefresh(self):
+        w = QtGui.QDialog(self)
+        w.setWindowTitle("Graph Refresh Interval")
+        layoutWidget = QtGui.QWidget(w)
+        layoutWidget.setGeometry(QtCore.QRect(0, 10, 339, 32))
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(w.sizePolicy().hasHeightForWidth())
+        w.setSizePolicy(sizePolicy)
+        layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
+        HLayout = QtGui.QHBoxLayout(layoutWidget)
+        HLayout.setMargin(3)
+        HLayout.setObjectName("HLayout")
+        
+        label = QtGui.QLabel()
+        label.setText("Refresh Interval:")
+        HLayout.addWidget(label)
+        
+        graphrefresh_spinBox = QtGui.QSpinBox()
+        graphrefresh_spinBox.setMinimum(2)
+        graphrefresh_spinBox.setMaximum(10)
+        graphrefresh_spinBox.setProperty("value", self.intervalTimer)
+        graphrefresh_spinBox.setObjectName(_fromUtf8("graphrefresh_spinBox"))
+        HLayout.addWidget(graphrefresh_spinBox)
+        
+        refresh_pushButton = QtGui.QPushButton(self.widget_2)
+        icon13 = QtGui.QIcon()
+        icon13.addPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/fromHelyx/fileSave16.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        refresh_pushButton.setIcon(icon13)
+        refresh_pushButton.setText("Apply")
+        QtCore.QObject.connect(refresh_pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), w, QtCore.SLOT(_fromUtf8("accept()")))
+        QtCore.QObject.connect(refresh_pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), lambda: self.update_figuretime(graphrefresh_spinBox.value()))
+        HLayout.addWidget(refresh_pushButton)
+        
+        w.exec_()
+        
+        return
+        
 
     def save_config(self):
         filename = '%s/petroSym.config'%self.currentFolder
@@ -951,7 +992,7 @@ class petroSym(petroSymUI):
             self.meshW.createMesh()
         self.postproW.setCurrentFolder(self.currentFolder)
         self.meshW.loadMeshData()
-        self.update_figuretimerefresh()
+        self.update_figuretime(2)
         
     def removeFilesPostPro(self):
         [bas1,bas2,currtime] = currentFields(self.currentFolder,nproc=self.nproc)

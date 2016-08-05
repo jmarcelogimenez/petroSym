@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>798</width>
-    <height>600</height>
+    <height>598</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -212,8 +212,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>194</width>
-                   <height>387</height>
+                   <width>130</width>
+                   <height>385</height>
                   </rect>
                  </property>
                 </widget>
@@ -283,31 +283,28 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Graph Refresh (In seconds):</string>
+             <string>Time Between Graph Refresh (In seconds):</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="graphrefresh_spinBox">
-            <property name="minimum">
-             <number>2</number>
+           <widget class="QLabel" name="label_time_refresh">
+            <property name="text">
+             <string>0</string>
             </property>
-            <property name="maximum">
-             <number>10</number>
-            </property>
-            <property name="value">
-             <number>2</number>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="refresh_pushButton">
             <property name="text">
-             <string>Apply</string>
+             <string>Modify</string>
             </property>
             <property name="icon">
              <iconset resource="resources.qrc">
-              <normaloff>:/newPrefix/images/fromHelyx/fileSave16.png</normaloff>:/newPrefix/images/fromHelyx/fileSave16.png</iconset>
+              <normaloff>:/newPrefix/images/fromHelyx/refresh_grey16.png</normaloff>:/newPrefix/images/fromHelyx/refresh_grey16.png</iconset>
             </property>
            </widget>
           </item>
