@@ -82,17 +82,16 @@ class tracers(tracersUI):
                     tracer['name'] = key
                     tracer['patchName'] = self.parsedData['functions'][key]['patchName']
                     tracer['startTime'] = self.parsedData['functions'][key]['fvOptions']['S']['timeStart']
+                    #TODO: cargar aca
+                    if tracer['patchName']=='point':
+                        tracer['position'] = self.parsedData['functions'][key]['fvOptions']['S']['position']
                     self.tracersData.append(tracer)
                         
         if self.patches==[]:
             boundaries = BoundaryDict(str(self.currentFolder))
-            self.patches = boundaries.patches()           
-            #filename = '%s/U'%(self.timedir)
-            #UData = ParsedParameterFile(filename,createZipped=False)
-            #self.patches = UData['boundaryField'].keys()
+            self.patches = boundaries.patches()
             for ipatch in self.patches:
                 if boundaries[ipatch]['type']=='empty':
-                #if UData['boundaryField'][ipatch]['type']=='empty':
                     self.emptys.append(ipatch)
                     
         self.pushButton_3.setEnabled(True)
@@ -106,19 +105,29 @@ class tracers(tracersUI):
             self.tableWidget.insertRow(i)
             item1 = QtGui.QTableWidgetItem()
             item2 = QtGui.QTableWidgetItem()
+            item3 = QtGui.QTableWidgetItem()
             wdg1 = QtGui.QLineEdit()
             wdg2 = QtGui.QComboBox()
+            wdg3 = QtGui.QLineEdit()
             wdg2.addItems(list(set(self.patches)-set(self.emptys)))
+            wdg2.addItem('point')
+            wdg2.setObjectName(str(i))
             
             wdg1.setText(str(self.tracersData[i]['startTime']))
             wdg2.setCurrentIndex(wdg2.findText(self.tracersData[i]['patchName']))
-                
+            #TODO: Hay que ver como cagarlo del archivo, preguntar a juan
+            wdg3.setText(str(self.tracersData[i]['position'])) if self.tracersData[i]['patchName']=='point' else wdg3.setText("(0 0 0)")
+            wdg3.setEnabled(False) if self.tracersData[i]['patchName']!='point' else wdg3.setEnabled(True)
+            QtCore.QObject.connect(wdg2, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.change_combobox)
+            wdg3.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("\({1}-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\){1}")))
             QtCore.QObject.connect(wdg1,QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
             
             self.tableWidget.setItem(i,0,item1)
-            self.tableWidget.setCellWidget(i,0,wdg1) 
+            self.tableWidget.setCellWidget(i,0,wdg1)
             self.tableWidget.setItem(i,1,item2)
             self.tableWidget.setCellWidget(i,1,wdg2)
+            self.tableWidget.setItem(i,2,item3)
+            self.tableWidget.setCellWidget(i,2,wdg3)
             
         self.pushButton_3.setEnabled(True)
 
@@ -157,21 +166,44 @@ class tracers(tracersUI):
         self.figureLayout.addWidget(self.canvas)
         
         self.pushButton_3.setEnabled(True)
+        return
+        
+    def change_combobox(self):
+        name = str(self.sender().objectName())
+        c=self.tableWidget.cellWidget(int(name),2)
+        
+        if self.sender().currentText()=='point':
+            c.setEnabled(True)
+        else:
+            c.setEnabled(False)
+        
+        print 'done'
+        return
 
     def newTracer(self):
         i = self.tableWidget.rowCount()
         self.tableWidget.insertRow(i)
         item1 = QtGui.QTableWidgetItem()
         item2 = QtGui.QTableWidgetItem()
+        item3 = QtGui.QTableWidgetItem()
         wdg1 = QtGui.QLineEdit()
         wdg2 = QtGui.QComboBox()
+        wdg3 = QtGui.QLineEdit()
         wdg2.addItems(list(set(self.patches)-set(self.emptys)))
+        wdg2.addItem('point')
+        wdg2.setObjectName(str(i))
+        wdg3.setEnabled(False)
         wdg1.setText('0')
+        wdg3.setText('(0 0 0)')
+        QtCore.QObject.connect(wdg2, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.change_combobox)
+        wdg3.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("\({1}-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\){1}")))
         QtCore.QObject.connect(wdg1,QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
         self.tableWidget.setItem(i,0,item1)
         self.tableWidget.setCellWidget(i,0,wdg1) 
         self.tableWidget.setItem(i,1,item2)
         self.tableWidget.setCellWidget(i,1,wdg2)
+        self.tableWidget.setItem(i,2,item3)
+        self.tableWidget.setCellWidget(i,2,wdg3)
         
         
         self.pushButton_3.setEnabled(True)
@@ -197,7 +229,6 @@ class tracers(tracersUI):
     def drawTracers(self, doTopoSet=False):
 
         for dd in self.tracersData:
-            #print dd['name']
             del self.parsedData['functions'][dd['name']]
         
         if 'functions' not in self.parsedData.getValueDict().keys():
@@ -213,12 +244,16 @@ class tracers(tracersUI):
             tracer['fvOptions']['S']['timeStart'] = str(self.tableWidget.cellWidget(i,0).text())
             tracer['fvOptions']['S']['cellSet'] = cellsetname
             tracer['patchName'] = patchName
+            if patchName=='point':
+                tracer['fvOptions']['S']['position'] = {} if 'position' not in tracer['fvOptions']['S'].keys() else None
+                #TODO: Verificar que sea correcto el punto
+                tracer['fvOptions']['S']['position'] = self.tableWidget.cellWidget(i,2).text()
+                
             del tracer['fvOptions']['S']['scalarExplicitSetValueCoeffs']['injectionRate']['T0']
             tracer['fvOptions']['S']['scalarExplicitSetValueCoeffs']['injectionRate'][newkey] = '1'            
             self.parsedData['functions'][newkey] = tracer
             patches.append(patchName)
         self.parsedData.writeFile()
-        #self.parsedData.closeFile()
         
         if doTopoSet:
             spatches = set(patches)
