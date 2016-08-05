@@ -71,11 +71,14 @@ class postproWidget(postproUI):
             w = QtGui.QMessageBox(QtGui.QMessageBox.Information, "Error", "Data only can be exported in reconstructed cases")
             w.exec_()
             return
+        tt = ''
+        if self.time_4.currentText()=='Latest Time':
+            tt = '-latestTime'
         opt = str(self.comboBox.currentText())
         filename = '%s/export.log'%self.currentFolder
         self.window().newLogTab('Export',filename)
         if opt=='VTK':
-            action = 'foamToVTK -case %s > %s &' %(self.currentFolder,filename)
+            action = 'foamToVTK -case %s %s > %s &' %(self.currentFolder,tt,filename)
         elif opt=='Fluent':
             action = 'foamMeshToFluent -case %s &' %(self.currentFolder)
             os.system(action)
@@ -87,9 +90,9 @@ class postproWidget(postproUI):
                 if ifield not in parsedData.getValueDict().keys():
                     parsedData[ifield] = ii
                     ii = ii + 1                        
-            action = 'foamDataToFluent -case %s > %s &' %(self.currentFolder,filename)
+            action = 'foamDataToFluent -case %s %s > %s &' %(self.currentFolder,tt,filename)
         elif opt=='Ensight':
-            action = 'foamToEnsight -case %s > %s &' %(self.currentFolder,filename)
+            action = 'foamToEnsight -case %s %s > %s &' %(self.currentFolder,tt,filename)
         os.system(action)
         return
     

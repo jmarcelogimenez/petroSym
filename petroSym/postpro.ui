@@ -48,6 +48,24 @@
        <string>Export Data</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Export Format: </string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="text">
+          <string>Export</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/newPrefix/images/fromHelyx/export16.png</normaloff>:/newPrefix/images/fromHelyx/export16.png</iconset>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="1">
         <widget class="QComboBox" name="comboBox">
          <item>
@@ -67,22 +85,25 @@
          </item>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_10">
          <property name="text">
-          <string>Export Format: </string>
+          <string>Time Range:</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QPushButton" name="pushButton_2">
-         <property name="text">
-          <string>Export</string>
-         </property>
-         <property name="icon">
-          <iconset resource="resources.qrc">
-           <normaloff>:/newPrefix/images/fromHelyx/export16.png</normaloff>:/newPrefix/images/fromHelyx/export16.png</iconset>
-         </property>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="time_4">
+         <item>
+          <property name="text">
+           <string>Latest Time</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Full Range</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
