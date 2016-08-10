@@ -46,11 +46,16 @@ dicc['rhop'] = 1000
 dicc['e'] = 1
 dicc['mu'] = 0.01
 dicc['outputControl'] = 'timeStep'
+dicc['outputType'] = 'interval'
 dicc['outputInterval'] = 1
 
+outputTypeData = ['interval','point']
 doubleData = [1,2,6,7,8,9,10]
 intData = [3]
 vecData = [4,5]
+lineEdit = [1,2,3,4,5,6,7,8,9,10]
+comboBox = [11]
+spin = [12]
 
 class particleTracking(particleTrackingUI):
 
@@ -90,8 +95,9 @@ class particleTracking(particleTrackingUI):
                     track['d'] = D['d'] if D.__contains__('d') else dicc['d']  
                     track['rhop'] = D['rhop'] if D.__contains__('rhop') else dicc['rhop']  
                     track['mu'] = D['mu'] if D.__contains__('mu') else dicc['mu']  
-                    track['e'] = D['e'] if D.__contains__('e') else dicc['e']  
-                    track['outputInterval'] = D['outputInterval'] if D.__contains__('outputInterval') else dicc['outputInterval']  
+                    track['e'] = D['e'] if D.__contains__('e') else dicc['e']
+                    track['outputType'] = D['outputType'] if D.__contains__('outputType') else dicc['outputType']
+                    track['outputInterval'] = D['outputInterval'] if D.__contains__('outputInterval') else dicc['outputInterval']
                     
                     self.trackingData.append(track)
                         
@@ -104,9 +110,9 @@ class particleTracking(particleTrackingUI):
         
         for i in range(len(self.trackingData)):
             self.tableWidget.insertColumn(i)
-            N = 12
+            N = 13
             items = [QtGui.QTableWidgetItem() for irow in range(N)]
-            wdgs = [QtGui.QLineEdit() for irow in range(N-1)]
+            wdgs = [QtGui.QLineEdit() for irow in range(N-2)]
             
             wdgs[0].setText(str(self.trackingData[i]['name']))
             wdgs[0].setEnabled(False)
@@ -120,11 +126,17 @@ class particleTracking(particleTrackingUI):
             wdgs[8].setText(str(self.trackingData[i]['rhop']))
             wdgs[9].setText(str(self.trackingData[i]['mu']))
             wdgs[10].setText(str(self.trackingData[i]['e']))
+            
+            wdgs.append(QtGui.QComboBox())
+            wdgs[11].addItems(outputTypeData)
+            wdgs[11].setObjectName(str(i))
+            wdgs[11].setCurrentIndex(wdgs[11].findText(self.trackingData[i]['outputType']))
 
             wdgs.append(QtGui.QSpinBox())
-            wdgs[11].setMinimum(1)
-            wdgs[11].setMaximum(1000)
-            wdgs[11].setValue(self.trackingData[i]['outputInterval'])
+            wdgs[12].setMinimum(1)
+            wdgs[12].setMaximum(1000)
+            wdgs[12].setValue(self.trackingData[i]['outputInterval'])
+            wdgs[12].setEnabled(False) if self.trackingData[i]['outputType']!='interval' else wdgs[12].setEnabled(True)
         
             for irow in range(N):
                 if irow in doubleData:
@@ -133,7 +145,14 @@ class particleTracking(particleTrackingUI):
                     wdgs[irow].setValidator(QtGui.QIntValidator())
                 if irow in vecData:
                     wdgs[irow].setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("\({1}-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\){1}")))
-                QtCore.QObject.connect(wdgs[irow],QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
+                if irow in lineEdit:
+                    QtCore.QObject.connect(wdgs[irow],QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
+                if irow in spin:
+                    QtCore.QObject.connect(wdgs[irow],QtCore.SIGNAL(_fromUtf8("valueChanged(QString)")), self.checkAccept)
+                if irow in comboBox:
+                    QtCore.QObject.connect(wdgs[irow], QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.checkAccept)
+                    QtCore.QObject.connect(wdgs[irow], QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.change_combobox)
+                
                 self.tableWidget.setItem(irow,i,items[irow])
                 self.tableWidget.setCellWidget(irow,i,wdgs[irow]) 
                 
@@ -178,14 +197,26 @@ class particleTracking(particleTrackingUI):
         self.figureLayout.addWidget(self.canvas)
         
         self.pushButton_3.setEnabled(True)
+        
+    def change_combobox(self):
+        name = str(self.sender().objectName())
+        c=self.tableWidget.cellWidget(12,int(name))
+        
+        if self.sender().currentText()=='interval':
+            c.setEnabled(True)
+        else:
+            c.setEnabled(False)
+        
+        print 'done'
+        return
 
     def newTracer(self):
         i = self.tableWidget.columnCount()
         self.tableWidget.insertColumn(i)
         
-        N = 12
+        N = 13
         items = [QtGui.QTableWidgetItem() for irow in range(N)]
-        wdgs = [QtGui.QLineEdit() for irow in range(N-1)]
+        wdgs = [QtGui.QLineEdit() for irow in range(N-2)]
         
         wdgs[0].setText(str('newCloud'))
         wdgs[1].setText(str(dicc['tInjStart']))
@@ -198,10 +229,14 @@ class particleTracking(particleTrackingUI):
         wdgs[8].setText(str(dicc['rhop']))
         wdgs[9].setText(str(dicc['mu']))
         wdgs[10].setText(str(dicc['e']))
+        
+        wdgs.append(QtGui.QComboBox())
+        wdgs[11].addItems(outputTypeData)
+        wdgs[11].setObjectName(str(i))
 
         wdgs.append(QtGui.QSpinBox())
-        wdgs[11].setMinimum(1)
-        wdgs[11].setMaximum(1000)
+        wdgs[12].setMinimum(1)
+        wdgs[12].setMaximum(1000)
             
         for irow in range(N):
             if irow in doubleData:
@@ -210,10 +245,14 @@ class particleTracking(particleTrackingUI):
                 wdgs[irow].setValidator(QtGui.QIntValidator())
             if irow in vecData:
                 wdgs[irow].setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("\({1}-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\){1}")))
-            if irow<(N-1):
+            if irow in lineEdit:
                 QtCore.QObject.connect(wdgs[irow],QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
-            else:
+            if irow in spin:
                 QtCore.QObject.connect(wdgs[irow],QtCore.SIGNAL(_fromUtf8("valueChanged(QString)")), self.checkAccept)
+            if irow in comboBox:
+                QtCore.QObject.connect(wdgs[irow], QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.checkAccept)
+                QtCore.QObject.connect(wdgs[irow], QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.change_combobox)
+            
             self.tableWidget.setItem(irow,i,items[irow])
             self.tableWidget.setCellWidget(irow,i,wdgs[irow]) 
                 
@@ -274,7 +313,8 @@ class particleTracking(particleTrackingUI):
             track['rhop'] = str(self.tableWidget.cellWidget(8,i).text())
             track['mu'] = str(self.tableWidget.cellWidget(9,i).text())
             track['e'] = str(self.tableWidget.cellWidget(10,i).text())
-            track['outputInterval'] = str(self.tableWidget.cellWidget(11,i).value())
+            track['outputType'] = str(self.tableWidget.cellWidget(11,i).currentText()) #TODO: ver aca que va
+            track['outputInterval'] = str(self.tableWidget.cellWidget(12,i).value())
             
             while keyname in self.parsedData['functions'].keys():
                 keyname = keyname+'1'                

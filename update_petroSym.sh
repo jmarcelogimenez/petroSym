@@ -10,8 +10,8 @@ if echo "$answer" | grep -iq "^y" ;then
 	sleep 1
 	git pull > LOG
 	if cat LOG | grep 'Already up-to-date';then
-		exit
 		rm LOG
+		exit
 	fi
 	rm LOG
 	echo "Installing the new requirements..."
