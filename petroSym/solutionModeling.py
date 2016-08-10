@@ -8,7 +8,6 @@ Created on Tue Aug 25 13:08:19 2015
 from PyQt4 import QtGui, QtCore
 from solutionModeling_ui import Ui_solutionModelingUI
 import os
-#from tracers import *
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8

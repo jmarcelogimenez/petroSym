@@ -17,30 +17,6 @@ FoamFile
 
 actions
 (
-
-	{
-        name    inletf;
-        type    faceSet;
-        action  new;
-		source patchToFace;
-		sourceInfo
-		{
-			name inlet;
-		}
-    }
-  
-    {
-        name    inletcells;
-        type    cellSet;
-        action  new;
-		source  faceToCell;
-		sourceInfo
-		{
-			set inletf;
-			option any;
-		}
-    }
-
 );
 
 // ************************************************************************* //

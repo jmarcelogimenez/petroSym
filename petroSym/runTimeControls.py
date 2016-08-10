@@ -8,6 +8,7 @@ Created on Tue Aug 25 13:08:19 2015
 from PyQt4 import QtGui, QtCore
 from runTimeControls_ui import Ui_runTimeControlsUI
 import os
+from utils import * #Para backup
 
 from PyFoam.RunDictionary.ParsedParameterFile import ParsedParameterFile
 
@@ -79,8 +80,10 @@ class runTimeControls(runTimeControlsUI):
         
 
     def loadData(self):
+        
         filename = '%s/system/controlDict'%self.currentFolder
         parsedData = ParsedParameterFile(filename,createZipped=False)
+        backupFile(filename)
         
         self.cb_start_from.setCurrentIndex(self.cb_start_from_ii[parsedData['startFrom']]) if parsedData.__contains__('startFrom') else None
         self.start_from.setText(str(parsedData['startTime'])) if parsedData.__contains__('startTime') else None
