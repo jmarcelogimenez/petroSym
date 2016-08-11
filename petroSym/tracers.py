@@ -10,6 +10,7 @@ from tracers_ui import tracersUI
 import os
 import utils
 from utils import * #Para backup
+from ExampleThread import *
 import copy
 import numpy
 
@@ -155,6 +156,9 @@ class tracers(tracersUI):
             wdg3.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("\({1}-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\){1}")))
             wdg4.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("\({1}-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\){1}")))
             QtCore.QObject.connect(wdg1,QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
+            QtCore.QObject.connect(wdg2,QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.checkAccept)
+            QtCore.QObject.connect(wdg3,QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
+            QtCore.QObject.connect(wdg4,QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
             
             self.tableWidget.setItem(i,0,item1)
             self.tableWidget.setCellWidget(i,0,wdg1)
@@ -242,6 +246,9 @@ class tracers(tracersUI):
         wdg3.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("\({1}-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\){1}")))
         wdg4.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("\({1}-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\s-?\d+\.?\d*(e-?\d)?\){1}")))
         QtCore.QObject.connect(wdg1,QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
+        QtCore.QObject.connect(wdg2,QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.checkAccept)
+        QtCore.QObject.connect(wdg3,QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
+        QtCore.QObject.connect(wdg4,QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.checkAccept)
         self.tableWidget.setItem(i,0,item1)
         self.tableWidget.setCellWidget(i,0,wdg1) 
         self.tableWidget.setItem(i,1,item2)
@@ -273,6 +280,16 @@ class tracers(tracersUI):
             self.pushButton_3.setEnabled(False)
 
     def drawTracers(self, doTopoSet=False):
+        
+        #Estoy obligado a hacer esto antes porque si lo hago durante la escritura
+        #de datos, me pueden quedar datos a mitad de escritura y corruptos
+        for i in range(self.tableWidget.rowCount()):
+            patchName = str(self.tableWidget.cellWidget(i,1).currentText())
+            if patchName=='box':
+                if str(self.tableWidget.cellWidget(i,2).text())[-1]!=')' or str(self.tableWidget.cellWidget(i,3).text())[-1]!=')':
+                    tracer = 'T%s'%str(i)
+                    QtGui.QMessageBox.about(self, "Error", "Wrong regular expression in "+tracer+"!")
+                    return False
 
         for dd in self.tracersData:
             del self.parsedData['functions'][dd['name']]
@@ -294,6 +311,7 @@ class tracers(tracersUI):
                 tracer['fvOptions']['S']['p0'] = {} if 'p0' not in tracer['fvOptions']['S'].keys() else None
                 tracer['fvOptions']['S']['p1'] = {} if 'p1' not in tracer['fvOptions']['S'].keys() else None
                 #TODO: Verificar que sea correcto el punto
+                
                 tracer['fvOptions']['S']['p0'] = str(self.tableWidget.cellWidget(i,2).text())
                 tracer['fvOptions']['S']['p1'] = str(self.tableWidget.cellWidget(i,3).text())
                 
@@ -334,14 +352,45 @@ class tracers(tracersUI):
                     ii = ii+1
             topoSetData.writeFile()
                         
-            cmd = 'topoSet -case %s > run_topoSet.log &'%self.currentFolder
-            os.system(cmd)
+            cmd = 'topoSet -case %s > %s/run_topoSet.log &'%(self.currentFolder,self.currentFolder)
+            self.threadtopoSet = ExampleThread(cmd)
+            self.connect(self.threadtopoSet, QtCore.SIGNAL("finished()"), self.verifyCells)
+            self.connect(self.threadtopoSet, QtCore.SIGNAL("finished()"), self.threadtopoSet.terminate)
+            self.threadtopoSet.start()
         
         self.loadCaseData()
         self.refreshTable()
         self.refreshTimeline()
         
         return True
+        
+    def verifyCells(self):
+        from os import listdir
+        from os.path import isfile, join
+        folder = '%s/constant/polyMesh/sets'%self.currentFolder
+        files = [f for f in listdir(folder) if isfile(join(folder, f))]
+        empties = []
+        for ifile in files:
+            if '_c' in ifile:
+                filename = folder+'/'+ifile
+                cmd="grep -in '(' %s"%filename
+                proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell=True)
+                (out, err) = proc.communicate()
+                out=out.replace(":(","").replace("\n","")
+                out = int(out)-1
+                cmd="awk \"NR==%s\" %s"%(str(out),filename)
+                proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell=True)
+                (out, err) = proc.communicate()
+                out=out.replace("\n","")
+                if int(out)==0:
+                    empties.append(ifile.replace("_c",""))
+                    
+        if empties!=[]:
+            strempties=' '.join(empties)
+            w = QtGui.QMessageBox(QtGui.QMessageBox.Warning, "Warning", "The tracer(s) "+strempties+" generated 0 cells!")
+            w.exec_()
+                
+        return
         
         
     def checkAccept(self):

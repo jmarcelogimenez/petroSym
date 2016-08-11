@@ -283,7 +283,7 @@ class particleTracking(particleTrackingUI):
             ct = str(self.tableWidget.cellWidget(4,i).text())
             r0 = str(self.tableWidget.cellWidget(5,i).text())            
             if ct[-1]!=')' or  r0[-1]!=')':
-                QtGui.QMessageBox.about(self, "ERROR", "Wrong regular expression in vector type")
+                QtGui.QMessageBox.about(self, "Error", "Wrong regular expression in vector type")
                 return False
                 
             tini = float(self.tableWidget.cellWidget(1,i).text())
