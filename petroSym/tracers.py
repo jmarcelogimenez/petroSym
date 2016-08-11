@@ -174,11 +174,13 @@ class tracers(tracersUI):
     def refreshTimeline(self):
         if not self.firstPlot:
             self.figureLayout.removeWidget(self.canvas)
+            self.canvas.destroy()
+            self.canvas.close()
 
         self.firstPlot = False
         fig = Figure((2.0, 1.5), dpi=100)
         self.canvas = FigureCanvas(fig)
-        self.canvas.setParent(self)
+        #self.canvas.setParent(self)
         
         self.ax = fig.add_subplot(111)
         self.ax.clear()

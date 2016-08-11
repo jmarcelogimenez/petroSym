@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>324</width>
-    <height>457</height>
+    <height>477</height>
    </rect>
   </property>
   <property name="font">
@@ -23,35 +23,6 @@
     <widget class="QPushButton" name="pushButton">
      <property name="text">
       <string>New</string>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="autoDefault">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <layout class="QVBoxLayout" name="figureLayout"/>
-   </item>
-   <item row="2" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="pushButton_2">
-     <property name="text">
-      <string>Remove</string>
      </property>
      <property name="checkable">
       <bool>false</bool>
@@ -83,6 +54,19 @@
       <bool>false</bool>
      </property>
     </widget>
+   </item>
+   <item row="2" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item row="0" column="0" rowspan="4">
     <widget class="QTableWidget" name="tableWidget">
@@ -152,7 +136,7 @@
      </row>
      <row>
       <property name="text">
-       <string>Output Type</string>
+       <string>Output Control</string>
       </property>
      </row>
      <row>
@@ -160,6 +144,34 @@
        <string>Output Interval</string>
       </property>
      </row>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>Remove</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <layout class="QHBoxLayout" name="figureLayout"/>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>

@@ -45,11 +45,10 @@ dicc['d'] = 0.01
 dicc['rhop'] = 1000
 dicc['e'] = 1
 dicc['mu'] = 0.01
-dicc['outputControl'] = 'timeStep' #outputTime
-dicc['outputType'] = 'interval'
+dicc['outputControl'] = 'timeStep'
 dicc['outputInterval'] = 1
 
-outputTypeData = ['interval','point']
+outputControlData = ['timeStep','outputTime']
 doubleData = [1,2,6,7,8,9,10]
 intData = [3]
 vecData = [4,5]
@@ -96,7 +95,7 @@ class particleTracking(particleTrackingUI):
                     track['rhop'] = D['rhop'] if D.__contains__('rhop') else dicc['rhop']  
                     track['mu'] = D['mu'] if D.__contains__('mu') else dicc['mu']  
                     track['e'] = D['e'] if D.__contains__('e') else dicc['e']
-                    track['outputType'] = D['outputType'] if D.__contains__('outputType') else dicc['outputType']
+                    track['outputControl'] = D['outputControl'] if D.__contains__('outputControl') else dicc['outputControl']
                     track['outputInterval'] = D['outputInterval'] if D.__contains__('outputInterval') else dicc['outputInterval']
                     
                     self.trackingData.append(track)
@@ -128,15 +127,15 @@ class particleTracking(particleTrackingUI):
             wdgs[10].setText(str(self.trackingData[i]['e']))
             
             wdgs.append(QtGui.QComboBox())
-            wdgs[11].addItems(outputTypeData)
+            wdgs[11].addItems(outputControlData)
             wdgs[11].setObjectName(str(i))
-            wdgs[11].setCurrentIndex(wdgs[11].findText(self.trackingData[i]['outputType']))
+            wdgs[11].setCurrentIndex(wdgs[11].findText(self.trackingData[i]['outputControl']))
 
             wdgs.append(QtGui.QSpinBox())
             wdgs[12].setMinimum(1)
             wdgs[12].setMaximum(1000)
             wdgs[12].setValue(self.trackingData[i]['outputInterval'])
-            wdgs[12].setEnabled(False) if self.trackingData[i]['outputType']!='interval' else wdgs[12].setEnabled(True)
+            wdgs[12].setEnabled(False) if self.trackingData[i]['outputControl']!='timeStep' else wdgs[12].setEnabled(True)
         
             for irow in range(N):
                 if irow in doubleData:
@@ -162,6 +161,8 @@ class particleTracking(particleTrackingUI):
     def refreshTimeline(self):
         if not self.firstPlot:
             self.figureLayout.removeWidget(self.canvas)
+            self.canvas.destroy()
+            self.canvas.close()
 
         self.firstPlot = False
         fig = Figure((2.0, 1.5), dpi=100)
@@ -202,7 +203,7 @@ class particleTracking(particleTrackingUI):
         name = str(self.sender().objectName())
         c=self.tableWidget.cellWidget(12,int(name))
         
-        if self.sender().currentText()=='interval':
+        if self.sender().currentText()=='timeStep':
             c.setEnabled(True)
         else:
             c.setEnabled(False)
@@ -231,7 +232,7 @@ class particleTracking(particleTrackingUI):
         wdgs[10].setText(str(dicc['e']))
         
         wdgs.append(QtGui.QComboBox())
-        wdgs[11].addItems(outputTypeData)
+        wdgs[11].addItems(outputControlData)
         wdgs[11].setObjectName(str(i))
 
         wdgs.append(QtGui.QSpinBox())
@@ -313,7 +314,7 @@ class particleTracking(particleTrackingUI):
             track['rhop'] = str(self.tableWidget.cellWidget(8,i).text())
             track['mu'] = str(self.tableWidget.cellWidget(9,i).text())
             track['e'] = str(self.tableWidget.cellWidget(10,i).text())
-            track['outputType'] = str(self.tableWidget.cellWidget(11,i).currentText()) #TODO: ver aca que va
+            track['outputControl'] = str(self.tableWidget.cellWidget(11,i).currentText()) #TODO: ver aca que va
             track['outputInterval'] = str(self.tableWidget.cellWidget(12,i).value())
             
             while keyname in self.parsedData['functions'].keys():
