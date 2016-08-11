@@ -288,9 +288,7 @@ class petroSym(petroSymUI):
             self.OnOff(True)
             self.meshW.setCurrentFolder(self.currentFolder)
             self.runW.setCurrentFolder(self.currentFolder,self.solvername)
-            self.postproW.setCurrentFolder(self.currentFolder)
         
-        #self.w.close()
         return result
 
     def saveCase(self):

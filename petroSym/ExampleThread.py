@@ -5,7 +5,7 @@ Created on Wed Apr 27 18:01:53 2016
 @author: santiago
 """
 
-#import threading
+from PyQt4 import QtCore
 from PyQt4.QtCore import QThread
 import os
 import subprocess
@@ -24,3 +24,5 @@ class ExampleThread(QThread):
         #os.system(self.cmd)
         p=subprocess.Popen([self.cmd],shell=True)
         p.wait()
+        
+        

@@ -45,7 +45,7 @@ dicc['d'] = 0.01
 dicc['rhop'] = 1000
 dicc['e'] = 1
 dicc['mu'] = 0.01
-dicc['outputControl'] = 'timeStep'
+dicc['outputControl'] = 'timeStep' #outputTime
 dicc['outputType'] = 'interval'
 dicc['outputInterval'] = 1
 

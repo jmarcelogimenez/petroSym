@@ -69,8 +69,12 @@ class meshWidget(meshUI):
         command = 'blockMesh -case %s 1> %s/createMesh.log 2> %s/error.log'%(self.currentFolder,self.currentFolder,self.currentFolder)
         
         self.threadblockmesh = ExampleThread(command)
-        self.connect(self.threadblockmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
-        self.connect(self.threadblockmesh, QtCore.SIGNAL("finished()"), self.threadblockmesh.terminate)
+        #self.connect(self.threadblockmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
+        #self.connect(self.threadblockmesh, QtCore.SIGNAL("finished()"), self.threadblockmesh.terminate)
+        QtCore.QObject.connect(self.threadblockmesh, QtCore.SIGNAL("finished()"), self.checkMesh)
+        QtCore.QObject.connect(self.threadblockmesh, QtCore.SIGNAL("finished()"), self.threadblockmesh.terminate)
+        QtCore.QObject.connect(self.threadblockmesh, QtCore.SIGNAL("finished()"), lambda: self.window().postproW.setCurrentFolder(self.currentFolder))
+
         self.threadblockmesh.start()
         
     def blockMesh(self):
