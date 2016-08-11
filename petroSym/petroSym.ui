@@ -212,7 +212,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>130</width>
+                   <width>110</width>
                    <height>385</height>
                   </rect>
                  </property>
@@ -700,6 +700,22 @@
     <hint type="destinationlabel">
      <x>398</x>
      <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionHelp</sender>
+   <signal>activated()</signal>
+   <receiver>petroSymUI</receiver>
+   <slot>openHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>398</x>
+     <y>298</y>
     </hint>
    </hints>
   </connection>

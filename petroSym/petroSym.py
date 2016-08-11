@@ -140,6 +140,10 @@ class petroSym(petroSymUI):
     def updateMeshPanel(self):
         QtGui.QMessageBox.about(self, "ERROR", "Primero se debe calcular!")
         
+    def openHelp(self):
+        w = QtGui.QMessageBox(QtGui.QMessageBox.Information,"Information","Please contact with: \n jmarcelogimenez@gmail.com (Juan Marcelo Gimenez) or \n santi_0926@hotmail.com (Santiago Chialvo)")
+        w.exec_()
+        
     def loadingmbox(self,title,msg):
         self.w = QtGui.QMessageBox(QtGui.QMessageBox.Information,title,msg)
         time.sleep(1)
